@@ -33,6 +33,7 @@ Northwind Robotics, its activity, and the signal are invented. Replace the sampl
 | `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |
 | `brain/decisions/` | Proposed decisions, each waiting for a person's verdict |
 | `brain/corrections.md` | Every edit or rejection, so repeated mistakes become rule changes |
+| `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
 | `brain/crm-export/` | Invented account, contact, candidate, and move-evidence CSVs |
 | `brain/call-rules.md`, `brain/calls/` | Private synthetic call excerpts and theme rules |

@@ -17,6 +17,7 @@ Every check is local practice for this invented starter brain. The owner reviews
 | M-WRONG-CHECK | Verify check identity | ops.owner | 30 | 2026-09-01 | review-note |
 | M-WRONG-TYPE | Verify evidence type | ops.owner | 30 | 2026-09-01 | review-note |
 | M-NO-OWNER | Assign the team-wide audit owner |  | 30 | 2026-09-20 | review-note |
+| M-SOURCES | Review the "Last checked" dates in `brain/sources.md` | ops.owner | 30 | 2026-10-21 | review-note |
 
 ## Evidence contract
 
