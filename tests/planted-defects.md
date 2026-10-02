@@ -115,5 +115,6 @@ Review date: 2026-09-28. A completion claim needs a valid date and a readable ev
 | M-WRONG-CHECK | Blocked | Readable file identifies M-DUE, not M-WRONG-CHECK |
 | M-WRONG-TYPE | Blocked | Readable file says `snapshot`, not `review-note` |
 | M-NO-OWNER | Blocked | No named owner; team-wide follow-up stays in review report |
+| M-SOURCES | Not yet due | No history; first due 2026-10-21 |
 
 On a checkout that does not preserve symlinks, M-SYMLINK still blocks because the checked-out text file is not matching evidence; only a symlink-capable checkout exercises the resolve-before-read case.
