@@ -1,0 +1,15 @@
+contact_id,company_id,first_name,last_name,title,function,email,email_status,linkedin_url,linkedin_current_company,country,owner,last_activity_at,has_open_deal,source
+P001,C001,Dana,Reyes,Head of Sales,Sales,,,linkedin.example/in/example-dana-reyes,Northwind Robotics,US,,2026-09-17,no,form
+P002,C001,Theo,Marsh,CEO,Executive,theo@northwindrobotics.example,valid,linkedin.example/in/example-theo-marsh,Northwind Robotics,US,,,no,vendor-a
+P003,C003,Priya,Nand,VP Revenue Operations,RevOps,priya.nand@harborledger.example,valid,linkedin.example/in/example-priya-nand,Harbor Ledger,US,maria.ortiz,2026-09-20,yes,manual
+P004,C003,Owen,Pike,Marketing Operations Manager,Marketing,owen.pike@harborledger,invalid,linkedin.example/in/example-owen-pike,Harbor Ledger,US,,,no,vendor-a
+P005,C004,Rosa,Klein,Director of Sales,Sales,rosa.klein@fernwoodfreight.example,valid,linkedin.example/in/example-rosa-klein,Fernwood Freight,US,,,no,vendor-a
+P006,C005,Marcus,Hale,Head of Growth,Marketing,marcus.hale@quillonhealth.example,valid,linkedin.example/in/example-marcus-hale,Brightline Care,US,,2025-11-03,no,vendor-a
+P007,C005,Ana,Soto,Revenue Operations Lead,RevOps,ana.soto@quillonhealth.example,valid,linkedin.example/in/example-ana-soto,Quillon Health,US,,,no,vendor-a
+P008,C007,Lee,Park,GTM Engineer,RevOps,lee.park@kestrelsec.example,valid,linkedin.example/in/example-lee-park,Kestrel Security,US,sam.lee,2026-09-02,yes,manual
+P009,C008,Nina,Ford,Founder,Executive,nina@tidewateranalytics.example,catch-all,linkedin.example/in/example-nina-ford,Tidewater Analytics,CA,,,no,vendor-a
+P010,C010,Jonah,Wells,VP Sales,Sales,jonah.wells@summitfleet.example,valid,linkedin.example/in/example-jonah-wells,Summit Fleet,US,maria.ortiz,2026-09-22,yes,manual
+P011,C012,Ivy,Chen,Director of Marketing,Marketing,ivy.chen@cedarclinics.example,valid,linkedin.example/in/example-ivy-chen,Cedar Clinics,US,,,no,vendor-b
+P012,C002,Dana,Reyes,Head of Sales,Sales,dana.reyes@northwindrobotics.example,unknown,linkedin.example/in/example-dana-reyes,Northwind Robotics,US,,,no,vendor-b
+P013,C003,Bea,Ellis,Accounts Payable Specialist,Finance,bea.ellis@harborledger.example,valid,linkedin.example/in/example-bea-ellis,Harbor Ledger,US,,,no,vendor-c
+P014,C001,Cal,Stone,Warehouse Operations Lead,Operations,cal.stone@northwindrobotics.example,valid,linkedin.example/in/example-cal-stone,Northwind Robotics,US,,,no,vendor-c

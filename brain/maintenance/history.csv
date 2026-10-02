@@ -1,0 +1,10 @@
+check_id,completed_at,evidence_path
+M-CURRENT,2026-09-20,brain/maintenance/evidence/current.md
+M-MISSING,2026-09-20,brain/maintenance/evidence/missing.md
+M-INVALID,2026-13-01,brain/maintenance/evidence/invalid-date.md
+M-FUTURE,2026-10-01,brain/maintenance/evidence/future-date.md
+M-ABSOLUTE,2026-09-20,/etc/hosts
+M-TRAVERSAL,2026-09-20,brain/maintenance/evidence/../outside-evidence.md
+M-SYMLINK,2026-09-20,brain/maintenance/evidence/escape-link.md
+M-WRONG-CHECK,2026-09-20,brain/maintenance/evidence/wrong-check.md
+M-WRONG-TYPE,2026-09-20,brain/maintenance/evidence/wrong-type.md

@@ -1,0 +1,55 @@
+# GTM brain
+
+A shared memory for a marketing and sales team, kept as plain files in your own git repo.
+
+MIT starter. The CRM examples use invented CSV data and create proposals for a person to review.
+
+## Five-minute walkthrough
+
+1. Clone this repository and open it in Claude Code:
+
+   ```bash
+   git clone https://github.com/jnkliberty/gtm-brain.git
+   cd gtm-brain
+   mkdir -p ~/.claude/skills
+   cp -Rf skills/account-handoff ~/.claude/skills/
+   claude
+   ```
+
+2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the dated signal, and the rules in `brain/stages.md` and `brain/plays.md`.
+3. Read the proposed file in `brain/decisions/`. Check that the decision and draft cite the source lines. The example has no verified email, so the proposal must keep that gap open.
+4. Approve, edit, or reject the proposal. The skill records your verdict; an edit or rejection also goes in `brain/corrections.md`. Nothing sends or changes a CRM.
+
+Northwind Robotics, its activity, and the signal are invented. Replace the sample records with your own private data only in a private copy of this repo.
+
+## What is here
+
+| Path | What it holds |
+| --- | --- |
+| `brain/icp.md` | Who you sell to, and who fails the cut |
+| `brain/stages.md` | Lifecycle stages, who owns each, and the handoff rules |
+| `brain/plays.md` | Your plays, their triggers, and the draft rules |
+| `brain/accounts/` | One file per account: what marketing and sales know |
+| `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |
+| `brain/decisions/` | Proposed decisions, each waiting for a person's verdict |
+| `brain/corrections.md` | Every edit or rejection, so repeated mistakes become rule changes |
+| `skills/account-handoff/` | Turns a marketing signal into a sales decision |
+| `brain/crm-export/` | Invented account, contact, candidate, and move-evidence CSVs |
+| `brain/call-rules.md`, `brain/calls/` | Private synthetic call excerpts and theme rules |
+| `brain/runbook.md`, `brain/maintenance/` | Maintenance checks, history, and synthetic evidence |
+| `skills/icp-filter-calibration/`, `skills/data-accuracy-audit/`, `skills/crm-field-provenance/` | Read-only CRM checks |
+| `skills/account-build/`, `skills/tiered-contact-build/`, `skills/contact-retention-review/` | Record-building and retention proposals |
+| `skills/contact-move-routing/`, `skills/call-intel-to-themes/`, `skills/crm-maintenance-runbook/` | Move, call, and maintenance reviews |
+
+## Rules every skill follows
+
+- Evidence on every claim, quoted from a brain file.
+- A gap stays a gap. Nothing gets filled with a guess.
+- A person approves every decision. Skills never send and never write to a CRM.
+- The CRM skills use the local CSV route in this starter. Live connectors need a separate activation plan.
+- Keep real call notes and theme files in a private repository. The call excerpts here are invented examples.
+- Corrections become rules: three matching corrections propose an edit to the file that caused them.
+
+## License
+
+MIT. See [LICENSE](./LICENSE). `signal-interpreter` is by Swan ([swan-gtm/gtm-skills](https://github.com/swan-gtm/gtm-skills), MIT).

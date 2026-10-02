@@ -1,0 +1,10 @@
+call_id,quote_id,company_id,call_date,exact_quote,pain_key,claim_value,rep_confirmed,rep_confirmed_at,source
+CALL-01,Q001,C003,2026-09-08,We copy handoff notes into three places before sales sees them.,manual_handoff,present,yes,2026-09-09,synthetic-private-note
+CALL-01,Q002,C003,2026-09-08,I think the owner also waits a day for those notes.,manual_handoff,present,no,,synthetic-private-note
+CALL-02,Q003,C010,2026-09-12,We retype qualification notes before the account owner sees them.,manual_handoff,present,yes,2026-09-13,synthetic-private-note
+CALL-03,Q004,C001,2026-09-11,Our quote approval takes four days.,quote_delay,present,yes,2026-09-12,synthetic-private-note
+CALL-04,Q005,C002,2026-09-14,Quote approval usually takes three days for our team.,quote_delay,present,yes,2026-09-15,synthetic-private-note
+CALL-05,Q006,C008,2026-09-16,We copy every handoff note into the CRM.,manual_handoff,present,yes,2026-09-17,synthetic-private-note
+CALL-05,Q007,C008,2026-09-16,We never copy handoff notes into the CRM.,manual_handoff,absent,yes,2026-09-17,synthetic-private-note
+CALL-06,Q008,C001,2026-09-18,We copy support status into the CRM every week.,support_sync,present,yes,2026-09-19,synthetic-private-note
+CALL-07,Q009,C002,2026-09-19,We never copy support status into the CRM.,support_sync,absent,yes,2026-09-20,synthetic-private-note

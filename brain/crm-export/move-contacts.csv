@@ -1,0 +1,3 @@
+contact_id,company_id,first_name,last_name,title,function,email,email_status,linkedin_url,linkedin_current_company,country,owner,last_activity_at,has_open_deal,source
+M101,C003,Elena,Price,Director Revenue Operations,RevOps,elena.price@harborledger.example,valid,linkedin.example/in/example-elena-price,Harbor Ledger,US,alex.chen,,no,synthetic
+M102,C003,Elena,Price,Director Revenue Operations,RevOps,elena.price+copy@harborledger.example,valid,linkedin.example/in/example-elena-price,Harbor Ledger,US,sam.lee,,no,synthetic

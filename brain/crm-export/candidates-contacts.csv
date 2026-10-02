@@ -1,0 +1,13 @@
+candidate_id,company_domain,first_name,last_name,title,function,email,email_status,linkedin_url,country,source
+K01,alderlogistics.example,Grace,Tan,VP Revenue Operations,RevOps,grace.tan@alderlogistics.example,valid,linkedin.example/in/example-grace-tan,US,vendor-c
+K02,alderlogistics.example,Hugo,Brandt,RevOps Analyst,RevOps,hugo.brandt@alderlogistics.example,valid,linkedin.example/in/example-hugo-brandt,US,vendor-c
+K03,alderlogistics.example,Iris,Moreau,Chief Revenue Officer,Sales,iris.moreau@alderlogistics.example,valid,linkedin.example/in/example-iris-moreau,US,vendor-c
+K04,alderlogistics.example,Jay,Okafor,Sales Director,Sales,jay.okafor@alderlogistics.example,catch-all,linkedin.example/in/example-jay-okafor,US,vendor-c
+K05,alderlogistics.example,Kira,Lund,VP Marketing,Marketing,kira.lund@alderlogistics.example,valid,linkedin.example/in/example-kira-lund,US,vendor-c
+K06,alderlogistics.example,Leo,Varga,Controller,Finance,leo.varga@alderlogistics.example,valid,linkedin.example/in/example-leo-varga,US,vendor-c
+K07,alderlogistics.example,Mia,Costa,CEO,Executive,mia.costa@alderlogistics.example,valid,linkedin.example/in/example-mia-costa,US,vendor-c
+K08,alderlogistics.example,Noah,Weiss,Account Executive,Sales,noah.weiss@alderlogistics.example,valid,linkedin.example/in/example-noah-weiss,US,vendor-c
+K09,harborledger.example,Omar,Reid,Head of Sales,Sales,omar.reid@harborledger.example,valid,linkedin.example/in/example-omar-reid,US,vendor-c
+K10,harborledger.example,Pia,Novak,Content Marketing Manager,Marketing,pia.novak@harborledger.example,invalid,linkedin.example/in/example-pia-novak,US,vendor-c
+K11,northwindrobotics.example,Dana,Reyes,Head of Sales,Sales,dana.reyes@northwindrobotics.example,valid,linkedin.example/in/example-dana-reyes,US,vendor-c
+K12,northwindrobotics.example,Raj,Iyer,Marketing Lead,Marketing,raj.iyer@northwindrobotics.example,valid,linkedin.example/in/example-raj-iyer,US,vendor-c

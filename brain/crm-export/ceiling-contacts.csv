@@ -1,0 +1,7 @@
+contact_id,company_id,first_name,last_name,title,function,email,email_status,linkedin_url,linkedin_current_company,country,owner,last_activity_at,has_open_deal,source
+P015,C003,Alma,Diaz,Sales Manager,Sales,alma.diaz@harborledger.example,valid,linkedin.example/in/example-alma-diaz,Harbor Ledger,US,,,no,vendor-c
+P016,C003,Ben,Shaw,Sales Representative,Sales,ben.shaw@harborledger.example,valid,linkedin.example/in/example-ben-shaw,Harbor Ledger,US,,,no,vendor-c
+P017,C003,Cleo,Price,Marketing Director,Marketing,cleo.price@harborledger.example,valid,linkedin.example/in/example-cleo-price,Harbor Ledger,US,,,no,vendor-c
+P018,C003,Drew,Patel,Revenue Analyst,RevOps,drew.patel@harborledger.example,valid,linkedin.example/in/example-drew-patel,Harbor Ledger,US,,,no,vendor-c
+P019,C003,Elle,Moore,Chief Operating Officer,Executive,elle.moore@harborledger.example,valid,linkedin.example/in/example-elle-moore,Harbor Ledger,US,,,no,vendor-c
+P020,C003,Finn,Lee,Finance Director,Finance,finn.lee@harborledger.example,valid,linkedin.example/in/example-finn-lee,Harbor Ledger,US,,,no,vendor-c
