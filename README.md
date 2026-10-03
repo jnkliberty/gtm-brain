@@ -16,7 +16,7 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
    claude
    ```
 
-2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the dated signal, and the rules in `brain/stages.md` and `brain/plays.md`.
+2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the account's row in `brain/crm-export/companies.csv`, the dated signal, and the rules in `brain/stages.md`, `brain/plays.md`, and `brain/sources.md`.
 3. Read the proposed file in `brain/decisions/`. Check that the decision and draft cite the source lines. The example has no verified email, so the proposal must keep that gap open.
 4. Approve, edit, or reject the proposal. The skill records your verdict; an edit or rejection also goes in `brain/corrections.md`. Nothing sends or changes a CRM.
 

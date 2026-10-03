@@ -7,6 +7,7 @@ Fictional example account. All data is invented.
 - **ICP:** fits `brain/icp.md` (B2B, 140 employees, founder-led sales, no GTM engineer).
 - **Stage:** Engaged.
 - **Owner:** none assigned.
+- **CRM record:** `C001`. Company, size, stage, owner, and contacts were read from it on 2026-09-28.
 - **Stack seen:** HubSpot, Clay, Apollo.
 
 ## Marketing activity
