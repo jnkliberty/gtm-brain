@@ -21,7 +21,7 @@ Apply them in order. The first rule that matches decides. Corrections point at t
    - the signal's `relevanceVerdict` is `relevant`,
    - the account is at stage Target or Engaged and fits the ICP,
    - the signal's `signalStrength` is High or Medium,
-   - the signal has a concrete `whyNow`,
+   - the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as "two days ago" is not concrete),
    - the current signal matches one play's trigger in `brain/plays.md`.
 4. **`rule-nurture`: nurture** in every other case, including a missing or unfamiliar `relevanceVerdict` (list it under Gaps). Name the next check that would move the account to act now.
 

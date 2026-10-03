@@ -1,6 +1,6 @@
 # Signal: Northwind Robotics posts a Founding GTM Engineer role
 
-Fictional example, already interpreted by `signal-interpreter`. Source posting text (invented): "We're hiring our first GTM Engineer to build our outbound engine from scratch. There is no playbook today. You'll own HubSpot, Clay, and our sending domains."
+Fictional example, already interpreted by `signal-interpreter`. Source: job post, posted 2026-09-24 (invented). Source text: "We're hiring our first GTM Engineer to build our outbound engine from scratch. There is no playbook today. You'll own HubSpot, Clay, and our sending domains."
 
 - **relevanceVerdict:** relevant
 - **signalType:** Business Event - Hiring
@@ -9,6 +9,6 @@ Fictional example, already interpreted by `signal-interpreter`. Source posting t
 - **businessImplication:** someone must stand up sequencing, enrichment, and domain setup before the hire can produce pipeline.
 - **signalStrength:** Medium. A single hire, but the first of its kind at the company.
 - **confidence:** Medium. The posting is explicit; budget and timeline are not stated.
-- **whyNow:** the role was posted two days ago and is the first GTM engineering role at the company.
+- **whyNow:** the role was posted on 2026-09-24 and is the first GTM engineering role at the company.
 - **whatNotToAssume:** that they want outside help while they hire; that the hiring manager is the Head of Sales.
 - **openQuestions:** Who is the hiring manager? Would they use outside help before the hire starts?
