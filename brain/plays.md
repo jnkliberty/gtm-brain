@@ -27,6 +27,6 @@ Every draft follows these. A correction about wording points at the one rule it 
 - `draft-length`: four sentences or fewer. The first sentence is under ten words.
 - `draft-unique-fact`: one fact quoted from this account's evidence that could not appear in any other company's message.
 - `draft-ask`: one ask: the play's offer in the play's own words, with no added terms such as price or duration.
-- `draft-public-only`: every company detail in the message cites a public source named in the brain file: a job post, a press release, the company's website, or a public post. Private conversations and tracked activity (calls, content reads, page visits) can shape the angle and stay out of the message. When no public source supports the detail the draft needs, write no draft and list the gap.
+- `draft-public-only`: every company detail in the message cites a public source whose type a brain file states and whose text it quotes: a job post, a press release, the company's website, or a public post, with a URL when the brain file has one. Private conversations and tracked activity (calls, content reads, page visits) can shape the angle and stay out of the message. When no public source supports the detail the draft needs, write no draft and list the gap.
 - `draft-plain`: plain words. Name the tool or the metric instead of a category.
 - `draft-recipient`: address the draft to a named person only when the account file names them. Otherwise address the role and list the contact under Gaps.
