@@ -81,7 +81,7 @@ verdict_reason:
 <play ID>: <one-sentence angle>. Or the next check (nurture, skip), or the owner note (route-to-owner).
 
 ## Draft (DRAFT, not sent)
-To: <named contact, or the role when no contact is named>
+To: <named contact, the role when no contact is named, or "none" when there is no draft>
 
 <the message, or "none">
 
