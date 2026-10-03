@@ -36,7 +36,7 @@ The snapshot date of `brain/crm-export/` is the read date of every value taken f
 
 When two places disagree, the first matching rule decides.
 
-1. **`source-crm-live`:** the CRM wins for live status: stage, amount, owner, close date.
+1. **`source-crm-live`:** a value read live from the CRM wins for live status: stage, amount, owner, close date. An export is a copy, not a live read; `source-export-copy` covers it.
 2. **`source-brain-rules`:** this repo wins for rules, definitions, and reviewed decisions.
 3. **`source-recorder`:** the call recorder wins for what was said.
 4. **`source-export-copy`:** an export, a snapshot, or a value copied into a brain file is a copy. State its read date beside every value read from it. When two copies disagree, the one read later wins. When their read dates are equal or one is missing, neither wins and the field stays unresolved.
