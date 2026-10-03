@@ -6,13 +6,13 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
 
 ## Five-minute walkthrough
 
-1. Clone this repository and open it in Claude Code:
+1. Install the skills as a plugin, then clone this repository and open it in Claude Code. The plugin holds the skills; the clone holds the brain files they read.
 
    ```bash
+   claude plugin marketplace add jnkliberty/gtm-brain
+   claude plugin install gtm-brain@gtm-brain
    git clone https://github.com/jnkliberty/gtm-brain.git
    cd gtm-brain
-   mkdir -p ~/.claude/skills
-   cp -Rf skills/account-handoff ~/.claude/skills/
    claude
    ```
 
@@ -26,9 +26,8 @@ Northwind Robotics, its activity, and the signal are invented. Replace the sampl
 
 Do this in a private copy of the repo. Your answers and records are your company's data.
 
-1. Copy the setup skill: `cp -Rf skills/brain-setup ~/.claude/skills/`.
-2. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
-3. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
+1. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
+2. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
 
 ## What is here
 
@@ -44,6 +43,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
+| `.claude-plugin/` | Plugin and marketplace manifests, so every skill installs with one command |
 | `brain/crm-export/` | Invented account, contact, candidate, and move-evidence CSVs |
 | `brain/call-rules.md`, `brain/calls/` | Private synthetic call excerpts and theme rules |
 | `brain/runbook.md`, `brain/maintenance/` | Maintenance checks, history, and synthetic evidence |
