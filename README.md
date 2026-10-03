@@ -22,6 +22,14 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
 
 Northwind Robotics, its activity, and the signal are invented. Replace the sample records with your own private data only in a private copy of this repo.
 
+## Make it yours
+
+Do this in a private copy of the repo. Your answers and records are your company's data.
+
+1. Copy the setup skill: `cp -Rf skills/brain-setup ~/.claude/skills/`.
+2. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
+3. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
+
 ## What is here
 
 | Path | What it holds |
@@ -35,6 +43,7 @@ Northwind Robotics, its activity, and the signal are invented. Replace the sampl
 | `brain/corrections.md` | Every edit or rejection, so repeated mistakes become rule changes |
 | `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
+| `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
 | `brain/crm-export/` | Invented account, contact, candidate, and move-evidence CSVs |
 | `brain/call-rules.md`, `brain/calls/` | Private synthetic call excerpts and theme rules |
 | `brain/runbook.md`, `brain/maintenance/` | Maintenance checks, history, and synthetic evidence |
