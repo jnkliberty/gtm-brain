@@ -23,7 +23,7 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
    From a terminal, run `claude` or `codex` in that folder. `AGENTS.md` at the repo root tells the agent where the skills (`skills/<name>/SKILL.md`) and the brain files (`brain/`) live. Codex loads it on its own, and `CLAUDE.md` imports it for Claude Code. If your agent does not load `AGENTS.md`, start with `Read AGENTS.md first.`
 
 2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the account's row in `brain/crm-export/companies.csv`, the dated signal, and the rules in `brain/stages.md`, `brain/plays.md`, and `brain/sources.md`.
-3. Read the proposed file in `brain/decisions/`. Check that the decision and draft cite the source lines. The example has no verified email, so the proposal must keep that gap open.
+3. Read the proposed file in `brain/decisions/`. Check that the decision and draft cite the source lines. The example has no verified email and no owner, so the proposal must keep "no recipient" and "no owner" open as gaps.
 4. Approve, edit, or reject the proposal. The skill records your verdict; an edit or rejection also goes in `brain/corrections.md`. Nothing sends or changes a CRM.
 
 Northwind Robotics, its activity, and the signal are invented. Replace the sample records with your own private data only in a private copy of this repo.
@@ -42,7 +42,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | Path | What it holds |
 | --- | --- |
 | `brain/icp.md` | Who you sell to, and who fails the cut |
-| `brain/stages.md` | Lifecycle stages, who owns each, and the handoff rules |
+| `brain/stages.md` | Lifecycle stages, who owns each, the handoff rules, and what every handoff must name (recipient, owner, dated reason) |
 | `brain/plays.md` | Your plays, their triggers, and the draft rules |
 | `brain/accounts/` | One file per account: what marketing and sales know |
 | `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |

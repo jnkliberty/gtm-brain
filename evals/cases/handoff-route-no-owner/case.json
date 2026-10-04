@@ -1,0 +1,42 @@
+{
+  "request": "Run account-handoff for Summit Fleet on the 2026-10-02 signal.",
+  "today": "2026-10-03",
+  "fixtures": [
+    "sweep-accounts"
+  ],
+  "replace": [
+    {
+      "file": "brain/accounts/summit-fleet.md",
+      "old": "- **Owner:** maria.ortiz.",
+      "new": "- **Owner:** none assigned."
+    },
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "Opportunity,maria.ortiz,",
+      "new": "Opportunity,,"
+    },
+    {
+      "file": "brain/crm-export/contacts.csv",
+      "old": "example-jonah-wells,Summit Fleet,US,maria.ortiz,",
+      "new": "example-jonah-wells,Summit Fleet,US,,"
+    }
+  ],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [
+      {
+        "account": "summit-fleet",
+        "decision": "route-to-owner",
+        "rule": "rule-route-to-owner",
+        "no_draft": true,
+        "gaps": [
+          "no owner"
+        ],
+        "signal": "brain/signals/2026-10-02-summit-first-gtm-engineer.md"
+      }
+    ],
+    "output_has": [
+      "no owner"
+    ]
+  }
+}

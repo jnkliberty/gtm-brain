@@ -22,6 +22,8 @@ Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cach
 | Case | What it proves |
 | --- | --- |
 | `handoff-northwind` | The walkthrough account gets `act-now`, `rule-act-now`, play `first-gtm-hire` |
+| `handoff-no-recipient-or-owner` | `act-now` with no valid email and no owner stays `act-now`, with the gaps "no recipient" and "no owner" |
+| `handoff-route-no-owner` | An Opportunity account with a blank owner is still `route-to-owner` with no draft, and the gap "no owner" |
 | `handoff-skip-icp-fail` | A consumer company is skipped (`rule-skip`) |
 | `handoff-route-to-owner` | An account at Opportunity goes to its owner, with no draft |
 | `handoff-relative-whynow` | A `whyNow` with no calendar date blocks `act-now` |
