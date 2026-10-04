@@ -88,7 +88,15 @@ def check(case, before, after, output):
                   and strip_verdict(before[k]) == strip_verdict(after[k])}
     append_ok = {k for k in exp.get("append_only", []) if k in before and k in after
                  and appended(before[k], after[k])}
-    changed = [k for k in changed if k not in verdict_ok | append_ok]
+    # An edited file must equal its before text with the one listed replacement, and nothing else.
+    edited_ok = set()
+    for k, e in exp.get("edited_files", {}).items():
+        old, rep = before.get(k, b"").decode(), after.get(k, b"").decode()
+        if old.count(e["old"]) == 1 and rep == old.replace(e["old"], e["new"]):
+            edited_ok.add(k)
+        else:
+            fails.append(f"{k}: not changed by exactly the one approved edit")
+    changed = [k for k in changed if k not in verdict_ok | append_ok | edited_ok]
     if changed or stray or gone:
         fails.append(f"files outside new decisions touched: {sorted(changed + stray + gone)}")
     for k, t in new.items():

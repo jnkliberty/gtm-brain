@@ -44,6 +44,7 @@ Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cach
 | `correction-promotes-on-three` | Three lines on one ID and one condition from three accounts: the skill proposes an edit, starting `Proposed rule edit: rule-act-now` |
 | `correction-same-account-no-promotion` | Three matching lines from one account: no edit is proposed |
 | `correction-different-conditions-no-promotion` | Three accounts and one ID, but two different conditions: no edit is proposed |
+| `rule-edit-approved` | A named person approves the exact proposed edit to `rule-act-now`: `brain/stages.md` changes by that one edit, and no decision, correction, or other file changes |
 | `sources-conflict-tiered-contact-build` | Two company rows at one domain, read the same day, give different revenue: the account is escalated with both values and no tier (`source-export-copy`) |
 | `sources-stale-export-retention` | An export read 48 days before the review is stale: no archive or merge rows, and the age is reported |
 
@@ -72,6 +73,7 @@ Every case starts from `evals/fixtures/base/` (the Northwind account, signal, an
 - `"verdict_files": ["brain/decisions/<file>"]` lets those decision files change their `status`, `verdict_reason`, `approved_by`, and `verdict_date` lines only. The fixture must already carry those lines, empty. Any other edit fails.
 - `"append_only": ["brain/corrections.md"]` lets those files gain lines at the end. Editing or removing an earlier line fails. A case without these keys behaves as before.
 - `"new_files": ["brain/proposals/"]` lets the run create new files under those folders, for skills that write a proposal instead of a decision. New files anywhere else still fail. Each new file there must stay `status: proposed` with `approved_by` empty. `"new_file_has": {"brain/proposals/": ["regex", ...]}` requires a new file in that folder and each regex to match it; `"new_file_lacks"` fails on any match, such as a forbidden action row.
+- `"edited_files": {"brain/stages.md": {"old": "...", "new": "..."}}` lets that file change by one exact replacement, for a case where a person approves a rule edit. `old` must appear once in the file before the run, and the file after the run must equal the file before with `old` replaced by `new`. Any other change, a missing edit, or a repeated edit fails.
 - `"file_has": {"brain/corrections.md": ["regex", ...]}` requires each regex to match in that file after the run (case-insensitive; `^` and `$` match at line breaks).
 
 Write the expected answer from the rules before you run the case, never from the run's output.
