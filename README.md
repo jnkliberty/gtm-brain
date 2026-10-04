@@ -34,7 +34,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 
 1. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
 2. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
-3. Ask `Run signal-sweep.` each morning, or from your own scheduler. It decides every new signal and reports only the handoffs that need a person. Sales gets no more than the weekly budget in `brain/stages.md`.
+3. Ask `Run signal-sweep.` each morning, or from your own scheduler. It decides every new signal and reports only the handoffs that need a person. Sales gets no more than the weekly budget in `brain/stages.md`. To use the brain from Slack, see [docs/slack.md](./docs/slack.md).
 4. After you edit a brain file or a skill, run `python3 evals/run.py`. It replays fixed cases with known answers and fails when a decision changes. Rewrite a case's expected answer only when your new rule means it.
 
 ## What is here
