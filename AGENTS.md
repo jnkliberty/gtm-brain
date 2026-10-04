@@ -17,7 +17,7 @@ The facts the skills read are in `brain/`. The README's "What is here" table say
 - A person approves every decision. Skills never send and never write to a CRM.
 - The CRM skills use the local CSV route in this starter. Live connectors need a separate activation plan.
 - Keep real call notes and theme files in a private repository. The call excerpts here are invented examples.
-- Corrections become rules: three matching corrections propose an edit to the file that caused them.
+- Corrections become rules: three independent matching corrections (same ID, same condition, three different accounts) propose an edit to the file that caused them. A one-off stays a one-off.
 
 ## Outputs
 
