@@ -22,7 +22,12 @@ Apply them in order. The first rule that matches decides. Corrections point at t
    - the account is at stage Target or Engaged and fits the ICP,
    - the signal's `signalStrength` is High or Medium,
    - the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as "two days ago" is not concrete),
-   - the current signal matches one play's trigger in `brain/plays.md`.
+   - the current signal matches one play's trigger in `brain/plays.md`,
+   - the handoff budget has room (`rule-handoff-budget` below).
 4. **`rule-nurture`: nurture** in every other case, including a missing or unfamiliar `relevanceVerdict` (list it under Gaps). Name the next check that would move the account to act now.
 
 A missing contact or email does not change the decision. It goes under Gaps and blocks only the send.
+
+## Handoff budget
+
+**`rule-handoff-budget`:** at most 5 `act-now` decisions in any 7 days. Count the files in `brain/decisions/` with `decision: act-now`, a `decided_at` date in the 7 days ending today, and any status except `rejected`. When the count is 5 or more, `rule-act-now` does not match: decide `nurture`, add the gap "handoff budget full" (needed by: `rule-handoff-budget`), and the account is first in line on the next sweep. Set the number to how many new accounts your sales team can work in a week. A handoff sales cannot get to is worse than none.

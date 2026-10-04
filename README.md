@@ -28,6 +28,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 
 1. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
 2. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
+3. Ask `Run signal-sweep.` each morning, or from your own scheduler. It decides every new signal and reports only the handoffs that need a person. Sales gets no more than the weekly budget in `brain/stages.md`.
 
 ## What is here
 
@@ -43,6 +44,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
+| `skills/signal-sweep/` | Decides every new signal in one run and reports only the handoffs |
 | `.claude-plugin/` | Plugin and marketplace manifests, so every skill installs with one command |
 | `brain/crm-export/` | Invented account, contact, candidate, and move-evidence CSVs |
 | `brain/call-rules.md`, `brain/calls/` | Private synthetic call excerpts and theme rules |

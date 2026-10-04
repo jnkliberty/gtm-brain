@@ -22,7 +22,7 @@ Replaces the invented examples in the four policy files with the team's own poli
 The other skills depend on these. Keep them exactly; the team changes only what they hold.
 
 - `brain/icp.md`: one line per in or out criterion, and the target range as two numbers.
-- `brain/stages.md`: the four handoff rules, in this order, with these IDs and decisions: `rule-skip` (skip), `rule-route-to-owner` (route to owner), `rule-act-now` (act now), `rule-nurture` (nurture). `rule-skip` and `rule-nurture` keep their conditions as written. `rule-act-now` always keeps two conditions: the signal's `relevanceVerdict` is `relevant`, and the current signal matches one play's trigger in `brain/plays.md`. The team sets the stage names (`q-stages`), the conditions of `rule-route-to-owner` (`q-sales-owned`), and the other conditions of `rule-act-now` (`q-act-now`).
+- `brain/stages.md`: the four handoff rules, in this order, with these IDs and decisions: `rule-skip` (skip), `rule-route-to-owner` (route to owner), `rule-act-now` (act now), `rule-nurture` (nurture). `rule-skip` and `rule-nurture` keep their conditions as written. `rule-act-now` always keeps three conditions: the signal's `relevanceVerdict` is `relevant`, the current signal matches one play's trigger in `brain/plays.md`, and the handoff budget has room. The Handoff budget section and `rule-handoff-budget` stay; the team sets the number (`q-budget`). The team sets the stage names (`q-stages`), the conditions of `rule-route-to-owner` (`q-sales-owned`), and the other conditions of `rule-act-now` (`q-act-now`).
 - `brain/plays.md`: each play is a `##` heading that is its ID (lowercase words joined by hyphens) with **Trigger**, **Angle**, and **Offer** bullets, most important first. The six draft rule IDs stay: `draft-length`, `draft-unique-fact`, `draft-ask`, `draft-public-only`, `draft-plain`, `draft-recipient`.
 - `brain/sources.md`: the sections Surfaces, Where to look, and Conflict order. The six source rules stay as written, in order.
 
@@ -39,6 +39,7 @@ Ask one question at a time. When it helps, show what the current file says as an
 - `q-stages`: List your lifecycle stages in order. For each one: who owns it, marketing or sales, and what moves an account into it.
 - `q-sales-owned`: Which stages mean sales already owns the account?
 - `q-act-now`: When should marketing hand an account to sales right away? Name the signal strength and timing you need.
+- `q-budget`: How many new accounts can sales take from marketing in a week?
 
 **`brain/plays.md`**
 - `q-plays`: List your plays, most important first. For each one: what triggers it, the angle, and the offer in the words you would send.
