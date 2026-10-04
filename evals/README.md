@@ -12,10 +12,10 @@ Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cach
 
 ## What a case checks
 
-- The new decision files: how many, every one at `status: proposed`, and for each account and signal the `decision`, `rule`, `play`, and text that must or must not appear under Gaps.
+- The new decision files: how many, every one at `status: proposed` with `approved_by` and `verdict_date` empty, and for each account and signal the `decision`, `rule`, `play`, and text that must or must not appear under Gaps.
 - What the run shows the person: patterns that must or must not appear, and `output_order` pairs where the first must come before the second.
 - Each decision file names the expected signal, is named `<today>-<account>-<signal>.md`, and has `decided_at` set to the case date. `no_draft` asserts the draft is `none`.
-- That nothing outside new files in `brain/decisions/` changed. A verdict case may change only the verdict fields of named decisions (`verdict_files`) and append to named files (`append_only`), and checks their text with `file_has`.
+- That nothing outside new files in `brain/decisions/` changed. A verdict case may change only the verdict fields of named decisions (`verdict_files`: `status`, `verdict_reason`, `approved_by`, `verdict_date`) and append to named files (`append_only`), and checks their text with `file_has`.
 
 ## Cases
 
@@ -38,6 +38,8 @@ Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cach
 | `sweep-empty-feed` | No signals at all: the empty-feed warning comes before any "No handoffs today." |
 | `sweep-blocked-input` | A decision blocked by a missing input is shown, not only counted |
 | `verdict-correction-format` | A rejection sets `status: rejected` and adds a corrections line with the decision path and `applies when` |
+| `verdict-records-approver` | An approval by a named person sets `approved_by` and `verdict_date`, changes no other line, and adds no corrections line |
+| `handoff-supersedes-held` | A new decision on a signal held the day before names the held file in `supersedes` and leaves it unedited |
 | `correction-no-false-promotion` | Three lines on one ID with different conditions or one-off scope propose no rule edit |
 | `correction-promotes-on-three` | Three lines on one ID and one condition from three accounts: the skill proposes an edit, starting `Proposed rule edit: rule-act-now` |
 | `correction-same-account-no-promotion` | Three matching lines from one account: no edit is proposed |
@@ -65,7 +67,7 @@ Make `evals/cases/<id>/case.json`:
 
 Every case starts from `evals/fixtures/base/` (the Northwind account, signal, and CRM export) with your accounts, signals, and decisions removed, so only your rules and skills are under test. Files under `evals/cases/<id>/files/` and each named folder in `evals/fixtures/` are copied over the repo copy before the run. Each `replace` text must appear exactly once. Each `append` entry (`{"file": ..., "text": ...}`) adds its text to the end of that file, so a case can seed history without replacing the file's own rules. Two optional keys serve cases that record a verdict instead of writing a decision:
 
-- `"verdict_files": ["brain/decisions/<file>"]` lets those decision files change their `status` and `verdict_reason` lines only. Any other edit fails.
+- `"verdict_files": ["brain/decisions/<file>"]` lets those decision files change their `status`, `verdict_reason`, `approved_by`, and `verdict_date` lines only. The fixture must already carry those lines, empty. Any other edit fails.
 - `"append_only": ["brain/corrections.md"]` lets those files gain lines at the end. Editing or removing an earlier line fails. A case without these keys behaves as before.
 - `"file_has": {"brain/corrections.md": ["regex", ...]}` requires each regex to match in that file after the run (case-insensitive; `^` and `$` match at line breaks).
 

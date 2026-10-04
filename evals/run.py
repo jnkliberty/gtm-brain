@@ -63,11 +63,11 @@ def appended(old, new):
 
 
 def strip_verdict(data):
-    # Blank only the two verdict values in the frontmatter; the body must match exactly.
+    # Blank only the verdict values in the frontmatter; the body must match exactly.
     m = re.match(rb"(---\n.*?\n---\n)(.*)", data, re.S)
     if not m:
         return data
-    head = re.sub(rb"(?m)^(status|verdict_reason):.*$", rb"\1:", m.group(1))
+    head = re.sub(rb"(?m)^(status|verdict_reason|approved_by|verdict_date):.*$", rb"\1:", m.group(1))
     return head + m.group(2)
 
 
@@ -93,6 +93,9 @@ def check(case, before, after, output):
     for k, t in new.items():
         if field(t, "status") != "proposed":
             fails.append(f"{k}: status is {field(t, 'status')!r}; only a person approves")
+        for key in ("approved_by", "verdict_date"):
+            if field(t, key):
+                fails.append(f"{k}: {key} is set on a new decision; only a verdict sets it")
     if "decision_count" in exp and len(new) != exp["decision_count"]:
         fails.append(f"expected {exp['decision_count']} new decision files, got {len(new)}: {sorted(new)}")
     for want in exp.get("decisions", []):

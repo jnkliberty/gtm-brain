@@ -1,0 +1,21 @@
+{
+  "request": "Record this verdict: Dana Reyes approves brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md with no changes.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "file_has": {
+      "brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md": [
+        "^status: approved\\s*$",
+        "^approved_by: Dana Reyes\\s*$",
+        "^verdict_date: 2026-10-03\\s*$",
+        "^verdict_reason: \\S"
+      ]
+    },
+    "verdict_files": [
+      "brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md"
+    ],
+    "output_lacks": [
+      "(?m)^\\W*Proposed rule edit:"
+    ]
+  }
+}

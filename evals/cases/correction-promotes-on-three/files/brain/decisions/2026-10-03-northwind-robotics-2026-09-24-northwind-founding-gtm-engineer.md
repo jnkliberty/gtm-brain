@@ -6,6 +6,10 @@ rule: rule-act-now
 play: first-gtm-hire
 status: proposed
 decided_at: 2026-10-03
+supersedes:
+review_by:
+approved_by:
+verdict_date:
 verdict_reason:
 ---
 

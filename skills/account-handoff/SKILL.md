@@ -26,7 +26,7 @@ Turns what marketing knows about an account into a sales decision a person can a
 - `brain/plays.md`: the team's plays in priority order, each with an ID, plus the draft rules.
 - `brain/corrections.md`: past verdicts. Read it before deciding.
 - `brain/sources.md`: where each kind of fact lives and which place wins when two disagree, each rule with an ID.
-- `brain/decisions/`: past decisions, to count recent `act-now` decisions for `rule-handoff-budget`.
+- `brain/decisions/`: past decisions, to count recent `act-now` decisions for `rule-handoff-budget` (a superseded decision does not count) and to find an earlier decision this one replaces.
 
 ## Branch A: decide on a new signal
 
@@ -34,17 +34,17 @@ Turns what marketing knows about an account into a sales decision a person can a
 2. **Decide.** Apply the handoff rules in `brain/stages.md` in order; the first rule that matches decides: `skip`, `route-to-owner`, `act-now`, or `nurture`. Each reason cites evidence. The step is done when every condition of the chosen rule is matched to a quoted line or listed as a gap. When two inputs disagree on a fact, the conflict order in `brain/sources.md` picks the one to use: cite the source rule ID and list the disagreement under Gaps (`source-fix-copy`). A missing read date, map row, or CRM record adds a gap but does not change the decision on its own; the person confirms the value at its source before approving. An unresolved field can change the decision, because no rule condition matches on it.
 3. **Pick the play.** For `act-now`, choose the play whose trigger the **current signal** matches. Account activity may shape the angle but creates no competing-play gap. When the signal matches two plays, the one listed first in `brain/plays.md` wins, and the other goes under Gaps as "person to confirm the play". Write the angle in one sentence. For `nurture` and `skip`, write the next check: what new evidence would change the decision. For `route-to-owner`, write one line for the owner saying what the signal is.
 4. **Draft.** For `act-now` only, draft the first touch under the draft rules in `brain/plays.md`. The draft is the message exactly as the recipient would read it: plain sentences, no file paths or citations inside it. Under the draft, list each sentence's evidence. The step is done when every draft sentence is either the ask or restates a **fact** with its meaning intact: the same event, the same people, the same tense (a posted role is still an open role). Cut any sentence that states a hypothesis, a judgment, or anything no brain file holds. A gap that blocks a detail or the send path (for example, no verified email) stays under Gaps.
-5. **Log and stop.** Write `brain/decisions/<today's date>-<company>-<signal>.md`, where `<signal>` is the signal file name without `.md` and the date is the day the decision is made, in the format below with `status: proposed`. When that file already exists, stop and tell the person; a decision file is never overwritten. Then show the person the decision, the gaps, and the draft. The run is done when the file exists and every claim in it cites evidence or sits under Gaps.
+5. **Log and stop.** Write `brain/decisions/<today's date>-<company>-<signal>.md`, where `<signal>` is the signal file name without `.md` and the date is the day the decision is made, in the format below with `status: proposed`, `approved_by` and `verdict_date` empty. When that file already exists, stop and tell the person; a decision file is never overwritten. When an earlier file in `brain/decisions/` is for the same account and the same signal, this decision replaces it: put that file's path in `supersedes` and leave the earlier file as it is. Set `review_by` only when the decision names a re-check date (a nurture or held decision with a dated next check); never invent one. Then show the person the decision, the gaps, and the draft. The run is done when the file exists and every claim in it cites evidence or sits under Gaps.
 
 ## Write boundary
 
-The skill writes new files in `brain/decisions/`, verdict fields in an existing decision file, and new lines in `brain/corrections.md`. The one exception is Branch B step 3. Sending, CRM writes, and stage changes belong to the person who approves.
+The skill writes new files in `brain/decisions/`, the verdict fields (`status`, `verdict_reason`, `approved_by`, `verdict_date`) in an existing decision file, and new lines in `brain/corrections.md`. The one exception is Branch B step 3. Sending, CRM writes, and stage changes belong to the person who approves.
 
 ## Branch B: record a verdict
 
 When a person approves, edits, or rejects a proposed decision:
 
-1. Set `status` to `approved`, `edited`, or `rejected` in the decision file, and fill `verdict_reason` with their words.
+1. Set `status` to `approved`, `edited`, or `rejected` in the decision file, fill `verdict_reason` with their words, set `approved_by` to the person who gave the verdict, and set `verdict_date` to today. Take the name from the request. When the request names no one, write `unnamed` and tell the person that the name is missing; never use your own name, and never guess one. A skill never gives a verdict itself. Change no other line of an existing decision file; a decision that is replaced later keeps its text and gets a new file (see `supersedes`).
 2. For `edited` or `rejected`, append one line to `brain/corrections.md` in the format at the top of that file: date, company, the decision file path, what was wrong, the disputed source line (file and quoted text, or `none`), `applies when:` one short condition for when the lesson holds ("this account only" for a one-off), and the one ID it points at (a rule ID from `brain/stages.md`, a play ID or draft rule ID from `brain/plays.md`, or a source rule ID from `brain/sources.md`).
 3. Count independent matching failures in `brain/corrections.md`: lines with the same ID, the same `applies when` condition, and three different accounts, each with its own decision file. A line whose `applies when` is "this account only" never counts. When three lines qualify, show the person the exact edit you propose to that rule, play, or source rule, starting with the line `Proposed rule edit: <ID>` and citing the three lines and their decision files. Write that line only when you propose an edit. When they say yes to that exact text, write that one edit to that one file. That is the only write outside `brain/decisions/` and `brain/corrections.md`.
 
@@ -59,6 +59,10 @@ rule: <rule ID from brain/stages.md>
 play: <play ID or none>
 status: proposed
 decided_at: <YYYY-MM-DD>
+supersedes:
+review_by:
+approved_by:
+verdict_date:
 verdict_reason:
 ---
 
@@ -90,3 +94,10 @@ Draft evidence:
 - Sentence 1: brain/<file>: "<quoted fact>"
 - Last sentence: the ask (<play ID> offer)
 ```
+
+Lifecycle fields, defined here once. An empty value means "not set". A decision file written before these fields existed counts as empty for all four.
+
+- `supersedes`: the path of the earlier decision this one replaces, or empty. Set by Branch A. The earlier file is never edited, so its dated evidence stays as written. A decision named in any file's `supersedes` is superseded: it does not count toward `rule-handoff-budget`, and `signal-sweep` does not list it as still proposed.
+- `review_by`: the date (`YYYY-MM-DD`) the decision should be re-checked, or empty. Set by Branch A only when the decision names a dated next check.
+- `approved_by`: the person who gave the verdict (approved, edited, or rejected). Empty until Branch B. A new decision never has it set.
+- `verdict_date`: the date (`YYYY-MM-DD`) of the verdict. Empty until Branch B.
