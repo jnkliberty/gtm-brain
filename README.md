@@ -48,7 +48,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |
 | `brain/decisions/` | Proposed decisions, each waiting for a person's verdict. A verdict records who gave it and when; a replaced decision keeps its text and the new one names it |
 | `brain/corrections.md` | Every edit or rejection, with its decision file, disputed source line, and when the lesson applies, so repeated mistakes become rule changes |
-| `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
+| `brain/sources.md` | Where each kind of fact lives, which place wins when two disagree, and how fresh a copy must be. Every CRM skill reads it before it proposes a value |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
 | `skills/signal-sweep/` | Decides every new signal in one run and reports only the handoffs |

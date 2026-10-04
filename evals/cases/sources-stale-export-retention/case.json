@@ -1,0 +1,32 @@
+{
+  "request": "Run contact-retention-review as of 2026-11-15 with the topic stale-export.",
+  "today": "2026-11-15",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "source-export-copy",
+        "stale",
+        "2026-09-28",
+        "48[- ]days?"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*archive record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*merge into\\s+\\S+?[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "48[- ]days?"
+    ],
+    "output_lacks": [
+      "\\|\\s*[`*_]*archive record[`*_]*\\s*\\|",
+      "\\|\\s*[`*_]*merge into\\s+\\S+?[`*_]*\\s*\\|"
+    ]
+  }
+}

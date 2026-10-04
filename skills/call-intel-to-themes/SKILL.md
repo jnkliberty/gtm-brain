@@ -15,7 +15,7 @@ For this CSV wave, read only the local files below, even when a live CRM or call
 ## Inputs
 
 - `brain/calls/call-notes.csv`: one exact excerpt per row, identified by `call_id` and `quote_id`.
-- `brain/crm-export/companies.csv`: join `company_id` to its `domain`; never infer a domain from the company name.
+- `brain/crm-export/companies.csv`: join `company_id` to its `domain`; never infer a domain from the company name. It is a copy: apply `brain/sources.md` and cite `source-export-copy` with its read date. When the export is older than its "Fresh for" days, state its age under Gaps and propose no theme from it; still report Facts and Gaps.
 - `brain/call-rules.md`: `call-confirmed`, `call-claim`, `theme-two-domains`, `call-conflict`, `call-private`, and `draft-public-only`.
 - `brain/field-rules.md` and `brain/crm-export/README.md`: check whether a field mentioned in a call has a documented CRM mapping.
 

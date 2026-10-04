@@ -31,11 +31,15 @@ When a live CRM connection is available (for example a HubSpot, Salesforce, or A
 
 Otherwise ask the person for an export in the `brain/crm-export/README.md` format, or use `brain/crm-export/companies.csv` when they point to it. Wave 1 only reads a CRM. Any CRM change goes to the person as a proposal in the `brain/proposals/README.md` format.
 
+## Source check
+
+Before a step uses a fact or proposes a value or record, find the fact's row in "Where to look" in `brain/sources.md` and apply its Conflict order. Cite the winning source's rule ID and read date. A fact with no row is a gap (`source-unmapped`). A copy older than its "Fresh for" days, counted to the date of the run, is stale. Each company value is a copy (`source-export-copy`) unless a live CRM read supplied it. When records at one domain give different values for a criterion's column with no winner, or the value is stale, the answer is ambiguous with the rule ID as its reason; it is not pass or fail. Such an answer is a data gap, not a wording problem: fixing the source resolves it, so step 4 proposes no `brain/icp.md` wording for it and a criterion is not marked unrepeatable because of it. When source-caused answers alone decide whether the count is in range, step 6 recommends a fresher or reconciled export instead of `tighten` or `loosen`. `rule-confirmed-wins` in `brain/field-rules.md` still picks between a detected and a confirmed value in one record. Never pick one value silently, and keep this ranking in `brain/sources.md`, not here.
+
 ## Steps
 
 1. **Read.** Read the inputs and number every line of `brain/icp.md` that puts a company in or out of the ICP as a criterion with an ID (`crit-<short-name>`). When `brain/filters.md` exists, keep its IDs for criteria whose wording is unchanged, so runs compare. The step is done when every in or out line of `brain/icp.md` has an ID, and the target range is read as two numbers or listed as a gap.
 2. **Write the filter.** For each criterion, choose the export column whose README meaning records it, then an operator (`equals`, `one-of`, `not-one-of`, `between`, `at-least`, `at-most`, `contains`) and a value. For a detected and confirmed pair, the column reads `<x>_confirmed, else <x>_detected`. Write what qualifies and what does not in plain words. A criterion no column records gets `none` for column, operator, and value, and `no (gap)` under Checkable. The step is done when every criterion has one row and every row either names a column the README defines or is marked a gap.
-3. **Run the filter.** Apply every checkable criterion to every record. Each record and criterion pair gets one answer: pass, fail, or ambiguous, with the cell value that decided it. For a paired field, record which field supplied the value. The step is done when no pair is left without an answer and every ambiguous answer names why the definition gives no single answer.
+3. **Run the filter.** Apply every checkable criterion to every record. Each record and criterion pair gets one answer: pass, fail, or ambiguous, with the cell value that decided it. For a paired field, record which field supplied the value. Apply the source check to each value first. The step is done when no pair is left without an answer and every ambiguous answer names why the definition gives no single answer.
 4. **Test repeatability.** A criterion is repeatable only when it gave zero ambiguous answers. For each criterion that is not, write the exact wording change to `brain/icp.md` that would give one answer for each of its ambiguous records. The step is done when every criterion is marked repeatable or carries a proposed wording.
 5. **Count.** Group the matched records by `domain`; records that share a domain are likely duplicates and count once. Compare the unique count with the target range. State how the ambiguous records could move the count: the count if all of them matched. The step is done when the record count, the unique count, and the range sit side by side with every duplicate group listed.
 6. **Recommend.** `in range` when the unique count sits in the range, `tighten` when it is above, `loosen` when it is below. For tighten or loosen, name the one criterion to change and the wording, and cite the records that change would move. When the ambiguous records alone decide whether the count is in range, say so and point at step 4 first. The step is done when the verdict names a criterion or states that none needs to change.
@@ -65,7 +69,7 @@ built_at: <YYYY-MM-DD>
 ---
 skill: icp-filter-calibration
 run_at: <YYYY-MM-DD>
-source: <brain/crm-export/companies.csv, or CRM name (read-only)>
+source: <brain/crm-export/companies.csv with its read date, or CRM name (read-only)>
 filter: brain/filters.md
 target_range: <low> to <high>
 matched_records: <n>

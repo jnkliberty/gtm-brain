@@ -49,6 +49,7 @@ Ask one question at a time. When it helps, show what the current file says as an
 - `q-systems`: Which CRM, call recorder, enrichment vendor, and chat tool do you use?
 - `q-owners`: For each row in "Where to look", where does the truth live, and who owns it?
 - `q-export`: How do skills read your CRM: an export in the `brain/crm-export/README.md` format? On what date was it taken?
+- `q-fresh`: For each row in "Where to look" with a day count under "Fresh for", how many days can a copy age before skills stop proposing from it? `keep` keeps the number shown.
 
 ## Steps
 
