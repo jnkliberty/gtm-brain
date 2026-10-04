@@ -1,0 +1,46 @@
+{
+  "request": "Run icp-filter-calibration on brain/crm-export/companies.csv as of 2026-11-15.",
+  "today": "2026-11-15",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "no_status_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "file_has": {
+      "brain/filters.md": [
+        "^built_at:\\s*2026-11-15",
+        "crit-"
+      ]
+    },
+    "new_file_has": {
+      "brain/calibration/": [
+        "^run_at:\\s*2026-11-15",
+        "^matched_records:\\s*[`*_]*0[`*_]*\\s*$",
+        "source-export-copy",
+        "stale",
+        "2026-09-28",
+        "48[- ]days?",
+        "fresh|newer|re-?export"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/calibration/": [
+        "^verdict:\\s*[`*_]*(tighten|loosen)\\b",
+        "^## Recommendation\\s*\\n+[\\s`*_]*(tighten|loosen)\\b"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "48[- ]days?",
+      "fresh|newer|re-?export"
+    ],
+    "output_lacks": [
+      "\\bverdict:?[\\s`*_]*(tighten|loosen)\\b"
+    ]
+  }
+}
