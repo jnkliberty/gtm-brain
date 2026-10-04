@@ -72,4 +72,4 @@ Do this in a private copy of the repo. Your answers and records are your company
 
 ## License
 
-MIT. See [LICENSE](./LICENSE). `signal-interpreter` is by Swan ([swan-gtm/gtm-skills](https://github.com/swan-gtm/gtm-skills), MIT).
+MIT. See [LICENSE](./LICENSE). `signal-interpreter` is by Din Arbel, in Swan's [swan-gtm/gtm-skills](https://github.com/swan-gtm/gtm-skills) (MIT).
