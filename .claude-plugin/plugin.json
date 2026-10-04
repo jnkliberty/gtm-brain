@@ -1,6 +1,6 @@
 {
   "name": "gtm-brain",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A shared memory for a marketing and sales team, kept as plain files in your own git repo. Skills turn signals into sales decisions, build and audit CRM records, and set the brain up for your team. Every skill proposes; a person approves.",
   "author": {
     "name": "Julian Alvarado",
