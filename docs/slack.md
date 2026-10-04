@@ -10,7 +10,7 @@ Run the brain's skills from a Slack channel with Claude Tag, Anthropic's Slack p
 
 ## Rules for this guide
 
-- **Use a private fork.** Your accounts, signals, and verdicts are your company's data.
+- **Use a private copy.** Your accounts, signals, and verdicts are your company's data.
 - **Test in a sandbox Slack workspace you own.** Never test in a client's workspace.
 - **Slack never sends and never writes to a CRM.** The skills only propose. Do not give Claude CRM or email credentials.
 - **Approvals land in GitHub.** Claude pushes a verdict as a branch or pull request, and a person reviews it there.
@@ -33,7 +33,7 @@ This repo already has the layout: `.claude-plugin/marketplace.json` at the root 
 
 Do every step in the sandbox workspace first.
 
-1. **Fork privately.** Fork `jnkliberty/gtm-brain` into a private repo in your GitHub organization. Check: the repo shows "Private".
+1. **Make a private copy.** GitHub keeps forks of a public repo public, so copy it instead. Create an empty private repo in your GitHub organization, then run `git clone --bare https://github.com/jnkliberty/gtm-brain.git` and, inside the new `gtm-brain.git` folder, `git push --mirror https://github.com/<your-org>/<your-repo>.git`. Check: the new repo shows "Private" and lists `.claude-plugin/marketplace.json`.
 2. **Install the Claude app.** Open [claude.com/claude-for-slack](https://claude.com/claude-for-slack) and choose Add to Slack. Check: Claude appears in the workspace's app list.
 3. **Get a pairing code.** A Slack workspace admin posts `/invite @Claude` in a test channel, then `@Claude connect` as a message with no other text. Check: Claude replies with a code only that admin sees. It works once and expires in 15 minutes.
 4. **Pair the workspace.** As the Claude Owner, open [claude.ai/admin-settings/claude-tag](https://claude.ai/admin-settings/claude-tag) and paste the code. Choose Specific channel, enter the test channel's ID, and select Pair workspace. For a private channel, invite Claude to it first. Check: "Connected to" and your workspace name appear.
