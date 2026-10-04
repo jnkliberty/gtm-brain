@@ -46,7 +46,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | `brain/plays.md` | Your plays, their triggers, and the draft rules |
 | `brain/accounts/` | One file per account: what marketing and sales know |
 | `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |
-| `brain/decisions/` | Proposed decisions, each waiting for a person's verdict |
+| `brain/decisions/` | Proposed decisions, each waiting for a person's verdict. A verdict records who gave it and when; a replaced decision keeps its text and the new one names it |
 | `brain/corrections.md` | Every edit or rejection, with its decision file, disputed source line, and when the lesson applies, so repeated mistakes become rule changes |
 | `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |

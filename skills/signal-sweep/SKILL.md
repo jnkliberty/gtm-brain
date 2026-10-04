@@ -12,7 +12,7 @@ Turns every new signal into a proposed decision, then tells the person only what
 
 **Quiet** is the leading word. The person hears about an account only when someone has to act on it.
 
-- A **new signal** is a file in `brain/signals/` with no decision yet: no file in `brain/decisions/` whose name ends with `-<signal file name>`. A signal whose latest decision has the gap "handoff budget full" (needed by: `rule-handoff-budget`) and any status except `rejected` counts as new again on a later day; on the day it was held, it waits for the next sweep.
+- A **new signal** is a file in `brain/signals/` with no decision yet: no file in `brain/decisions/` whose name ends with `-<signal file name>`. A signal whose latest decision (the one no other decision names in `supersedes`) has the gap "handoff budget full" (needed by: `rule-handoff-budget`) and any status except `rejected` counts as new again on a later day; on the day it was held, it waits for the next sweep.
 - A **handoff** is a decision of `act-now` or `route-to-owner`. Each one is reported in full.
 - `nurture` and `skip` decisions are logged as usual and reported only as a count.
 - A **stale feed** is one whose newest signal file is dated more than 7 days before today, by the date in its file name. A stale feed is reported first, even when there are no new signals: a quiet sweep over a dead feed looks the same as a quiet week. An empty `brain/signals/` is reported the same way: "No signals in `brain/signals/`. Check the signal feed."
@@ -25,7 +25,7 @@ Turns every new signal into a proposed decision, then tells the person only what
 4. **Report.** Show the person, in this order, and leave out any part that is empty:
    - The stale feed: "The newest signal is from <date>, <n> days ago. Check the signal feed." Or the empty-feed line.
    - Each handoff, `act-now` first in the order decided, then `route-to-owner`: the account, the decision, the rule, the play, the draft or owner note, the gaps, and the decision file path.
-   - Handoffs still `proposed` from earlier runs, today's included, one line each: the account, the decision, and the decision file path. This catches a handoff an interrupted sweep never reported.
+   - Handoffs still `proposed` from earlier runs, today's included (skip any a later decision names in `supersedes`), one line each: the account, the decision, and the decision file path. This catches a handoff an interrupted sweep never reported.
    - Accounts held back by `rule-handoff-budget`: they are first in line on the next sweep.
    - `nurture` decisions where a missing or unresolved input kept a `rule-act-now` condition from matching, such as no `relevanceVerdict` or two stages that disagree, whatever rule ID the gap names. Show the account, the gap, and the decision file path. A person fixes the input, then runs `account-handoff` for that signal on a later day, since today's decision file already exists.
    - Signals with no account file, by file name.
