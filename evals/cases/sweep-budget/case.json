@@ -1,0 +1,65 @@
+{
+  "request": "Run signal-sweep.",
+  "today": "2026-10-03",
+  "fixtures": [
+    "sweep-accounts"
+  ],
+  "replace": [
+    {
+      "file": "brain/stages.md",
+      "old": "at most 5 `act-now`",
+      "new": "at most 2 `act-now`"
+    },
+    {
+      "file": "brain/stages.md",
+      "old": "count is 5 or more",
+      "new": "count is 2 or more"
+    }
+  ],
+  "expect": {
+    "decision_count": 6,
+    "decisions": [
+      {
+        "account": "quillon-health",
+        "decision": "act-now",
+        "play": "first-gtm-hire",
+        "signal": "brain/signals/2026-10-01-quillon-first-gtm-engineer.md"
+      },
+      {
+        "account": "fernwood-freight",
+        "decision": "act-now",
+        "play": "first-gtm-hire",
+        "signal": "brain/signals/2026-10-01-fernwood-first-gtm-engineer.md"
+      },
+      {
+        "account": "summit-fleet",
+        "decision": "route-to-owner",
+        "signal": "brain/signals/2026-10-02-summit-first-gtm-engineer.md"
+      },
+      {
+        "account": "northwind-robotics",
+        "decision": "nurture",
+        "gaps": [
+          "handoff budget full"
+        ],
+        "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md"
+      },
+      {
+        "account": "tidewater-analytics",
+        "decision": "nurture",
+        "gaps": [
+          "handoff budget full"
+        ],
+        "signal": "brain/signals/2026-09-29-tidewater-revops-tools.md"
+      },
+      {
+        "account": "brightpath-tutors",
+        "decision": "skip",
+        "signal": "brain/signals/2026-10-01-brightpath-tutor-hiring.md"
+      }
+    ],
+    "output_has": [
+      "lumen"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+# Golden evals
+
+Fixed cases with known answers. Each case runs a skill headless on a fresh copy of the repo and checks the files it writes. Run them after you change a brain file or a skill.
+
+```bash
+python3 evals/run.py                      # every case, 4 at a time, Sonnet 5.5
+python3 evals/run.py sweep-budget --keep  # one case; keep its work folder and output
+python3 evals/run.py --jobs 8 --model claude-haiku-4-5-20251001
+```
+
+Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cache/gtm-brain-evals/`, so your `brain/` is never touched. A run costs one headless session per case.
+
+## What a case checks
+
+- The new decision files: how many, every one at `status: proposed`, and for each account and signal the `decision`, `rule`, `play`, and text that must or must not appear under Gaps.
+- What the run shows the person: patterns that must or must not appear, and `output_order` pairs where the first must come before the second.
+- Each decision file names the expected signal, is named `<today>-<account>-<signal>.md`, and has `decided_at` set to the case date. `no_draft` asserts the draft is `none`.
+- That nothing outside new files in `brain/decisions/` changed.
+
+## Cases
+
+| Case | What it proves |
+| --- | --- |
+| `handoff-northwind` | The walkthrough account gets `act-now`, `rule-act-now`, play `first-gtm-hire` |
+| `handoff-skip-icp-fail` | A consumer company is skipped (`rule-skip`) |
+| `handoff-route-to-owner` | An account at Opportunity goes to its owner, with no draft |
+| `handoff-relative-whynow` | A `whyNow` with no calendar date blocks `act-now` |
+| `handoff-missing-verdict` | No `relevanceVerdict` means `nurture`, with the gap listed |
+| `handoff-stage-conflict-unresolved` | Two stage copies read the same day: neither wins, so no stage rule matches |
+| `handoff-stage-later-copy` | The copy read later wins (`source-export-copy`) |
+| `handoff-budget-full` | 5 `act-now` this week: `nurture` with the gap "handoff budget full" |
+| `handoff-budget-rejected-frees` | A rejected `act-now` frees its slot |
+| `handoff-budget-old-window` | `act-now` decisions older than 7 days do not count |
+| `sweep-budget` | Seven signals, budget 2: the two strongest get `act-now`, the rest decided in order |
+| `sweep-held-first` | Next day: a held account takes a freed slot ahead of a stronger new signal |
+| `sweep-quiet` | Every signal decided: "No handoffs today." |
+| `sweep-stale` | Newest signal 10 days old: the stale-feed warning comes before the first handoff |
+| `sweep-empty-feed` | No signals at all: the empty-feed warning comes before any "No handoffs today." |
+| `sweep-blocked-input` | A decision blocked by a missing input is shown, not only counted |
+
+## Add a case
+
+Make `evals/cases/<id>/case.json`:
+
+```json
+{
+  "request": "Run account-handoff for Northwind Robotics on the 2026-09-24 signal.",
+  "today": "2026-10-03",
+  "fixtures": [],
+  "replace": [{"file": "brain/stages.md", "old": "at most 5", "new": "at most 2"}],
+  "delete": [],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [{"account": "northwind-robotics", "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md", "decision": "act-now", "gaps": [], "no_gaps": []}],
+    "output_has": [],
+    "output_lacks": []
+  }
+}
+```
+
+Every case starts from `evals/fixtures/base/` (the Northwind account, signal, and CRM export) with your accounts, signals, and decisions removed, so only your rules and skills are under test. Files under `evals/cases/<id>/files/` and each named folder in `evals/fixtures/` are copied over the repo copy before the run. Each `replace` text must appear exactly once. Write the expected answer from the rules before you run the case, never from the run's output.

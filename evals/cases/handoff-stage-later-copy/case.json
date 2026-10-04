@@ -1,0 +1,27 @@
+{
+  "request": "Run account-handoff for Northwind Robotics on the 2026-09-24 signal.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/accounts/northwind-robotics.md",
+      "old": "- **Stage:** Engaged.",
+      "new": "- **Stage:** Opportunity."
+    },
+    {
+      "file": "brain/accounts/northwind-robotics.md",
+      "old": "were read from it on 2026-09-28",
+      "new": "were read from it on 2026-10-01"
+    }
+  ],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [
+      {
+        "account": "northwind-robotics",
+        "decision": "route-to-owner",
+        "rule": "rule-route-to-owner",
+        "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+company_id,name,domain,segment,industry,employees,revenue_detected,revenue_confirmed,revenue_confirmed_at,crm_detected,crm_confirmed,crm_confirmed_at,has_gtm_engineer,hq_country,stage,owner,last_activity_at,source
+C001,Northwind Robotics,northwindrobotics.example,B2B,Warehouse robotics,140,32000000,,,HubSpot,HubSpot,2026-08-14,no,US,Engaged,,2026-09-18,vendor-a
+C002,Northwind Robotics Inc.,northwindrobotics.example,B2B,Warehouse robotics,150,30000000,,,HubSpot,,,no,US,Target,,,vendor-b
+C003,Harbor Ledger,harborledger.example,B2B,Accounting software,220,41000000,25000000,2026-07-02,Salesforce,Salesforce,2026-07-02,no,US,Engaged,maria.ortiz,2026-09-20,manual
+C004,Fernwood Freight,fernwoodfreight.example,B2B,Freight brokerage,90,500000000000,,,HubSpot,,,no,US,Target,,,vendor-a
+C005,Quillon Health,quillonhealth.example,B2B,Clinical scheduling software,310,58000000,60000000,,Salesforce,Salesforce,2026-06-11,unknown,US,Target,,,vendor-a
+C006,Brightpath Tutors,brightpathtutors.example,B2C,Online tutoring,120,18000000,,,HubSpot,,,no,US,Target,,,vendor-b
+C007,Kestrel Security,kestrelsec.example,B2B,Cloud security,480,95000000,,,Salesforce,,,yes,US,Engaged,sam.lee,2026-09-02,vendor-a
+C008,Tidewater Analytics,tidewateranalytics.example,B2B,Retail analytics,65,9000000,,,HubSpot,Pipedrive,2026-05-20,no,CA,Target,,,vendor-a
+C009,Orbit Growth Agency,orbitgrowth.example,B2B,Marketing agency,40,4000000,,,HubSpot,,,no,US,Target,,,vendor-b
+C010,Summit Fleet,summitfleet.example,B2B,Fleet telematics,260,52000000,,,Salesforce,,,no,US,Opportunity,maria.ortiz,2026-09-22,manual
+C011,Lumen Payroll,lumenpayroll.example,B2B,Payroll software,15,1200000,,,HubSpot,,,no,US,Target,,,vendor-a
+C012,Cedar Clinics,cedarclinics.example,B2B,Dental clinic group,700,120000000,,,Salesforce,,,no,US,Target,,,vendor-b

@@ -1,0 +1,50 @@
+{
+  "request": "Run signal-sweep.",
+  "today": "2026-10-04",
+  "fixtures": [
+    "sweep-accounts"
+  ],
+  "replace": [
+    {
+      "file": "brain/stages.md",
+      "old": "at most 5 `act-now`",
+      "new": "at most 2 `act-now`"
+    },
+    {
+      "file": "brain/stages.md",
+      "old": "count is 5 or more",
+      "new": "count is 2 or more"
+    },
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "C012,Cedar Clinics,cedarclinics.example,B2B,Dental clinic group,700,120000000,,,Salesforce,,,no,US,Target,,,vendor-b",
+      "new": "C012,Cedar Clinics,cedarclinics.example,B2B,Dental clinic group,700,120000000,,,Salesforce,,,no,US,Target,,,vendor-b\nC013,Granite Docs,granitedocs.example,B2B,Document automation,180,30000000,,,HubSpot,HubSpot,2026-08-01,no,US,Target,,,vendor-a"
+    }
+  ],
+  "expect": {
+    "decision_count": 3,
+    "decisions": [
+      {
+        "account": "northwind-robotics",
+        "decision": "act-now",
+        "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md"
+      },
+      {
+        "account": "tidewater-analytics",
+        "decision": "nurture",
+        "gaps": [
+          "handoff budget full"
+        ],
+        "signal": "brain/signals/2026-09-29-tidewater-revops-tools.md"
+      },
+      {
+        "account": "granite-docs",
+        "decision": "nurture",
+        "gaps": [
+          "handoff budget full"
+        ],
+        "signal": "brain/signals/2026-10-04-granite-first-gtm-engineer.md"
+      }
+    ]
+  }
+}
