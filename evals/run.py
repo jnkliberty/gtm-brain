@@ -34,6 +34,10 @@ def prepare(case, work):
     own = CASES / case["id"] / "files"
     if own.is_dir():
         shutil.copytree(own, work, dirs_exist_ok=True)
+    for a in case.get("append", []):
+        target = work / a["file"]
+        text = target.read_text()
+        target.write_text(text + ("" if text.endswith("\n") else "\n") + a["text"])
     for rel in case.get("delete", []):
         (work / rel).unlink()
     for r in case.get("replace", []):
@@ -53,6 +57,20 @@ def field(text, key):
     return m.group(1).strip() if m else None
 
 
+def appended(old, new):
+    prefix = old if not old or old.endswith(b"\n") else old + b"\n"
+    return new == old or new.startswith(prefix)
+
+
+def strip_verdict(data):
+    # Blank only the two verdict values in the frontmatter; the body must match exactly.
+    m = re.match(rb"(---\n.*?\n---\n)(.*)", data, re.S)
+    if not m:
+        return data
+    head = re.sub(rb"(?m)^(status|verdict_reason):.*$", rb"\1:", m.group(1))
+    return head + m.group(2)
+
+
 def section(text, name):
     m = re.search(rf"^## {name}\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     return m.group(1) if m else ""
@@ -64,6 +82,12 @@ def check(case, before, after, output):
     changed = [k for k in after if k in before and after[k] != before[k]]
     stray = [k for k in after if k not in before and not k.startswith("brain/decisions/")]
     gone = [k for k in before if k not in after]
+    # A verdict may change only the verdict fields of its decision and append to listed files.
+    verdict_ok = {k for k in exp.get("verdict_files", []) if k in before and k in after
+                  and strip_verdict(before[k]) == strip_verdict(after[k])}
+    append_ok = {k for k in exp.get("append_only", []) if k in before and k in after
+                 and appended(before[k], after[k])}
+    changed = [k for k in changed if k not in verdict_ok | append_ok]
     if changed or stray or gone:
         fails.append(f"files outside new decisions touched: {sorted(changed + stray + gone)}")
     for k, t in new.items():
@@ -97,6 +121,11 @@ def check(case, before, after, output):
         for g in want.get("no_gaps", []):
             if g.lower() in gaps:
                 fails.append(f"{want['account']}: Gaps has {g!r}")
+    for path, pats in exp.get("file_has", {}).items():
+        text = after.get(path, b"").decode()
+        for pat in pats:
+            if not re.search(pat, text, re.I | re.M):
+                fails.append(f"{path} lacks /{pat}/")
     for pat in exp.get("output_has", []):
         if not re.search(pat, output, re.I | re.S):
             fails.append(f"output lacks /{pat}/")

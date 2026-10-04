@@ -1,0 +1,30 @@
+{
+  "request": "Record this verdict: reject brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md, because the posting shows no start date for the role.",
+  "today": "2026-10-03",
+  "append": [
+    {
+      "file": "brain/corrections.md",
+      "text": "- 2026-09-20 | Northwind Robotics | decision: brain/decisions/2026-09-20-northwind-robotics-2026-09-20-northwind-robotics-signal.md | wrong: acted on a hiring post that gave no start date | source: brain/signals/2026-09-20-northwind-robotics-signal.md: \"we are hiring a GTM lead\" | applies when: the signal is a hiring post with no start date | points at: rule-act-now\n- 2026-09-27 | Northwind Robotics | decision: brain/decisions/2026-09-27-northwind-robotics-2026-09-27-northwind-robotics-signal.md | wrong: acted on a hiring post that gave no start date | source: brain/signals/2026-09-27-northwind-robotics-signal.md: \"we are hiring a GTM lead\" | applies when: the signal is a hiring post with no start date | points at: rule-act-now\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "file_has": {
+      "brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md": [
+        "^status: rejected\\s*$"
+      ],
+      "brain/corrections.md": [
+        "^- 2026-10-03 \\| [^|\\n]*\\S \\| decision: brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer\\.md \\| wrong: [^|\\n]*\\S \\| source: [^|\\n]*\\S \\| applies when: [^|\\n]*no start date[^|\\n]* \\| points at: rule-act-now\\s*$"
+      ]
+    },
+    "output_lacks": [
+      "(?m)^\\W*Proposed rule edit:"
+    ],
+    "verdict_files": [
+      "brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md"
+    ],
+    "append_only": [
+      "brain/corrections.md"
+    ]
+  }
+}

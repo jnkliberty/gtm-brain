@@ -47,7 +47,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 | `brain/accounts/` | One file per account: what marketing and sales know |
 | `brain/signals/` | Signals on accounts, interpreted by `signal-interpreter` |
 | `brain/decisions/` | Proposed decisions, each waiting for a person's verdict |
-| `brain/corrections.md` | Every edit or rejection, so repeated mistakes become rule changes |
+| `brain/corrections.md` | Every edit or rejection, with its decision file, disputed source line, and when the lesson applies, so repeated mistakes become rule changes |
 | `brain/sources.md` | Where each kind of fact lives, and which place wins when two disagree |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
@@ -68,7 +68,7 @@ Do this in a private copy of the repo. Your answers and records are your company
 - A person approves every decision. Skills never send and never write to a CRM.
 - The CRM skills use the local CSV route in this starter. Live connectors need a separate activation plan.
 - Keep real call notes and theme files in a private repository. The call excerpts here are invented examples.
-- Corrections become rules: three matching corrections propose an edit to the file that caused them.
+- Corrections become rules: three independent matching corrections (same ID, same condition, three different accounts) propose an edit to the file that caused them. A one-off stays a one-off.
 
 ## License
 
