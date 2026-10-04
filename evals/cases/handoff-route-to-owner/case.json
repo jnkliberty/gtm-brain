@@ -12,7 +12,11 @@
         "decision": "route-to-owner",
         "rule": "rule-route-to-owner",
         "no_draft": true,
-        "signal": "brain/signals/2026-10-02-summit-first-gtm-engineer.md"
+        "signal": "brain/signals/2026-10-02-summit-first-gtm-engineer.md",
+        "no_gaps": [
+          "no owner",
+          "no recipient"
+        ]
       }
     ]
   }
