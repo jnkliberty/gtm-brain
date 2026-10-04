@@ -1,0 +1,27 @@
+{
+  "request": "Dana Reyes approves this proposed rule edit to rule-act-now. In brain/stages.md, directly after the bullet \"the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as \\\"two days ago\\\" is not concrete),\" add this bullet, indented like its neighbours: \"if the signal is a hiring post, it states the role's start date,\". Write that edit.",
+  "today": "2026-10-03",
+  "append": [
+    {
+      "file": "brain/corrections.md",
+      "text": "- 2026-10-01 | Acme A | decision: brain/decisions/2026-10-01-acme-a-2026-10-01-acme-a-signal.md | wrong: acted on a hiring post that gave no start date | source: brain/signals/2026-10-01-acme-a-signal.md: \"we are hiring a GTM lead\" | applies when: the signal is a hiring post with no start date | points at: rule-act-now\n- 2026-10-02 | Acme C | decision: brain/decisions/2026-10-02-acme-c-2026-10-02-acme-c-signal.md | wrong: acted on a hiring post that gave no start date | source: brain/signals/2026-10-02-acme-c-signal.md: \"we are hiring a GTM lead\" | applies when: the signal is a hiring post with no start date | points at: rule-act-now\n- 2026-10-03 | Northwind Robotics | decision: brain/decisions/2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer.md | wrong: acted on a hiring post that gave no start date | source: none | applies when: the signal is a hiring post with no start date | points at: rule-act-now\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "edited_files": {
+      "brain/stages.md": {
+        "old": "   - the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as \"two days ago\" is not concrete),\n",
+        "new": "   - the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as \"two days ago\" is not concrete),\n   - if the signal is a hiring post, it states the role's start date,\n"
+      }
+    },
+    "output_has": [
+      "(?m)^\\W*Rule edit applied:\\W*rule-act-now",
+      "stages\\.md",
+      "start date"
+    ],
+    "output_lacks": [
+      "(?m)^\\W*Proposed rule edit:"
+    ]
+  }
+}
