@@ -49,6 +49,9 @@ Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cach
 | `rule-edit-approved` | A named person approves the exact proposed edit to `rule-act-now`: `brain/stages.md` changes by that one edit, and no decision, correction, or other file changes |
 | `sources-conflict-tiered-contact-build` | Two company rows at one domain, read the same day, give different revenue: the account is escalated with both values and no tier (`source-export-copy`) |
 | `sources-stale-export-retention` | An export read 48 days before the review is stale: no archive or merge rows, and the age is reported |
+| `icp-calibration-stale-export` | Calibration 48 days after the export: every company value is stale, so no record matches, the age is reported, and the verdict asks for a fresher export instead of tighten or loosen |
+| `themes-stale-export` | Call themes 48 days after the export: the theme is `none` although two domains would otherwise qualify, Facts still list the confirmed quotes, and Gaps state the export age |
+| `setup-fresh-days` | A sources.md redo with a new freshness number (14 days) for the two CRM rows: the proposal carries 14 and today's check date on those rows, keeps the other numbers, leaves `brain/sources.md` unchanged, and stays proposed |
 
 ## Add a case
 
@@ -76,6 +79,7 @@ Every case starts from `evals/fixtures/base/` (the Northwind account, signal, an
 - `"append_only": ["brain/corrections.md"]` lets those files gain lines at the end. Editing or removing an earlier line fails. A case without these keys behaves as before.
 - `"new_files": ["brain/proposals/"]` lets the run create new files under those folders, for skills that write a proposal instead of a decision. New files anywhere else still fail. Each new file there must stay `status: proposed` with `approved_by` empty. `"new_file_has": {"brain/proposals/": ["regex", ...]}` requires a new file in that folder and each regex to match it; `"new_file_lacks"` fails on any match, such as a forbidden action row.
 - `"edited_files": {"brain/stages.md": {"old": "...", "new": "..."}}` lets that file change by one exact replacement, for a case where a person approves a rule edit. `old` must appear once in the file before the run, and the file after the run must equal the file before with `old` replaced by `new`. Any other change, a missing edit, or a repeated edit fails.
+- `"no_status_files": ["brain/calibration/"]` exempts new files under those paths from the `status: proposed` requirement, for a record format with no status field (a calibration record or a rebuilt filter). They must still have `approved_by` empty. List the same paths in `new_files`.
 - `"file_has": {"brain/corrections.md": ["regex", ...]}` requires each regex to match in that file after the run (case-insensitive; `^` and `$` match at line breaks).
 
 Write the expected answer from the rules before you run the case, never from the run's output.

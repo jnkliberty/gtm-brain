@@ -1,0 +1,33 @@
+{
+  "request": "Run brain-setup to redo brain/sources.md only. Do not interview me, these are my answers. q-systems: keep. q-owners: keep. q-export: keep. q-fresh: 14 days for the 'Deal stage, amount, and owner' row and the 'Company and contact records' row; keep every other number. I have not said yes to any proposed text.",
+  "today": "2026-10-04",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/setup/"
+    ],
+    "new_file_has": {
+      "brain/setup/": [
+        "^started_at:\\s*2026-10-04",
+        "^status:\\s*proposed",
+        "q-fresh",
+        "^\\|\\s*[`*_]*Deal stage, amount, and owner[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*14\\b[^|\\n]*\\|\\s*[`*_]*2026-10-04",
+        "^\\|\\s*[`*_]*Company and contact records[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*14\\b[^|\\n]*\\|\\s*[`*_]*2026-10-04",
+        "^\\|\\s*[`*_]*Vendor account and contact candidates[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*30\\b[^|\\n]*\\|",
+        "^\\|\\s*[`*_]*Contact work history[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*90\\b[^|\\n]*\\|",
+        "source-crm-live",
+        "source-unmapped"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/setup/": [
+        "^\\|\\s*[`*_]*(Deal stage, amount, and owner|Company and contact records)[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*30\\b[^|\\n]*\\|\\s*[`*_]*20",
+        "GAP:",
+        "^status:\\s*(approved|rejected)"
+      ]
+    },
+    "output_has": [
+      "\\b14\\b"
+    ]
+  }
+}

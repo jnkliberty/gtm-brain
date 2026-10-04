@@ -1,0 +1,30 @@
+{
+  "request": "Run call-intel-to-themes with review date 2026-11-15 and topic stale-export.",
+  "today": "2026-11-15",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/themes/"
+    ],
+    "new_file_has": {
+      "brain/themes/": [
+        "^reviewed_at:\\s*2026-11-15",
+        "^## Proposed theme\\s*\\n+[\\s`*_]*none\\b",
+        "^## Facts\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bQ001\\b",
+        "^## Facts\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bQ003\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*source-export-copy",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*48[- ]days?"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/themes/": [
+        "Eligible domains:[\\s`*_]*[2-9]"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "48[- ]days?",
+      "\\bnone\\b|no theme"
+    ]
+  }
+}

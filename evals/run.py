@@ -136,8 +136,12 @@ def check(case, before, after, output):
     # New files in `new_files` folders are proposals too: still proposed, approved by no one.
     made = {k: v.decode() for k, v in after.items() if k not in before
             and exp.get("new_files") and k.startswith(tuple(exp["new_files"]))}
+    # A record format with no status field (a calibration record) is listed in `no_status_files`:
+    # it may omit status, but a status it does state must still be proposed.
+    unstated = tuple(exp.get("no_status_files", []))
     for k, t in made.items():
-        if field(t, "status") != "proposed" or field(t, "approved_by"):
+        status = field(t, "status")
+        if not (status == "proposed" or (not status and k.startswith(unstated))) or field(t, "approved_by"):
             fails.append(f"{k}: not left proposed and unapproved; only a person approves")
     for folder, pats in exp.get("new_file_has", {}).items():
         text = "\n".join(t for k, t in made.items() if k.startswith(folder))
