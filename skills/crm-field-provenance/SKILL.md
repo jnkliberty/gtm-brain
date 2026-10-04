@@ -28,9 +28,13 @@ When a live CRM connection is available (for example a HubSpot, Salesforce, or A
 - Current values: a live CRM connection, or `brain/crm-export/companies.csv` and `contacts.csv`.
 - Branch A only: one proposal file in `brain/proposals/`, in the `brain/proposals/README.md` format.
 
+## Source check
+
+Before a step uses a fact or proposes a value or record, find the fact's row in "Where to look" in `brain/sources.md` and apply its Conflict order. Cite the winning source's rule ID and read date. A fact with no row is a gap (`source-unmapped`). A copy older than its "Fresh for" days, counted to the date of the run, is stale. `brain/sources.md` decides which place wins. `brain/field-rules.md` still decides detected against confirmed inside one record, and `stale-proposal` still tests a row's old value. When two copies of a current value disagree with no winner, or the current value is stale: in Branch A the row is `check`, its rule is the source rule ID, and its note gives both values and dates; it is never `ok`. In Branch B the finding goes under Gaps with the record ID, both values, and the rule ID. Never pick one value silently, and keep this ranking in `brain/sources.md`, not here.
+
 ## Branch A: review a proposal
 
-1. **Read.** Read `brain/field-rules.md`, the proposal, and the current values for every record ID the proposal names. Identify record actions by the exact `Field` values in `brain/proposals/README.md`; their candidate IDs may have no current CRM record. The step is done when every field-change row is matched to a field pair and current record or listed as a gap, and every record-action row is identified.
+1. **Read.** Read `brain/field-rules.md`, the proposal, and the current values for every record ID the proposal names. Identify record actions by the exact `Field` values in `brain/proposals/README.md`; their candidate IDs may have no current CRM record. The step is done when every field-change row is matched to a field pair and current record or listed as a gap, and every record-action row is identified. Then apply the source check.
 2. **Judge each row.** Give each proposal row exactly one verdict. Identify `action` rows first; for field changes, `blocked` outranks `check`, and `check` outranks `ok`.
    - `blocked`: the row changes a confirmed field or its confirmation date. Rule: `rule-no-overwrite`. Note: "A person must make this change in the CRM themselves."
    - `check`: the row changes a detected field while the confirmed field holds a value. Rule: `rule-confirmed-wins`. Note: the change has no effect on anything that reads the value, because the confirmed value wins; quote the confirmed value.
@@ -44,7 +48,7 @@ When a live CRM connection is available (for example a HubSpot, Salesforce, or A
 
 ## Branch B: audit the export
 
-1. **Read.** Read `brain/field-rules.md` and the current values. The step is done when you can name, for each field pair, the export file and columns that hold it.
+1. **Read.** Read `brain/field-rules.md` and the current values. The step is done when you can name, for each field pair, the export file and columns that hold it. Then apply the source check.
 2. **Check every record.** For every record and every field pair:
    - The confirmed field holds a value and the date field is empty: finding under `rule-dated`. Note: "Owner to date or re-confirm."
    - Both the detected and confirmed fields hold a value and they disagree as `rule-disagree` defines it: numbers differ by more than 10% of the confirmed value; text differs at all, ignoring case and outer spaces. Finding under `rule-disagree`. Note: the confirmed value stands; the confirmed value may be stale or the enrichment source may be wrong.

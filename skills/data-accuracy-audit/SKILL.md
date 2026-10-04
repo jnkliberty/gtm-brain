@@ -45,9 +45,13 @@ Duplicate checks compare each sampled record against the whole export, not only 
 | contact | `company_id` | missing from `companies.csv`, or `linkedin_current_company` names a different employer than that company's `name` (ignore suffixes like Inc.) |
 | contact | duplicate | another contact has the same `linkedin_url`, or the same first and last name at the same company domain |
 
+## Source check
+
+Before a step uses a fact or proposes a value or record, find the fact's row in "Where to look" in `brain/sources.md` and apply its Conflict order. Cite the winning source's rule ID and read date. A fact with no row is a gap (`source-unmapped`). A copy older than its "Fresh for" days, counted to the date of the run, is stale. The export is a copy (`source-export-copy`). When two records give the same fact different values with no winner (for example two companies at one domain with different stages), the field is `needs human check`, with both values and the rule ID. When the export is stale, say so under Gaps with its age; the score still stands, as of the read date. `brain/field-rules.md` still decides detected against confirmed. Never pick one value silently, and keep this ranking in `brain/sources.md`, not here.
+
 ## Steps
 
-1. **Sample.** Sort each file by ID, ascending. With N records and a sample size n, set k = N divided by n, rounded down, and take rows 1, 1+k, 1+2k, and so on until you hold n records. When N is n or fewer, audit every record and say so. The step is done when the audit file can state N, n, k, and the sampled IDs, so a second run on the same export picks the same sample.
+1. **Sample.** Sort each file by ID, ascending. With N records and a sample size n, set k = N divided by n, rounded down, and take rows 1, 1+k, 1+2k, and so on until you hold n records. When N is n or fewer, audit every record and say so. The step is done when the audit file can state N, n, k, and the sampled IDs, so a second run on the same export picks the same sample. Then apply the source check.
 2. **Check.** Run every check in the table on every sampled record. Mark each remaining field `needs human check` or `empty`. The step is done when every field of every sampled record carries one of `pass`, `fail`, `needs human check`, or `empty`, and every `fail` quotes its value.
 3. **Score.** Score = passed checks divided by checked checks (pass plus fail). Report the score per field and overall, against the team bar, as PASS or FAIL. The step is done when the overall number and the bar sit side by side.
 4. **Trace.** For each fail, name the likely source, labeled as a hypothesis:
@@ -69,7 +73,7 @@ The skill writes only new files in `brain/audits/` and `brain/proposals/`. The e
 ---
 skill: data-accuracy-audit
 audited_at: <YYYY-MM-DD>
-export: <file paths, or the live CRM read>
+export: <file paths with their read dates, or the live CRM read>
 settings: <sample sizes, pass bar, revenue range, revenue tolerance>
 score: <overall %>
 result: PASS | FAIL

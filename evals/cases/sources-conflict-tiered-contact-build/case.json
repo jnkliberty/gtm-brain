@@ -1,0 +1,40 @@
+{
+  "request": "Run tiered-contact-build for Northwind Robotics only. Leave every other account out of the proposal.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "C002,Northwind Robotics Inc.,northwindrobotics.example,B2B,Warehouse robotics,150,30000000,",
+      "new": "C002,Northwind Robotics Inc.,northwindrobotics.example,B2B,Warehouse robotics,150,45000000,"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "source-export-copy",
+        "32,?000,?000",
+        "45,?000,?000",
+        "escalat",
+        "^\\|[^|\\n]*Northwind[^|\\n]*\\|\\s*[`*_]*No tier\\b",
+        "^## Escalated accounts and gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*Northwind"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K1[12][`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "32,?000,?000",
+      "45,?000,?000",
+      "escalat"
+    ],
+    "output_lacks": [
+      "\\|\\s*[`*_]*K1[12][`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|"
+    ]
+  }
+}

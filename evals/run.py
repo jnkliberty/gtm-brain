@@ -80,7 +80,8 @@ def check(case, before, after, output):
     exp, fails = case["expect"], []
     new = {k: v.decode() for k, v in after.items() if k not in before and k.startswith("brain/decisions/")}
     changed = [k for k in after if k in before and after[k] != before[k]]
-    stray = [k for k in after if k not in before and not k.startswith("brain/decisions/")]
+    stray = [k for k in after if k not in before
+             and not k.startswith(("brain/decisions/", *exp.get("new_files", [])))]
     gone = [k for k in before if k not in after]
     # A verdict may change only the verdict fields of its decision and append to listed files.
     verdict_ok = {k for k in exp.get("verdict_files", []) if k in before and k in after
@@ -124,6 +125,24 @@ def check(case, before, after, output):
         for g in want.get("no_gaps", []):
             if g.lower() in gaps:
                 fails.append(f"{want['account']}: Gaps has {g!r}")
+    # New files in `new_files` folders are proposals too: still proposed, approved by no one.
+    made = {k: v.decode() for k, v in after.items() if k not in before
+            and exp.get("new_files") and k.startswith(tuple(exp["new_files"]))}
+    for k, t in made.items():
+        if field(t, "status") != "proposed" or field(t, "approved_by"):
+            fails.append(f"{k}: not left proposed and unapproved; only a person approves")
+    for folder, pats in exp.get("new_file_has", {}).items():
+        text = "\n".join(t for k, t in made.items() if k.startswith(folder))
+        if not text:
+            fails.append(f"no new file under {folder}")
+        for pat in pats:
+            if text and not re.search(pat, text, re.I | re.M):
+                fails.append(f"new file under {folder} lacks /{pat}/")
+    for folder, pats in exp.get("new_file_lacks", {}).items():
+        text = "\n".join(t for k, t in made.items() if k.startswith(folder))
+        for pat in pats:
+            if re.search(pat, text, re.I | re.M):
+                fails.append(f"new file under {folder} has /{pat}/")
     for path, pats in exp.get("file_has", {}).items():
         text = after.get(path, b"").decode()
         for pat in pats:
