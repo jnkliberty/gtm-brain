@@ -1,0 +1,22 @@
+{
+  "request": "Run account-handoff for Northwind Robotics on the 2026-09-24 signal.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md",
+      "old": "- **whyNow:** the role was posted on 2026-09-24 and is the first GTM engineering role at the company.",
+      "new": "- **whyNow:** the role was posted a few days ago."
+    }
+  ],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [
+      {
+        "account": "northwind-robotics",
+        "decision": "nurture",
+        "rule": "rule-nurture",
+        "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md"
+      }
+    ]
+  }
+}

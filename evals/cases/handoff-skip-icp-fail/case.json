@@ -1,0 +1,25 @@
+{
+  "request": "Run account-handoff for Brightpath Tutors on the 2026-10-01 signal.",
+  "today": "2026-10-03",
+  "fixtures": [
+    "sweep-accounts"
+  ],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [
+      {
+        "account": "brightpath-tutors",
+        "decision": "skip",
+        "rule": "rule-skip",
+        "signal": "brain/signals/2026-10-01-brightpath-tutor-hiring.md"
+      }
+    ]
+  },
+  "replace": [
+    {
+      "file": "brain/signals/2026-10-01-brightpath-tutor-hiring.md",
+      "old": "- **relevanceVerdict:** not_relevant",
+      "new": "- **relevanceVerdict:** relevant"
+    }
+  ]
+}

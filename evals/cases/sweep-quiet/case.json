@@ -1,0 +1,13 @@
+{
+  "request": "Run signal-sweep.",
+  "today": "2026-10-03",
+  "fixtures": [
+    "sweep-accounts"
+  ],
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "\\A\\W*No handoffs today\\.\\s*0 nurture and 0 skip[^\\n]*\\s*\\Z"
+    ]
+  }
+}

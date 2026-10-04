@@ -1,0 +1,19 @@
+{
+  "request": "Run signal-sweep.",
+  "today": "2026-10-03",
+  "delete": [
+    "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md"
+  ],
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "No signals in"
+    ],
+    "output_order": [
+      [
+        "No signals in",
+        "No handoffs today"
+      ]
+    ]
+  }
+}
