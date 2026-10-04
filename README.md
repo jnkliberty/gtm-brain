@@ -13,14 +13,14 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
    cd gtm-brain
    ```
 
-   From a terminal, run `claude` or `codex` in that folder. `AGENTS.md` at the repo root tells the agent where the skills (`skills/<name>/SKILL.md`) and the brain files (`brain/`) live. Codex loads it on its own, and `CLAUDE.md` imports it for Claude Code. If your agent does not load `AGENTS.md`, start with `Read AGENTS.md first.`
-
    **Optional, Claude Code only:** these two commands install the skills as a plugin, so Claude Code lists them in any folder. The skills still read the brain files from your clone.
 
    ```bash
    claude plugin marketplace add jnkliberty/gtm-brain
    claude plugin install gtm-brain@gtm-brain
    ```
+
+   From a terminal, run `claude` or `codex` in that folder. `AGENTS.md` at the repo root tells the agent where the skills (`skills/<name>/SKILL.md`) and the brain files (`brain/`) live. Codex loads it on its own, and `CLAUDE.md` imports it for Claude Code. If your agent does not load `AGENTS.md`, start with `Read AGENTS.md first.`
 
 2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the account's row in `brain/crm-export/companies.csv`, the dated signal, and the rules in `brain/stages.md`, `brain/plays.md`, and `brain/sources.md`.
 3. Read the proposed file in `brain/decisions/`. Check that the decision and draft cite the source lines. The example has no verified email, so the proposal must keep that gap open.
