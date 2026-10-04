@@ -6,14 +6,20 @@ MIT starter. The CRM examples use invented CSV data and create proposals for a p
 
 ## Five-minute walkthrough
 
-1. Install the skills as a plugin, then clone this repository and open it in Claude Code. The plugin holds the skills; the clone holds the brain files they read.
+1. Clone this repository and open the folder in your coding agent, such as Claude Code or Codex.
+
+   ```bash
+   git clone https://github.com/jnkliberty/gtm-brain.git
+   cd gtm-brain
+   ```
+
+   From a terminal, run `claude` or `codex` in that folder. `AGENTS.md` at the repo root tells the agent where the skills (`skills/<name>/SKILL.md`) and the brain files (`brain/`) live. Codex loads it on its own, and `CLAUDE.md` imports it for Claude Code. If your agent does not load `AGENTS.md`, start with `Read AGENTS.md first.`
+
+   **Optional, Claude Code only:** these two commands install the skills as a plugin, so Claude Code lists them in any folder. The skills still read the brain files from your clone.
 
    ```bash
    claude plugin marketplace add jnkliberty/gtm-brain
    claude plugin install gtm-brain@gtm-brain
-   git clone https://github.com/jnkliberty/gtm-brain.git
-   cd gtm-brain
-   claude
    ```
 
 2. Ask: `Run account-handoff for Northwind Robotics on the 2026-09-24 signal.` The skill reads `brain/accounts/northwind-robotics.md`, the account's row in `brain/crm-export/companies.csv`, the dated signal, and the rules in `brain/stages.md`, `brain/plays.md`, and `brain/sources.md`.
