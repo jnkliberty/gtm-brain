@@ -64,6 +64,8 @@ The skill writes files in `brain/setup/` and, only after a yes to the exact text
 
 ## Setup record format
 
+For the next steps after the policy interview, see the [team setup guide](../../docs/team-setup.md).
+
 ```markdown
 ---
 started_at: <YYYY-MM-DD>

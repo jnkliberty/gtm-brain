@@ -32,6 +32,14 @@ Northwind Robotics, its activity, and the signal are invented. Replace the sampl
 
 Do this in a private copy of the repo. Your answers and records are your company's data.
 
+For a team rollout, start with the [six-step team setup guide](./docs/team-setup.md). Ask:
+
+```text
+Read docs/team-setup.md and start step 1. Confirm this is a private copy before asking for company data. Ask one question at a time. Draft in chat only; do not write files or change any system.
+```
+
+A public fork remains public. Use a private repository or a private local copy before you add real company data.
+
 1. Ask: `Run brain-setup.` It interviews you about your ICP, stages, plays, and where each fact lives, one file at a time. It shows each proposed file and writes only the ones you approve. A question you skip stays a visible gap.
 2. Export your CRM in the `brain/crm-export/README.md` format, add one account file and one signal, and run `account-handoff` on them. Setup is done when that decision file cites your own records, not Northwind's.
 3. Ask `Run signal-sweep.` each morning, or from your own scheduler. It decides every new signal and reports only the handoffs that need a person. Sales gets no more than the weekly budget in `brain/stages.md`. To use the brain from Slack, see [docs/slack.md](./docs/slack.md).
