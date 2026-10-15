@@ -5,7 +5,7 @@
   "state": {
     "goal": "Pick the one skill that handles the request, or none.",
     "evidence": {
-      "request": "Check what ChatGPT says about Northwind."
+      "request": "Check what ChatGPT says about Contoso."
     },
     "rules": [
       "Pick none when no listed skill fits.",

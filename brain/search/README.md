@@ -1,6 +1,6 @@
 # Search and answer-engine files
 
-These files hold what the content engineering skills read and write: buyer questions, approved company facts, AI answer runs, traffic, and deals. Every record here is invented sample data for the invented company Northwind Robotics, except the shared starter records in `brain/calls/` and `brain/crm-export/`. Replace the sample records with your own only in a private copy of this repo.
+These files hold what the content engineering skills read and write: buyer questions, approved company facts, AI answer runs, traffic, and deals. Every record here is invented sample data for the invented company Contoso, which sells handoff and pipeline tooling to B2B sales and marketing teams. In the sample, Contoso is the company that owns this brain: `brain/icp.md` is its ICP, `brain/calls/` holds its sales calls, and the accounts in `brain/crm-export/` (Northwind Robotics among them) are its prospects. Replace the sample records with your own only in a private copy of this repo.
 
 **Write boundary:** Writes proposals under `brain/search/proposals/` only. Scripts write machine reports under `brain/search/checks/` and panel runs under `brain/search/panel-runs/`.
 

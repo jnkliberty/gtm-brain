@@ -38,7 +38,7 @@ Eligible domains: 2 (harborledger.example, summitfleet.example); rule: theme-two
 - northwindrobotics.example, support_sync: C001 quote Q008 ("We copy support status into the CRM every week.") and duplicate C002 quote Q009 ("We never copy support status into the CRM."); excluded by call-conflict.
 
 ## Hypotheses
-- Hypothesis: a buyer who already retypes notes between systems (Q001, Q003) may ask whether a new system adds one more copy step. Buyers would then put that doubt into a question about connecting to the systems they already run.
+- Hypothesis: a prospect who copies or retypes handoff notes between systems (Q001, Q003) is likely to search for a way to stop the copying, such as a tool that connects to the CRM already in use. No call quote states that search yet.
 
 ## Gaps
 - Q002 has no rep confirmation.

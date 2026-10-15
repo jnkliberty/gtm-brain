@@ -6,7 +6,7 @@ license: MIT
 
 # Competitor comparison pages
 
-Plans a comparison page ("us versus Harlow") or an alternatives page ("alternatives to Harlow") from facts a person already approved. The result is a proposal: a page outline, a table of rows with a fact ID behind every cell, and a list of what was left out and why. The skill writes no page copy that goes live.
+Plans a comparison page ("us versus Relaymark") or an alternatives page ("alternatives to Relaymark") from facts a person already approved. The result is a proposal: a page outline, a table of rows with a fact ID behind every cell, and a list of what was left out and why. The skill writes no page copy that goes live.
 
 This skill is not legal advice. A person checks every claim before anything is published.
 

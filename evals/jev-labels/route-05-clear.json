@@ -5,7 +5,7 @@
   "state": {
     "goal": "Pick the one skill that handles the request, or none.",
     "evidence": {
-      "request": "Plan an alternatives page that compares us with Harlow Robotics, using only facts we have approved."
+      "request": "Plan an alternatives page that compares us with Relaymark, using only facts we have approved."
     },
     "rules": [
       "Pick none when no listed skill fits.",

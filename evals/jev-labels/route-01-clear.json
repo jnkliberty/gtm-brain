@@ -5,7 +5,7 @@
   "state": {
     "goal": "Pick the one skill that handles the request, or none.",
     "evidence": {
-      "request": "Run our eight buyer questions through ChatGPT and Perplexity and record whether Northwind is mentioned or cited."
+      "request": "Run our eight buyer questions through ChatGPT and Perplexity and record whether Contoso is mentioned or cited."
     },
     "rules": [
       "Pick none when no listed skill fits.",

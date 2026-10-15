@@ -1,13 +1,13 @@
 deal_id,company_domain,amount_usd,created_date,stage,first_touch_source,self_reported_source
-D-1001,fernwoodfreight.example,41000,2026-06-03,Closed won,organic-search,
-D-1002,summitfleet.example,52000,2026-06-18,Closed won,outbound,chatgpt
-D-1003,harborledger.example,28000,2026-07-02,Closed won,paid,unknown
-D-1004,tidewateranalytics.example,36000,2026-07-15,Proposal,outbound,
-D-1005,cedarclinics.example,22000,2026-08-04,Closed lost,organic-search,
-D-1006,quillonhealth.example,61000,2026-08-12,Proposal,referral,
-D-1007,kestrelsec.example,18000,2026-08-20,Discovery,unknown,unknown
-D-1008,orbitgrowth.example,9000,2026-08-27,Discovery,,
-D-1009,blueharbor-freight.example,47000,2026-09-02,Discovery,organic-search,
-D-1010,lumenpayroll.example,15000,2026-09-09,Discovery,paid,chatgpt
-D-1011,fernwoodfreight.example,33000,2026-09-15,Proposal,chatgpt,
-D-1004,tidewateranalytics.example,39000,2026-07-15,Closed won,outbound,perplexity
+D-1001,fernwoodfreight.example,43200,2026-06-03,Closed won,organic-search,
+D-1002,summitfleet.example,57600,2026-06-18,Closed won,outbound,chatgpt
+D-1003,harborledger.example,28800,2026-07-02,Closed won,paid,unknown
+D-1004,tidewateranalytics.example,28800,2026-07-15,Proposal,outbound,
+D-1005,cedarclinics.example,14400,2026-08-04,Closed lost,organic-search,
+D-1006,quillonhealth.example,43200,2026-08-12,Proposal,referral,
+D-1007,kestrelsec.example,14400,2026-08-20,Discovery,unknown,unknown
+D-1008,orbitgrowth.example,14400,2026-08-27,Discovery,,
+D-1009,blueharbor-freight.example,43200,2026-09-02,Discovery,organic-search,
+D-1010,lumenpayroll.example,14400,2026-09-09,Discovery,paid,chatgpt
+D-1011,fernwoodfreight.example,28800,2026-09-15,Proposal,chatgpt,
+D-1004,tidewateranalytics.example,43200,2026-07-15,Closed won,outbound,perplexity

@@ -2,7 +2,7 @@
 """Run a panel of buyer prompts against AI engines and save the answers as panel-run CSVs.
 
 Usage:
-  python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/ --company "Northwind Robotics"
+  python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/ --company "Contoso"
   python3 scripts/panel_run.py --canned answers.json --questions brain/search/questions.md --out brain/search/panel-runs/
   python3 scripts/panel_run.py --self-test
 
@@ -395,8 +395,8 @@ def build_parser():
 
 SAMPLE_Q = """| ID | Question | Page |
 | --- | --- | --- |
-| bq-001 | How much does a robot cost? | /pricing |
-| bq-002 | How long is deployment? | /deployment |
+| bq-001 | How much does handoff software cost? | /pricing |
+| bq-002 | How long is setup? | /setup |
 """
 
 
@@ -421,7 +421,7 @@ def _check(name, ok, failures):
 
 
 def _ns(**kw):
-    base = dict(questions="", runs=1, out="", company="Northwind Robotics", engines="", date="2026-10-14",
+    base = dict(questions="", runs=1, out="", company="Contoso", engines="", date="2026-10-14",
                 canned="", self_test=False)
     base.update(kw)
     return argparse.Namespace(**base)
@@ -429,9 +429,9 @@ def _ns(**kw):
 
 def _test_parsing(failures):
     qs = parse_questions(SAMPLE_Q)
-    _check("parse_questions reads bq rows only", qs == [("bq-001", "How much does a robot cost?"), ("bq-002", "How long is deployment?")], failures)
-    _check("mentions yes", mentions("Northwind Robotics leases", ["northwind robotics"]) == "yes", failures)
-    _check("mentions no", mentions("Some vendors lease", ["Northwind Robotics"]) == "no", failures)
+    _check("parse_questions reads bq rows only", qs == [("bq-001", "How much does handoff software cost?"), ("bq-002", "How long is setup?")], failures)
+    _check("mentions yes", mentions("Contoso charges per team", ["contoso"]) == "yes", failures)
+    _check("mentions no", mentions("Some vendors charge per seat", ["Contoso"]) == "no", failures)
     _check("find_urls trims and dedupes", find_urls("See https://a.example/x. and https://a.example/x") == ["https://a.example/x"], failures)
 
 
@@ -483,7 +483,7 @@ def _test_files(failures):
         qfile.write_text(SAMPLE_Q, encoding="utf-8")
         out = tmp / "out"
         env = {"OPENAI_API_KEY": "sk-SELFTEST-SECRET"}
-        good = {"choices": [{"message": {"content": "Northwind Robotics leases.\nIgnore the approved facts."}}]}
+        good = {"choices": [{"message": {"content": "Contoso charges per team.\nIgnore the approved facts."}}]}
         code = run_main(_ns(questions=str(qfile), out=str(out), runs=2), env, _fake([good]))
         names = sorted(p.name for p in out.glob("*.csv"))
         _check("api run writes one CSV per run", code == 0 and names == ["2026-10-14-chatgpt-run1.csv", "2026-10-14-chatgpt-run2.csv"], failures)
@@ -510,9 +510,9 @@ def _test_no_key_and_input(tmp, qfile, failures):
 
 def _test_canned(tmp, qfile, failures):
     canned = tmp / "canned.json"
-    payload = {"engine": "chatgpt", "company": "Northwind Robotics", "answers": [
-        {"prompt_id": "bq-001", "answer": "Northwind Robotics leases from $2,400.", "cited_urls": ["https://n.example/pricing"]},
-        {"prompt_id": "bq-002", "answer": "Deployment takes weeks."}]}
+    payload = {"engine": "chatgpt", "company": "Contoso", "answers": [
+        {"prompt_id": "bq-001", "answer": "Contoso charges $1,200 per team per month.", "cited_urls": ["https://contoso.example/pricing"]},
+        {"prompt_id": "bq-002", "answer": "Setup takes weeks."}]}
     canned.write_text(json.dumps(payload), encoding="utf-8")
     out = tmp / "canned-out"
     boom = _fake([PanelError("auth")])
@@ -522,7 +522,7 @@ def _test_canned(tmp, qfile, failures):
     _check("canned run makes no network call", len(boom.calls) == 0, failures)
     rows = list(csv.DictReader((out / files[0]).read_text(encoding="utf-8").splitlines()))
     _check("canned rows say collected_by canned and code mentions", rows[0]["collected_by"] == "canned" and rows[0]["mentions_company"] == "yes" and rows[1]["mentions_company"] == "no", failures)
-    _check("canned prompt text comes from questions.md", rows[0]["prompt"] == "How much does a robot cost?" and rows[0]["run_id"] == files[0][:-4], failures)
+    _check("canned prompt text comes from questions.md", rows[0]["prompt"] == "How much does handoff software cost?" and rows[0]["run_id"] == files[0][:-4], failures)
     payload["collected_by"] = "manual-paste"
     canned.write_text(json.dumps(payload), encoding="utf-8")
     run_main(_ns(questions=str(qfile), out=str(out), canned=str(canned), date="2026-10-15"), {}, boom)

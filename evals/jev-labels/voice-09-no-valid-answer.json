@@ -6,7 +6,7 @@
     "goal": "Judge one draft against approved buyer questions and voice rules.",
     "evidence": {
       "draft_file": "drafts/pricing.md",
-      "draft_text": "Leases run on a 36-month term. Payback depends on the site.",
+      "draft_text": "Plans run on a 12-month term. Payback depends on the team.",
       "approved_facts": "not provided"
     },
     "rules": [
