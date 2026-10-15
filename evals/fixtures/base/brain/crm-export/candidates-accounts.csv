@@ -1,0 +1,10 @@
+candidate_id,name,domain,segment,industry,employees,revenue,crm,has_gtm_engineer,hq_country,source
+A01,Northwind Robotics,northwindrobotics.example,B2B,Warehouse robotics,145,33000000,HubSpot,no,US,vendor-c
+A02,Harbor Ledger LLC,harborledger-alt.example,B2B,Accounting software,215,40000000,Salesforce,no,US,vendor-c
+A03,Alder Logistics,alderlogistics.example,B2B,Third-party logistics,320,70000000,Salesforce,no,US,vendor-c
+A04,Juniper Grid,junipergrid.example,B2B,Energy analytics,180,26000000,HubSpot,no,US,vendor-c
+A05,Mosaic Labs,mosaiclabs.example,B2B,Lab automation,60,900000000000,HubSpot,no,US,vendor-c
+A06,Pebble Pets,pebblepets.example,B2C,Pet supplies,210,45000000,HubSpot,no,US,vendor-c
+A07,Wren Studio,wrenstudio.example,B2B,Design software,30,3000000,HubSpot,no,US,vendor-c
+A08,Summit Fleet,summitfleet.example,B2B,Fleet telematics,265,53000000,Salesforce,no,US,vendor-c
+A09,Basalt Metrics,basaltmetrics.example,B2B,Manufacturing analytics,95,12000000,Pipedrive,no,CA,vendor-c

@@ -11,6 +11,8 @@ Where each kind of fact lives, which place wins when two disagree, and how fresh
 | `brain/crm-export/` | A dated snapshot of CRM companies and contacts | Anything edited by hand | A copy. It holds no authority. |
 | Call recorder | Full recordings and transcripts | Themes, decisions | What was said on a call |
 | Enrichment vendor | Detected company and contact values | Values a person confirmed | Detected values only (see `brain/field-rules.md`) |
+| Site analytics | Weekly sessions and conversions by landing page and channel | Deal status, company facts | Traffic and conversions as the analytics tool counted them |
+| Answer engines | Answers an engine gave on a dated run, stored in `brain/search/panel-runs/` | Company facts | What the engine said on that date. It is never a source for a company fact. |
 | Chat and email threads | Requests, approvals in progress | Any fact a skill relies on | None. A fact from chat enters the brain as a gap until it lands in a surface above. |
 
 ## Where to look
@@ -34,6 +36,14 @@ The snapshot date of `brain/crm-export/` is the read date of every value taken f
 | Account history and marketing activity | `brain/accounts/` | Account owner | File read | no limit | 2026-09-24 |
 | Signals on accounts | `brain/signals/` | Marketing lead | File read | no limit | 2026-09-24 |
 | Decisions and verdicts | `brain/decisions/` | The person who gave the verdict | File read | no limit | 2026-09-24 |
+| Approved buyer questions | `brain/search/questions.md` | Marketing lead | File read; a person edits it after approving a proposal | no limit | 2026-09-28 |
+| Approved company facts | `brain/search/brand-facts.md` | Marketing lead | File read | no limit | 2026-09-28 |
+| Customer proof points | `brain/proof.md` | Marketing lead | File read; use a row only when its `May publish` is `yes` | no limit | 2026-09-28 |
+| Competitor facts | `brain/search/competitors.md` | Marketing lead | File read; each row is dated by its `Checked on` column | 90 | 2026-09-28 |
+| Buyer reviews | Review sites | Marketing lead | `brain/search/reviews.csv`, a copy | 90 | 2026-09-28 |
+| AI answers by engine | Answer engines | Marketing lead | `brain/search/panel-runs/*.csv`, each file dated by its name | 30 | 2026-09-28 |
+| Site traffic and conversions | Analytics tool | Marketing lead | `brain/search/analytics-export.csv`, weekly rows | 14 | 2026-09-28 |
+| Deals with source fields | CRM | Sales lead | `brain/search/deals-export.csv`, joined to `brain/crm-export/companies.csv` by domain | 30 | 2026-09-28 |
 
 ## Conflict order
 

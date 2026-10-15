@@ -1,0 +1,13 @@
+review_id,source,review_date,rating,reviewer_role,text
+R-001,invented-review-site,2026-03-12,4,Operations manager,"Price was my first question. The lease number was clear, but I had to ask what happens at the end of the 36 months."
+R-002,invented-review-site,2026-04-02,5,Warehouse director,"Went live in seven weeks. I expected months. Our WMS vendor needed one call with their team to open the API."
+R-003,invented-review-site,2026-04-19,3,IT lead,"Integration took longer than the sales call suggested. Nobody told me which WMS versions they test against, and my team retyped order data by hand for two weeks."
+R-004,invented-review-site,2026-05-07,4,COO,"We compared it with Harlow Robotics. Harlow is a purchase and Northwind is a lease, and that changed how our finance team saw it."
+R-005,invented-review-site,2026-05-30,2,Shift supervisor,"A robot stalled during a night shift and it took a day to get a technician. I wanted to know the response time before signing."
+R-006,invented-review-site,2026-06-14,5,Operations manager,"Our peak season starts in October. I asked whether we can add robots for 3 months only. We could."
+R-007,invented-review-site,2026-06-28,4,Finance director,"Payback was the question my board asked. We got about 20 months on our numbers."
+R-008,invented-review-site,,4,Warehouse director,"Training took two afternoons for pickers."
+R-009,invented-review-site,2026-07-21,3,Operations manager,"I could not find pricing on the website, so I booked a call just to get a number."
+R-010,invented-review-site,2026-08-09,4,Procurement lead,"Does it work with a small building? Ours is 60,000 square feet and most vendors target bigger sites."
+R-011,invented-review-site,2026-08-25,5,Operations manager,"Our peak season starts in October. I asked whether we can add robots for 3 months only. We could."
+R-012,invented-review-site,2026-09-10,3,IT lead,"Our security team asked for a SOC 2 report. I am still waiting for an answer."

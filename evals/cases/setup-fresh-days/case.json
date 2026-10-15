@@ -1,5 +1,5 @@
 {
-  "request": "Run brain-setup to redo brain/sources.md only. Do not interview me, these are my answers. q-systems: keep. q-owners: keep. q-export: keep. q-fresh: 14 days for the 'Deal stage, amount, and owner' row and the 'Company and contact records' row; keep every other number. I have not said yes to any proposed text.",
+  "request": "Run brain-setup to redo brain/sources.md only. Do not interview me, these are my answers. q-systems: keep. q-owners: keep. q-export: keep. q-fresh: 14 days for the 'Deal stage, amount, and owner' row and the 'Company and contact records' row; keep every other number. q-search-data: keep. q-engines: keep. q-brand-facts: Northwind Robotics was founded in 2019 and leases its robots; the About page states both. I have not said yes to any proposed text.",
   "today": "2026-10-04",
   "expect": {
     "decision_count": 0,
@@ -11,6 +11,9 @@
         "^started_at:\\s*2026-10-04",
         "^status:\\s*proposed",
         "q-fresh",
+        "q-search-data",
+        "q-engines",
+        "q-brand-facts",
         "^\\|\\s*[`*_]*Deal stage, amount, and owner[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*14\\b[^|\\n]*\\|\\s*[`*_]*2026-10-04",
         "^\\|\\s*[`*_]*Company and contact records[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*14\\b[^|\\n]*\\|\\s*[`*_]*2026-10-04",
         "^\\|\\s*[`*_]*Vendor account and contact candidates[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*30\\b[^|\\n]*\\|",
