@@ -24,6 +24,9 @@
         "\\bD-1010\\b[^\\n]*chatgpt",
         "\\bD-1011\\b[^\\n]*chatgpt",
         "\\b43,?200\\b",
+        "^[^\\n]*\\bai\\b[^\\n]*\\b43,?200\\b",
+        "^[^\\n]*\\bai\\b[^\\n]*\\bchatgpt\\b[^\\n]*\\b2\\b",
+        "^[^\\n]*\\bsearch\\b[^\\n]*\\b0\\b",
         "\\bunknown\\b",
         "\\bagent\\b"
       ]

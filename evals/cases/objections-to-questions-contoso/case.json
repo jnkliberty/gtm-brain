@@ -13,6 +13,7 @@
         "\\bbq-0(?:09|10)\\b[^\\n]*\\bR-012\\b",
         "\\bbq-0(?:09|10)\\b[^\\n]*SOC 2",
         "new page",
+        "thin evidence",
         "\\bna-001\\b",
         "qrule-rank-sources",
         "qrule-buyer-words",

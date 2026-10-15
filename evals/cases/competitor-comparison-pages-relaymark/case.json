@@ -24,7 +24,8 @@
         "Judged by:\\s*agent",
         "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*SOC 2",
         "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bpf-003\\b|^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*Ridgeway",
-        "\\bna-001\\b"
+        "\\bna-001\\b",
+        "^\\W*Refused:[^\\n]*SOC 2"
       ]
     },
     "new_file_lacks": {
@@ -35,6 +36,7 @@
         "^### Outline\\s*\\n(?:(?!##)[^\\n]*\\n)*?(?![^\\n]*\\bnot (?:publishable|used|approved)\\b)[^\\n]*\\bpf-003\\b",
         "not ready: no owner",
         "not ready: no approved question",
+        "^\\W*Status:\\s*not ready",
         "^\\W*Rows where the competitor wins:\\s*none"
       ]
     },

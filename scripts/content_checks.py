@@ -82,6 +82,7 @@ VOICE_TEMPLATE = (
     "Answer yes only when the whole draft follows the rule. If the draft text "
     "is missing, cut off, or lacks what the rule needs, answer with a middle value."
 )
+ROUTER_SKILL = "start-here"
 ROUTE_INSTRUCTIONS = (
     "Pick the one GTM Brain skill whose description matches the request in "
     "evidence. Pick none when no listed skill fits, or when the request asks "
@@ -691,6 +692,11 @@ def route_criteria(skills, names):
     return criteria
 
 
+def route_names(skills):
+    """The route options: every skill except start-here (it routes, so it is never the answer), then none."""
+    return [name for name in skills if name != ROUTER_SKILL] + ["none"]
+
+
 def route_state(request, names):
     return make_state(
         goal="Pick the one skill that handles the request, or none.",
@@ -735,7 +741,7 @@ def cmd_route(args, env, opener):
     if not skills:
         print(f"no skills found under {args.skills}", file=sys.stderr)
         return 2
-    names = list(skills) + ["none"]
+    names = route_names(skills)
     settings = settings_from_env(env)
     spec = choice_spec(ROUTE_INSTRUCTIONS, route_criteria(skills, names))
     result = ask_jev(settings, route_state(request, names), {"route_pick": spec}, opener)
@@ -1277,6 +1283,15 @@ def test_route():
         sent = json.loads(opener.calls[0].data)["questions"]["route_pick"]
         assert outcome["skill"] == "alpha-skill" and outcome["probability"] == 0.8 and outcome["judged_by"] == "jev"
         assert list(sent["criteria"]) == ["alpha-skill", "beta-skill", "none"]
+        router = root / "skills" / ROUTER_SKILL
+        router.mkdir(parents=True)
+        (router / "SKILL.md").write_text(f'---\nname: {ROUTER_SKILL}\ndescription: "Use to route a request."\n---\n\nBody.\n', encoding="utf-8")
+        with_router = load_skills(root / "skills")
+        assert ROUTER_SKILL in with_router and ROUTER_SKILL not in route_names(with_router)
+        opener = fake_opener(payload)
+        silent(main, args, keyed_env(), opener)
+        sent = json.loads(opener.calls[0].data)["questions"]["route_pick"]
+        assert ROUTER_SKILL not in sent["criteria"] and list(sent["criteria"]) == ["alpha-skill", "beta-skill", "none"]
         off_menu = {"model": "m", "answers": {"route_pick": {"type": "choice", "choice": "gamma", "probabilities": {}}}}
         code, out, _ = silent(main, args, keyed_env(), fake_opener(off_menu))
         assert json.loads(out)["jev_error"] == "malformed"

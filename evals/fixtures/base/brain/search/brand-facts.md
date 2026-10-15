@@ -14,6 +14,7 @@ Invented sample data for Contoso, the invented company that owns this brain. For
 | bf-008 | Teams go live 2 to 3 weeks after the contract is signed. | https://contoso.example/setup, read 2026-09-22 | Marketing lead | 2026-09-22 |
 | bf-009 | Contoso connects to HubSpot, Salesforce, and Pipedrive through native connectors. | https://contoso.example/docs/integrations, read 2026-09-22 | Marketing lead | 2026-09-22 |
 | bf-010 | Contoso sells in the United States only. | https://contoso.example/about, read 2026-09-22 | Marketing lead | 2026-09-22 |
+| bf-011 | Contoso's own website is contoso.example. | https://contoso.example/about, read 2026-09-22 | Marketing lead | 2026-09-22 |
 
 ## Not approved
 

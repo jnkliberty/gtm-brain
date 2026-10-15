@@ -140,6 +140,27 @@ All records are invented for Contoso, the company that owns the sample brain (it
 | S13 | `deals-export.csv` D-1003, D-1007, D-1008 | D-1003 names `paid` and `unknown`; D-1007 names `unknown` twice; D-1008 has both fields empty | Attribution stays `unknown` for all three |
 | S14 | `deals-export.csv` D-1010 | `first_touch_source` is `paid` and `self_reported_source` is `chatgpt` | Counts as AI sourced because the buyer named it |
 
-Expected ledger counts after the rules in `brain/search/README.md`: 11 unique deals; 10 join to `companies.csv`; D-1001, D-1002, D-1004, D-1005, D-1010, and D-1011 are AI or search sourced (D-1005 is Closed lost); D-1003, D-1006, D-1007, and D-1008 stay `unknown`. The six AI or search sourced deals total $201,600 (D-1001 $43,200; D-1002 $57,600; D-1004 $43,200; D-1005 $14,400; D-1010 $14,400; D-1011 $28,800). The four `unknown` deals total $100,800. D-1009 is the one gap and stays out of both sets.
+Expected ledger counts across the whole export, after the rules in `skills/mention-to-deal-ledger/SKILL.md`: 11 unique deals; 10 join to `companies.csv`; D-1009 is the one gap and stays out of every bucket. The ledger splits sourced deals into `ai` and `search`:
+
+| Bucket | Deals | Arithmetic | Amount |
+| --- | --- | --- | --- |
+| `ai` | D-1002 (`chatgpt`), D-1004 (`perplexity`), D-1010 (`chatgpt`), D-1011 (`chatgpt`) | 57,600 + 43,200 + 14,400 + 28,800 | $144,000 |
+| `search` | D-1001 (`organic-search`), D-1005 (`organic-search`, Closed lost) | 43,200 + 14,400 | $57,600 |
+| `unknown` | D-1003, D-1006, D-1007, D-1008 | 28,800 + 43,200 + 14,400 + 14,400 | $100,800 |
+
+`ai` by engine: `chatgpt` 3 deals ($100,800: 57,600 + 14,400 + 28,800), `perplexity` 1 deal ($43,200). The old combined AI or search total is $201,600 (144,000 + 57,600), so the split loses nothing. 4 + 2 + 4 = 10 joined deals, plus 1 gap = 11 unique deals. A bare `paid` (D-1003, D-1010) does not name search.
+
+Expected ledger by month (deals by `created_date`; D-1004 uses its later row, Closed won $43,200):
+
+| Month | `ai` | `search` | `unknown` | Gaps | Reconciliation |
+| --- | --- | --- | --- | --- | --- |
+| 2026-06 | D-1002 (`chatgpt`, $57,600 Closed won) | D-1001 ($43,200 Closed won) | none | none | 1 + 1 + 0 + 0 = 2 |
+| 2026-07 | D-1004 (`perplexity`, $43,200 Closed won) | none | D-1003 ($28,800 Closed won) | none | 1 + 0 + 1 + 0 = 2 |
+| 2026-08 | none | D-1005 ($14,400 Closed lost) | D-1006 ($43,200), D-1007 ($14,400), D-1008 ($14,400): $72,000 open | none | 0 + 1 + 3 + 0 = 4 |
+| 2026-09 | D-1010 ($14,400 open), D-1011 ($28,800 open): both `chatgpt`, $43,200 | none | none | D-1009 | 2 + 0 + 0 + 1 = 3 |
+
+2026-09 mentions: ChatGPT 2026-09-14 is 3 of 8 (bq-001, bq-002, bq-005); Perplexity 2026-09-14 is 5 of 8 (bq-001, bq-002, bq-003, bq-005, bq-006); ChatGPT 2026-09-21 is 5 of 8 (bq-001, bq-002, bq-004, bq-005, plus bq-008, miscoded `no`). Answers citing `contoso.example` (`bf-011`): 3, 5, and 4 for those three runs. 2026-09 `ai-referral` (weeks starting 09-07, 09-14, 09-21; the 09-28 week has no rows): `/pricing` 15 + 22 + 31 = 68 sessions and 1 + 2 + 3 = 6 conversions; `/setup` 8 + 11 = 19 sessions and 1 + 1 = 2 conversions (the 09-07 row of 6 sessions and 9 conversions is impossible and left out); `/compare/relaymark` 5 + 9 = 14 sessions and 0 + 1 = 1 conversion.
+
+Partial ledgers: a run with `deals-export.csv` removed is `(partial)` with every deal cell `gap`; a run for a month with no panel-run file (for example 2026-10) is `(partial)` with the mention and citation cells `gap`.
 
 Accurate answers that must raise no finding: `bq-001` and `bq-002` in the first ChatGPT run, `bq-001` and `bq-002` in the Perplexity run, `bq-002` and `bq-005` in the second ChatGPT run.

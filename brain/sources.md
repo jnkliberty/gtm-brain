@@ -37,7 +37,8 @@ The snapshot date of `brain/crm-export/` is the read date of every value taken f
 | Signals on accounts | `brain/signals/` | Marketing lead | File read | no limit | 2026-09-24 |
 | Decisions and verdicts | `brain/decisions/` | The person who gave the verdict | File read | no limit | 2026-09-24 |
 | Approved buyer questions | `brain/search/questions.md` | Marketing lead | File read; a person edits it after approving a proposal | no limit | 2026-09-28 |
-| Approved company facts | `brain/search/brand-facts.md` | Marketing lead | File read | no limit | 2026-09-28 |
+| Approved company facts, except price, plan, and contract term | `brain/search/brand-facts.md` | Marketing lead | File read | no limit | 2026-09-28 |
+| Approved company facts that name a price, plan, or contract term | `brain/search/brand-facts.md` | Marketing lead | File read; each fact is dated by the read date in its `Evidence` column, the same 90-day limit as competitor facts | 90 | 2026-09-28 |
 | Customer proof points | `brain/proof.md` | Marketing lead | File read; use a row only when its `May publish` is `yes` | no limit | 2026-09-28 |
 | Competitor facts | `brain/search/competitors.md` | Marketing lead | File read; each row is dated by its `Checked on` column | 90 | 2026-09-28 |
 | Buyer reviews | Review sites | Marketing lead | `brain/search/reviews.csv`, a copy | 90 | 2026-09-28 |
