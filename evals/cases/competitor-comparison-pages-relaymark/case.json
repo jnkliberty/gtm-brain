@@ -14,7 +14,8 @@
         "^\\W*Owner:[^\\n]*Dana Reyes",
         "^\\W*Review:[^\\n]*quarterly",
         "Not legal advice",
-        "^\\W*Rows where the competitor wins:[^\\n]*(?:pric|cost|seat)",
+        "^\\W*Rows where the competitor wins:[^\\n]*(?:month-to-month|minimum term|contract term|\\bcf-006\\b)",
+        "\\bbf-007\\b[^\\n]*\\bcf-006\\b|\\bcf-006\\b[^\\n]*\\bbf-007\\b",
         "\\bbf-007\\b[^\\n]*\\bcf-001\\b|\\bcf-001\\b[^\\n]*\\bbf-007\\b",
         "\\bbf-008\\b[^\\n]*\\bcf-002\\b|\\bcf-002\\b[^\\n]*\\bbf-008\\b",
         "\\$95 per seat[^\\n]*as of 2026-09-15",
@@ -31,9 +32,10 @@
         "^### Table\\s*\\n(?:(?!###)[^\\n]*\\n)*?[^\\n]*SOC 2",
         "^### Table\\s*\\n(?:(?!###)[^\\n]*\\n)*?[^\\n]*Ridgeway",
         "^### Outline\\s*\\n(?:(?!##)[^\\n]*\\n)*?[^\\n]*SOC 2",
-        "^### Outline\\s*\\n(?:(?!##)[^\\n]*\\n)*?[^\\n]*\\bpf-003\\b",
+        "^### Outline\\s*\\n(?:(?!##)[^\\n]*\\n)*?(?![^\\n]*\\bnot (?:publishable|used|approved)\\b)[^\\n]*\\bpf-003\\b",
         "not ready: no owner",
-        "not ready: no approved question"
+        "not ready: no approved question",
+        "^\\W*Rows where the competitor wins:\\s*none"
       ]
     },
     "output_has": [

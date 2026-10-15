@@ -9,6 +9,7 @@ Invented sample data. The competitors of Contoso are fictional. Format: `brain/s
 | cf-003 | Pipelane | Requires a 24-month minimum term. | https://pipelane.example/terms | 2026-09-15 | Marketing lead |
 | cf-004 | Pipelane | Supports Microsoft Dynamics through a paid add-on. | https://pipelane.example/docs | 2026-09-15 | Marketing lead |
 | cf-005 | Tessel Works | Serves Salesforce teams only. | https://tesselworks.example/customers | 2026-09-15 | Marketing lead |
+| cf-006 | Relaymark | Offers month-to-month plans with no minimum term. | https://relaymark.example/pricing | 2026-09-15 | Marketing lead |
 
 ## Gaps
 
