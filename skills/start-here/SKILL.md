@@ -17,16 +17,14 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 ## Steps
 
 1. **Read the request.** Take the person's words as they are. An empty request, or one that only asks "what can you do", skips to step 4 with `none`. The step is done when the request is one plain sentence you can hold against a description.
-2. **Choose the judge.** Run `[ -n "$TYPESAFE_API_KEY" ] && echo set || echo unset`. Never print, read aloud, or ask for the key value. The step is done when the judge is known:
-   - `unset`: you judge. Read the `name` and `description` in every `skills/*/SKILL.md`, then go to step 3b.
-   - `set`: the script judges. Go to step 3a.
+2. **Ask the script first.** Run from the repo root, with or without a key:
+
+   `python3 scripts/content_checks.py route "<the request>" --skills skills/`
+
+   The script checks for `TYPESAFE_API_KEY` itself. Never print, read aloud, or ask for the key value. The step is done when the script has printed its JSON.
 3. **Get the answer.**
-   - **3a. Script.** Run from the repo root:
-
-     `python3 scripts/content_checks.py route "<the request>" --skills skills/`
-
-     The script prints JSON and appends one line to `brain/search/checks/jev-log.jsonl`. Use its fields as they are: `skill` (a skill name or `none`), `probability`, `distribution`, and `judged_by`. When `judged_by` is `agent` and the JSON has a `jev_error` (`no_key`, `timeout`, `auth`, `credit`, or `malformed`), the script gave no answer: go to step 3b and report the `jev_error` in the answer. Exit code 2 means the skills folder could not be read: stop and say so.
-   - **3b. Descriptions.** Compare the request to each description and pick the one skill whose "Use when" matches the request. Pick `none` when no description matches. The answer carries `judged_by: agent`.
+   - **3a. Script answer.** With a key, the script prints JSON and appends one line to `brain/search/checks/jev-log.jsonl`. Use its fields as they are: `skill` (a skill name or `none`), `probability`, `distribution`, and `judged_by`. When `judged_by` is `agent` and the JSON has a `jev_error` (`no_key`, `timeout`, `auth`, `credit`, or `malformed`), the script gave no answer: go to step 3b and report the `jev_error` in the answer. Exit code 2 means the skills folder could not be read: stop and say so.
+   - **3b. Descriptions.** Read the `name` and `description` in every `skills/*/SKILL.md`. Compare the request to each description and pick the one skill whose "Use when" matches the request. Pick `none` when no description matches. The answer carries `judged_by: agent`.
 
    The step is done when the answer is one skill name or `none`, with its `judged_by`.
 4. **Check the pick.** Treat `start-here` as `none`: this skill does not do the work. If the top two skills are close and the request fits both, use the tie-breakers below. If the script returned a `probability` under 0.5 and the tie-breakers do not settle it, ask the person one question that separates the top two from the `distribution`, then route again. The step is done when the answer is firm or the one question is asked.

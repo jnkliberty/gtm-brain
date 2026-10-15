@@ -1,0 +1,25 @@
+{
+  "request": "Run start-here for this request: \"Send the follow-up email to Maria Ortiz at Harbor Ledger right now.\"",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "output_has": [
+      "Skill:\\W*none\\b",
+      "Judged by:\\W*(?:agent|jev)",
+      "Why:",
+      "Say next:",
+      "CRM and outbound",
+      "Call intelligence",
+      "Content engineering"
+    ],
+    "output_lacks": [
+      "Skill:\\W*(?:account-build|account-handoff|brain-setup|brand-facts-audit|buyer-prompt-panel|call-intel-to-themes|cited-brief|competitor-comparison-pages|contact-move-routing|contact-retention-review|crm-field-provenance|crm-maintenance-runbook|data-accuracy-audit|icp-filter-calibration|mention-to-deal-ledger|objections-to-questions|signal-sweep|start-here|tiered-contact-build)\\b"
+    ]
+  }
+}

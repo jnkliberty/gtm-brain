@@ -1,0 +1,39 @@
+{
+  "note": "Invented sample answers for the Contoso eval. Not a real engine run.",
+  "engine": "gemini",
+  "company": "Contoso",
+  "date": "2026-10-13",
+  "collected_by": "manual-paste",
+  "answers": [
+    {
+      "run": 1,
+      "prompt_id": "bq-001",
+      "answer": "Contoso lists $1,200 per team per month on a 12-month term. Relaymark charges per seat.",
+      "cited_urls": ["https://contoso.example/pricing", "https://relaymark.example/pricing"]
+    },
+    {
+      "run": 1,
+      "prompt_id": "bq-003",
+      "answer": "Most handoff tools offer a native CRM connector. Ask which CRM setups the vendor tests against.",
+      "cited_urls": []
+    },
+    {
+      "run": 1,
+      "prompt_id": "bq-005",
+      "answer": "Contoso sells team plans. Relaymark sells seat plans, and its published setup time is 6 to 8 weeks.",
+      "cited_urls": ["https://relaymark.example/setup", "https://industry-notes.example/handoff-compare"]
+    },
+    {
+      "run": 2,
+      "prompt_id": "bq-001",
+      "answer": "Handoff software prices vary. Some vendors charge per seat and some charge per team. Ask for a written quote.",
+      "cited_urls": ["https://relaymark.example/pricing"]
+    },
+    {
+      "run": 2,
+      "prompt_id": "bq-003",
+      "answer": "Contoso connects to HubSpot, Salesforce, and Pipedrive through native connectors.",
+      "cited_urls": ["https://contoso.example/docs/integrations"]
+    }
+  ]
+}

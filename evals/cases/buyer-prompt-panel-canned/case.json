@@ -1,0 +1,47 @@
+{
+  "request": "Run buyer-prompt-panel. Use the pasted-answers path: the saved answers are in inbox/gemini-pasted.json, the engine is Gemini, and the company is Contoso. Do not use API keys. Build the proposal from the two new Gemini run files only.",
+  "today": "2026-10-13",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/",
+      "brain/search/panel-runs/"
+    ],
+    "no_status_files": [
+      "brain/search/panel-runs/"
+    ],
+    "new_file_has": {
+      "brain/search/panel-runs/": [
+        "^run_id,engine,prompt_id,prompt,answer,cited_urls,mentions_company,collected_by\\r?$",
+        "^2026-10-13-gemini-canned-run1,gemini,bq-001,How much does handoff software cost for a B2B sales team\\?,.*,yes,manual-paste\\r?$",
+        "^2026-10-13-gemini-canned-run1,gemini,bq-003,.*,no,manual-paste\\r?$",
+        "^2026-10-13-gemini-canned-run1,gemini,bq-005,.*,yes,manual-paste\\r?$",
+        "^2026-10-13-gemini-canned-run2,gemini,bq-001,.*,no,manual-paste\\r?$",
+        "^2026-10-13-gemini-canned-run2,gemini,bq-003,.*,yes,manual-paste\\r?$"
+      ],
+      "brain/search/proposals/": [
+        "^skill:\\s*buyer-prompt-panel",
+        "\\bbq-001\\b[^\\n]*\\b1 of 2\\b",
+        "\\bbq-003\\b[^\\n]*\\b1 of 2\\b",
+        "\\bbq-005\\b[^\\n]*\\b1 of 1\\b",
+        "Relaymark",
+        "manual-paste",
+        "brand-facts-audit",
+        "2026-10-13-gemini-canned-run1",
+        "2026-10-13-gemini-canned-run2",
+        "\\bagent\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bbq-002\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bbq-008\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)"
+      ]
+    },
+    "output_has": [
+      "\\bbq-001\\b",
+      "\\b1 of 2\\b"
+    ]
+  }
+}
