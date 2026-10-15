@@ -15,6 +15,6 @@
     "available_actions": ["answer each question with a probability that the answer is yes"],
     "previous_actions": []
   },
-  "question": "Does the draft in evidence answer this buyer question: \"Can handoff software connect to my CRM without copying notes by hand?\" Answer yes only when the draft states an answer to it. A draft that only names the topic does not answer it. If the draft text is missing, cut off, or lacks what is needed to tell, answer with a middle value.",
+  "question": "Does the draft in evidence answer this buyer question: \"Can handoff software connect to my CRM without copying notes by hand?\" Answer yes only when the draft states an answer to it. A draft that only names the topic does not answer it. If the draft text is missing, cut off, or lacks what is needed to tell, answer with a middle value. These drafts are the company's own pages, so a draft answers a buyer question when it gives the answer for the company's own product.",
   "expected": true
 }

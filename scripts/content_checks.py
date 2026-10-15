@@ -44,7 +44,9 @@ LOW_BAR = 0.3
 MAX_DRAFT_CHARS = 30000
 RULE_REPEAT = "rule-repeat-phrase"
 RULE_BANNED = "rule-banned-phrase"
+RULE_LONG = "rule-long-sentence"
 REPEAT_LIMIT = 3
+SENTENCE_LIMIT = 25
 STATE_FIELDS = ("goal", "evidence", "rules", "available_actions", "previous_actions")
 SURFACES = ("questions", "voice", "route")
 KINDS = ("clear", "ambiguous", "no_valid_answer", "misleading_state")
@@ -66,7 +68,9 @@ QUESTION_TEMPLATE = (
     'Does the draft in evidence answer this buyer question: "{text}" '
     "Answer yes only when the draft states an answer to it. A draft that only "
     "names the topic does not answer it. If the draft text is missing, cut off, "
-    "or lacks what is needed to tell, answer with a middle value."
+    "or lacks what is needed to tell, answer with a middle value. These drafts "
+    "are the company's own pages, so a draft answers a buyer question when it "
+    "gives the answer for the company's own product."
 )
 VOICE_TEMPLATE = (
     "Judge this voice rule against the draft in evidence: {text} "
@@ -152,6 +156,18 @@ def repeated_phrases(text):
         {"phrase": " ".join(gram), "count": count, "rule": RULE_REPEAT}
         for gram, count in kept
     ]
+
+
+def long_sentences(text):
+    """Sentences of more than 25 words, by line (rule-long-sentence).
+
+    Sentences and words are counted the way repeated_phrases counts them."""
+    hits = []
+    for number, line in enumerate(text.splitlines(), start=1):
+        for tokens in phrase_segments(line):
+            if len(tokens) > SENTENCE_LIMIT:
+                hits.append({"line": number, "words": len(tokens), "rule": RULE_LONG})
+    return hits
 
 
 def parse_banned(text):
@@ -480,6 +496,7 @@ def run_check(text, name, questions, voice, banned, settings, opener=None):
         "draft": name,
         "checked_at": datetime.date.today().isoformat(),
         "repeated_phrases": repeated_phrases(text),
+        "long_sentences": long_sentences(text),
         "banned_hits": banned_hits(text, banned),
         "questions": [],
         "voice": [],
@@ -521,6 +538,7 @@ def summarize(report):
 
     lines = [
         f"repeated phrases: {len(report['repeated_phrases'])}",
+        f"long sentences: {len(report['long_sentences'])}",
         f"banned phrase hits: {len(report['banned_hits'])}",
     ]
     for label, key in (("questions", "questions"), ("voice rules", "voice")):
@@ -960,6 +978,18 @@ def test_repeated_phrases():
     assert all(r["rule"] == RULE_REPEAT for r in repeated_phrases(long_text))
 
 
+def test_long_sentences():
+    twenty_five = " ".join(["word"] * 25)
+    twenty_six = " ".join(["word"] * 26)
+    text = f"Short one.\n{twenty_five}.\n**{twenty_six}!** Short again.\n\n{twenty_six} and {twenty_six}"
+    hits = long_sentences(text)
+    assert hits == [{"line": 3, "words": 26, "rule": RULE_LONG}, {"line": 5, "words": 53, "rule": RULE_LONG}], hits
+    assert long_sentences("") == [] and long_sentences(twenty_five) == []
+    curly = chr(0x2019)
+    assert long_sentences(" ".join([f"don{curly}t"] * 26))[0]["words"] == 26
+    assert long_sentences(f"{twenty_five}; {twenty_five}: {twenty_five}") == [], "colon and semicolon end a sentence"
+
+
 def test_banned_hits():
     curly = chr(0x2019)
     text = f"Line one dive into it.\nclean line\nIn today{curly}s fast-paced world, DIVE INTO more.\ndive intolerance is fine"
@@ -1193,7 +1223,7 @@ def test_no_network_guard():
 
 
 TESTS = [
-    test_repeated_phrases, test_banned_hits, test_parsers, test_thresholds, test_no_key,
+    test_repeated_phrases, test_long_sentences, test_banned_hits, test_parsers, test_thresholds, test_no_key,
     test_timeout_retries_once, test_auth_and_credit, test_malformed, test_request_shape_and_bands,
     test_check_command_and_log, test_unreadable_draft_exits_two, test_route, test_label_composition,
     test_label_grading, test_labels_command, test_no_network_guard,

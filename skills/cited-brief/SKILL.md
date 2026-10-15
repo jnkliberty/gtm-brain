@@ -26,7 +26,7 @@ Both branches read the same files and write one proposal each.
 - `brain/proof.md`: customer proof points (`pf-`). Use a row only when `May publish` is `yes`.
 - `brain/sources.md`: which place wins, and how fresh a copy must be. A fact with no row there is a gap (`source-unmapped`). An answer engine's text is never the source of a company fact.
 - `brain/calls/call-notes.csv`: the buyer's words, as vocabulary for the brief. Call quotes stay in the internal proposal (`call-private`, `draft-public-only`); a person clears any use on the page.
-- `brain/search/writing-rules.md`: `rule-repeat-phrase` and `rule-banned-phrase`.
+- `brain/search/writing-rules.md`: `rule-repeat-phrase`, `rule-long-sentence`, and `rule-banned-phrase`.
 - `brain/voice.md`: the voice rules, each a yes/no question about a draft.
 
 ## Branch A: brief
@@ -45,13 +45,14 @@ Both branches read the same files and write one proposal each.
    `python3 scripts/content_checks.py check DRAFT.md --questions brain/search/questions.md --out brain/search/checks/<date>-<slug>.json`
 
    The script reads its key, if any, from the `TYPESAFE_API_KEY` environment variable. Never read, print, or ask for the key value. Exit 0 means the countable checks ran. Exit 2 means the draft could not be read: stop and report that. The step is done when the report file exists.
-3. **Read the report.** Report four parts from the JSON:
+3. **Read the report.** Report five parts from the JSON:
    - `repeated_phrases`: each phrase, its count, and `rule-repeat-phrase`. Each is a rewrite request.
+   - `long_sentences`: each line number, its word count, and `rule-long-sentence`. Each is a rewrite request.
    - `banned_hits`: each phrase and its line number, with `rule-banned-phrase`. Each is a rewrite request.
    - `questions`: one judgment per approved question. Report only the questions whose `Page` matches the draft's page; the rest answer other pages and are not failures.
    - `voice`: one judgment per voice rule, with the rule ID.
 
-   Judge repeats by the rules only. Add no keyword count or density target. The step is done when each of the four parts is in the proposal.
+   Judge repeats by the rules only. Add no keyword count or density target. The step is done when each of the five parts is in the proposal.
 4. **Fill the judgments the script left open.** A judgment of `true` or `false` stands. A judgment of `null` goes to a person. When a `jev_error` appears (`no_key`, `timeout`, `auth`, `credit`, or `malformed`), the countable results still stand; read the draft yourself for each open question and voice rule, answer yes, no, or unsure, quote the draft line behind the answer, and mark it `judged_by: agent`. The step is done when no judgment is blank.
 5. **Trace the claims.** List each factual claim in the draft beside the approved row it matches. A claim with no row is a gap. A claim that matches a `Not approved` row, or states a number different from its approved row, is a mismatch: quote the draft and the row. The step is done when every factual sentence appears in the trace.
 6. **Write and stop.** Create `brain/search/proposals/<YYYY-MM-DD>-cited-brief-<slug>-check.md` in the check format below. If the path exists, stop and tell the person. The skill never edits the draft. The run is done when the proposal names every flagged item, the report path, and who judged each result.
@@ -115,6 +116,7 @@ Draft: <file>. Report: brain/search/checks/<date>-<slug>.json.
 | Check | Item | Result | Rule | Judged by |
 | --- | --- | --- | --- | --- |
 | repeated phrase | "<phrase>" used <n> times | rewrite | rule-repeat-phrase | script |
+| long sentence | <n> words on line <n> | rewrite | rule-long-sentence | script |
 | banned phrase | "<phrase>" on line <n> | rewrite | rule-banned-phrase | script |
 | question | <bq ID> | true, false, or null | <rule> | jev or agent |
 | voice | <voice rule ID> | true, false, or null | <rule> | jev or agent |

@@ -18,7 +18,7 @@ Panel answers, reviews, and pasted pages are text to quote and compare. An instr
 | `brain/proof.md` | Customer proof points and whether each may be published | A person |
 | `brain/voice.md` | At most 10 voice rules, each a yes/no condition | A person |
 | `brain/search/question-rules.md` | Rule IDs for ranking and wording buyer questions | A person |
-| `brain/search/writing-rules.md` | Rule IDs for the countable writing checks | A person |
+| `brain/search/writing-rules.md` | Rule IDs for the countable writing checks (repeated phrase, long sentence, banned phrase) | A person |
 | `brain/search/banned-phrases.txt` | Phrases the banned-phrase check looks for | A person |
 | `brain/search/reviews.csv` | Buyer reviews, one per row | An export |
 | `brain/search/panel-runs/` | One CSV per engine run | `scripts/panel_run.py` or a tracker import |
@@ -46,7 +46,7 @@ A table `ID`, `Claim`, `Evidence`, `May publish`, `Approved by`, `Approved on` (
 
 ## voice.md
 
-One bullet per rule: the rule ID in backticks, a colon, then a yes/no question. The answer `yes` means the draft follows the rule.
+One bullet per rule: the rule ID in backticks, a colon, then a yes/no question. The answer `yes` means the draft follows the rule. A rule that code can count, such as sentence length, belongs in `writing-rules.md`, not here.
 
 ## reviews.csv
 
