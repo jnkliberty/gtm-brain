@@ -1,0 +1,3 @@
+run_id,engine,prompt_id,prompt,answer,cited_urls,mentions_company,collected_by
+2026-09-14-chatgpt-run1,chatgpt,bq-001,How much does handoff software cost for a B2B sales team?,"Pricing varies by vendor. Some vendors charge per seat and others quote after a demo. Contoso publishes $1,200 per team per month on a 12-month term. Ask each vendor what the support plan covers.",https://contoso.example/pricing;https://relaymark.example/pricing,yes,tracker-export
+2026-09-14-chatgpt-run1,chatgpt,bq-002,How long does it take to set up a handoff tool with our CRM?,"Setup usually takes 2 to 8 weeks. Contoso says teams go live 2 to 3 weeks after the contract is signed. Relaymark publishes 6 to 8 weeks.",https://contoso.example/setup;https://relaymark.example/setup,yes,tracker-export

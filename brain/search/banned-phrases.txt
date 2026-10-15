@@ -1,0 +1,46 @@
+# Banned phrases (invented starter list for GTM Brain).
+# One phrase per line. A phrase matches case-insensitively, on word boundaries.
+# A line that starts with # is a comment. Replace this list with your own.
+in today's fast-paced world
+in today's digital landscape
+it is important to note
+it's worth noting
+in order to
+let's dive in
+dive into
+delve into
+unlock the power
+unlock the potential
+take it to the next level
+cutting-edge
+state-of-the-art
+best-in-class
+world-class
+industry-leading
+one-stop shop
+end-to-end solution
+robust solution
+holistic approach
+seamlessly integrates
+seamless experience
+a testament to
+at the end of the day
+in the realm of
+navigate the landscape
+ever-evolving landscape
+look no further
+whether you are a
+revolutionize the way
+transform your business
+elevate your
+empower your team
+streamline your workflow
+supercharge your
+pave the way
+paving the way
+rich tapestry
+plays a pivotal role
+plays a crucial role
+stands as a testament
+more than just
+not just a

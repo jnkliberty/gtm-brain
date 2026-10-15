@@ -24,7 +24,8 @@ The other skills depend on these. Keep them exactly; the team changes only what 
 - `brain/icp.md`: one line per in or out criterion, and the target range as two numbers.
 - `brain/stages.md`: the four handoff rules, in this order, with these IDs and decisions: `rule-skip` (skip), `rule-route-to-owner` (route to owner), `rule-act-now` (act now), `rule-nurture` (nurture). `rule-skip` and `rule-nurture` keep their conditions as written. `rule-act-now` always keeps three conditions: the signal's `relevanceVerdict` is `relevant`, the current signal matches one play's trigger in `brain/plays.md`, and the handoff budget has room. The Handoff budget section and `rule-handoff-budget` stay; the team sets the number (`q-budget`). The team sets the stage names (`q-stages`), the conditions of `rule-route-to-owner` (`q-sales-owned`), and the other conditions of `rule-act-now` (`q-act-now`).
 - `brain/plays.md`: each play is a `##` heading that is its ID (lowercase words joined by hyphens) with **Trigger**, **Angle**, and **Offer** bullets, most important first. The six draft rule IDs stay: `draft-length`, `draft-unique-fact`, `draft-ask`, `draft-public-only`, `draft-plain`, `draft-recipient`.
-- `brain/sources.md`: the sections Surfaces, Where to look, and Conflict order. The six source rules stay as written, in order.
+- `brain/sources.md`: the sections Surfaces, Where to look, and Conflict order. The six source rules stay as written, in order. The search rows in Where to look (buyer questions, company facts, proof points, competitor facts, reviews, AI answers, site traffic, deals with source fields) stay; the team sets their owners, systems, and day counts through `q-owners`, `q-fresh`, `q-search-data`, and `q-engines`.
+- `q-brand-facts` fills no row in `brain/sources.md`. Record its answer word for word under Answers and list `brain/search/brand-facts.md` among the follow-ups. The skill never writes that file; the person edits it.
 
 ## Questions
 
@@ -50,6 +51,9 @@ Ask one question at a time. When it helps, show what the current file says as an
 - `q-owners`: For each row in "Where to look", where does the truth live, and who owns it?
 - `q-export`: How do skills read your CRM: an export in the `brain/crm-export/README.md` format? On what date was it taken?
 - `q-fresh`: For each row in "Where to look" with a day count under "Fresh for", how many days can a copy age before skills stop proposing from it? `keep` keeps the number shown.
+- `q-search-data`: Which tool produces your site analytics export, and which CRM fields hold a deal's first-touch source and the source the buyer reported? On what date was each export taken?
+- `q-engines`: Which AI answer engines do you check, and do you collect their answers by API, tracker export, or pasted text? Name the environment variables that hold your keys. Never give a key value.
+- `q-brand-facts`: Which facts about your company may an AI answer repeat as true? Give each fact with the public page that states it.
 
 ## Steps
 

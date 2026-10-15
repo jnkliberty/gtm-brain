@@ -1,0 +1,62 @@
+{
+  "request": "Run objections-to-questions for all topics. Use the call notes, the call themes, and the reviews. The buyer questions in brain/search/questions.md are already approved; propose only what they do not cover.",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*objections-to-questions",
+        "^## Already approved\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bbq-003\\b",
+        "\\bbq-0(?:09|10)\\b[^\\n]*\\bR-012\\b",
+        "\\bbq-0(?:09|10)\\b[^\\n]*SOC 2",
+        "new page",
+        "thin evidence",
+        "\\bna-001\\b",
+        "qrule-rank-sources",
+        "qrule-buyer-words",
+        "qrule-page-fit",
+        "source-export-copy",
+        "\\bagent\\b",
+        "\\bQ001\\b",
+        "\\bQ002\\b",
+        "\\bQ003\\b",
+        "\\bQ004\\b",
+        "\\bQ005\\b",
+        "\\bQ006\\b",
+        "\\bQ007\\b",
+        "\\bQ008\\b",
+        "\\bQ009\\b",
+        "\\bR-001\\b",
+        "\\bR-002\\b",
+        "\\bR-003\\b",
+        "\\bR-004\\b",
+        "\\bR-005\\b",
+        "\\bR-006\\b",
+        "\\bR-007\\b",
+        "\\bR-008\\b",
+        "\\bR-009\\b",
+        "\\bR-010\\b",
+        "\\bR-011\\b",
+        "\\bR-012\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bQ002\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bR-008\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(?:\\bR-011\\b[^\\n]*\\bR-006\\b|\\bR-006\\b[^\\n]*\\bR-011\\b)",
+        "(?:\\bQ006\\b[^\\n]*\\bQ007\\b|\\bQ007\\b[^\\n]*\\bQ006\\b)",
+        "(?:\\bQ008\\b[^\\n]*\\bQ009\\b|\\bQ009\\b[^\\n]*\\bQ008\\b)"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\|\\s*\\d+\\s*\\|\\s*bq-00[1-8]\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "SOC 2",
+      "R-012"
+    ]
+  }
+}

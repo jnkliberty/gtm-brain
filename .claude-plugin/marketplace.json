@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "gtm-brain",
-  "description": "A shared memory for a marketing and sales team, kept as plain files in your own git repo.",
+  "description": "A shared memory for a marketing and sales team, with skills for CRM, outbound, and content engineering.",
   "owner": {
     "name": "Julian Alvarado",
     "url": "https://github.com/jnkliberty"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "gtm-brain",
-      "description": "Skills for a marketing and sales brain: account handoff, setup, CRM builds and audits.",
+      "description": "A shared memory for a marketing and sales team, with skills for CRM, outbound, and content engineering.",
       "source": "./",
       "category": "productivity"
     }

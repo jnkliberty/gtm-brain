@@ -2,10 +2,12 @@
 """Run the golden eval cases headless and check each result on disk.
 
 Usage: python3 evals/run.py [case ...] [--model M] [--jobs N] [--keep]
+       python3 evals/run.py --sentinel     # prove private records never reach an eval copy
 """
 import argparse
 import concurrent.futures
 import json
+import os
 import pathlib
 import re
 import shutil
@@ -16,19 +18,41 @@ import tempfile
 REPO = pathlib.Path(__file__).resolve().parent.parent
 CASES = REPO / "evals" / "cases"
 FIXTURES = REPO / "evals" / "fixtures"
-TOOLS = "Read,Glob,Grep,LS,Write,Edit"
+# Two narrow script permissions: the real check script, and panel_run.py in its no-network canned mode.
+TOOLS = ",".join(["Read", "Glob", "Grep", "LS", "Write", "Edit",
+                  "Bash(python3 scripts/content_checks.py:*)", "Bash(python3 scripts/panel_run.py --canned:*)"])
+# Rule files in brain/search/ belong to the repo; every other file there is the user's own record.
+SEARCH_RULES = ("README.md", "question-rules.md", "writing-rules.md", "banned-phrases.txt")
+SENTINEL = "PRIVATE-SENTINEL"
 # Claude Code refuses writes inside the loaded plugin and under the system temp folder,
 # so the plugin loads from the repo and each case writes to its own copy here.
 RUNS = pathlib.Path.home() / ".cache" / "gtm-brain-evals"
 
 
-def prepare(case, work):
-    shutil.copytree(REPO, work, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests"))
+def clear_private(work):
     # Records come from fixed fixtures; only the rules and skills are yours. Your own
-    # accounts, signals, decisions, and export would change what each case decides.
+    # accounts, signals, decisions, search records, themes, call notes, CRM exports,
+    # voice, and proof would change what each case decides, so none reach the copy.
+    brain = work / "brain"
     for folder in ("accounts", "signals", "decisions"):
-        for old in (work / "brain" / folder).glob("*.md"):
+        for old in (brain / folder).glob("*.md"):
             old.unlink()
+    for old in (brain / "search").rglob("*"):
+        if old.is_file() and not (old.parent == brain / "search" and old.name in SEARCH_RULES):
+            old.unlink()
+    for old in (brain / "themes").rglob("*"):
+        if old.is_file():
+            old.unlink()
+    for folder in ("calls", "crm-export"):
+        for old in (brain / folder).glob("*.csv"):
+            old.unlink()
+    for name in ("voice.md", "proof.md"):
+        (brain / name).unlink(missing_ok=True)
+
+
+def prepare(case, work):
+    shutil.copytree(REPO, work, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
+    clear_private(work)
     for name in ["base"] + case.get("fixtures", []):
         shutil.copytree(FIXTURES / name, work, dirs_exist_ok=True)
     own = CASES / case["id"] / "files"
@@ -188,7 +212,7 @@ def run(case, model, keep):
             ["claude", "-p", prompt, "--model", model, "--plugin-dir", str(REPO),
              "--allowedTools", TOOLS, "--permission-mode", "acceptEdits",
              "--setting-sources", "project", "--strict-mcp-config", "--no-session-persistence"],
-            cwd=work, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=case.get("timeout", 900))
+            cwd=work, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=case.get("timeout", 900))
         (tmp / "output.txt").write_text(proc.stdout + "\n--- stderr ---\n" + proc.stderr)
         if proc.returncode != 0:
             return case["id"], [f"claude exited {proc.returncode}: {proc.stderr.strip()[-300:]}"], tmp
@@ -200,13 +224,114 @@ def run(case, model, keep):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+def plant_file(path, text, made, saved):
+    """Append text to a planted file. A file that exists is saved first; only a file this run creates goes in made."""
+    if path.exists():
+        saved[path] = old = path.read_bytes()
+        path.write_bytes(old + (b"" if not old or old.endswith(b"\n") else b"\n") + text.encode())
+    else:
+        made.append(path)
+        path.write_text(text)
+
+
+def make_folder(folder, dirs):
+    """Create folder and record every missing ancestor this call creates, deepest first, to remove later."""
+    missing, probe = [], folder
+    while not probe.exists():
+        missing.append(probe)
+        probe = probe.parent
+    folder.mkdir(parents=True, exist_ok=True)
+    dirs.extend(missing)
+
+
+def plant(root, made, saved, dirs):
+    """Put the sentinel in every private evidence location; record what to undo in made, saved, and dirs."""
+    note = f"{SENTINEL}\n"
+    for rel in ("brain/search/panel-runs", "brain/themes"):
+        make_folder(root / rel, dirs)
+        plant_file(root / rel / f"{SENTINEL}.md", note, made, saved)
+    for rel, text in (("brain/calls/call-notes.csv", f"{SENTINEL},{SENTINEL},{SENTINEL}\n"),
+                      ("brain/crm-export/contacts.csv", f"{SENTINEL},{SENTINEL}@example.invalid,{SENTINEL}\n"),
+                      ("brain/voice.md", f"\n{note}"), ("brain/proof.md", f"\n{note}")):
+        make_folder((root / rel).parent, dirs)
+        plant_file(root / rel, text, made, saved)
+
+
+def undo(made, saved, dirs):
+    """Delete the files this run created, restore the saved ones byte for byte, drop folders it created."""
+    for p in made:
+        p.unlink(missing_ok=True)
+    for p, old in saved.items():
+        p.write_bytes(old)
+    for d in dirs:
+        try:
+            d.rmdir()
+        except OSError:
+            pass
+
+
+def roundtrip():
+    """Plant into a throwaway folder that already holds files at the marker names. Return the failures."""
+    originals = {"brain/search/panel-runs/PRIVATE-SENTINEL.md": b"kept\n", "brain/themes/PRIVATE-SENTINEL.md": b"kept, no final newline",
+                 "brain/voice.md": b"voice rules\n"}
+    fails = []
+    with tempfile.TemporaryDirectory(dir=RUNS) as tmp:
+        root = pathlib.Path(tmp)
+        for rel, data in originals.items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_bytes(data)
+        before = {p.relative_to(root) for p in root.rglob("*")}
+        made, saved, dirs = [], {}, []
+        plant(root, made, saved, dirs)
+        if len(saved) != 3 or any(p.name == f"{SENTINEL}.md" for p in made):
+            fails.append("roundtrip: a pre-existing marker file was treated as new")
+        undo(made, saved, dirs)
+        for rel, data in originals.items():
+            if not (root / rel).is_file() or (root / rel).read_bytes() != data:
+                fails.append(f"roundtrip: {rel} was not restored byte for byte")
+        left = {p.relative_to(root) for p in root.rglob("*")} ^ before
+        fails += [f"roundtrip: {p} was left behind or removed" for p in sorted(left)]
+    return fails
+
+
+def sentinel():
+    """Plant the sentinel, run prepare() into a temp folder, and require it nowhere in the copy."""
+    made, saved, dirs = [], {}, []
+    RUNS.mkdir(parents=True, exist_ok=True)
+    fails = roundtrip()
+    tmp = pathlib.Path(tempfile.mkdtemp(prefix="sentinel-", dir=RUNS))
+    try:
+        plant(REPO, made, saved, dirs)
+        prepare({"id": "sentinel"}, tmp / "repo")
+        for p in (tmp / "repo").rglob("*"):
+            if SENTINEL in p.name or (p.is_file() and SENTINEL.encode() in p.read_bytes()):
+                fails.append(str(p.relative_to(tmp / "repo")))
+    finally:
+        undo(made, saved, dirs)
+        shutil.rmtree(tmp, ignore_errors=True)
+    for p, old in saved.items():
+        if p.read_bytes() != old:
+            fails.append(f"{p.relative_to(REPO)} was not restored")
+    for p in made + dirs:
+        if p.exists():
+            fails.append(f"{p.relative_to(REPO)} was not removed")
+    print(f"{'FAIL' if fails else 'PASS'}  sentinel: {len(made) + len(saved)} locations planted")
+    for f in fails:
+        print(f"      - {f}")
+    sys.exit(1 if fails else 0)
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--sentinel", action="store_true",
+                    help="plant a private marker in each evidence location and prove no eval copy carries it")
     ap.add_argument("cases", nargs="*")
     ap.add_argument("--model", default="claude-sonnet-5-5")
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--keep", action="store_true", help="keep each case's work folder for inspection")
     a = ap.parse_args()
+    if a.sentinel:
+        sentinel()
     cases = [json.loads(p.read_text()) | {"id": p.parent.name} for p in sorted(CASES.glob("*/case.json"))]
     unknown = set(a.cases) - {c["id"] for c in cases}
     if unknown:

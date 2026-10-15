@@ -1,0 +1,66 @@
+{
+  "request": "Run cited-brief on the draft drafts/setup-page-draft.md. The draft is for the /setup page. Check it and write the check proposal.",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/",
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "new_file_has": {
+      "brain/search/checks/": [
+        "\"draft\":\\s*\"[^\"]*drafts/setup-page-draft\\.md\"",
+        "\"phrase\":\\s*\"handoff notes\",\\s*\"count\":\\s*5,\\s*\"rule\":\\s*\"rule-repeat-phrase\"",
+        "\"line\":\\s*9,\\s*\"words\":\\s*37,\\s*\"rule\":\\s*\"rule-long-sentence\"",
+        "\"phrase\":\\s*\"seamlessly integrates\",\\s*\"line\":\\s*5,\\s*\"rule\":\\s*\"rule-banned-phrase\"",
+        "\"phrase\":\\s*\"look no further\",\\s*\"line\":\\s*11,\\s*\"rule\":\\s*\"rule-banned-phrase\"",
+        "\"id\":\\s*\"bq-001\",\\s*\"question\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"bq-002\",\\s*\"question\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-you\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-numbers\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-no-superlatives\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-name-the-thing\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-answer-first\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-active\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\"",
+        "\"id\":\\s*\"voice-say-gaps\",\\s*\"rule\":\\s*\"(?:[^\"\\\\]|\\\\.)*\",\\s*\"answered\":\\s*(?:true|false|null),\\s*\"judged_by\":\\s*\"(?:jev|agent)\""
+      ],
+      "brain/search/proposals/": [
+        "^skill:\\s*cited-brief",
+        "brain/search/checks/[^\\s|`]*\\.json",
+        "handoff notes[^\\n]*\\b5\\b",
+        "rule-repeat-phrase",
+        "(?:\\b37 words[^\\n]*line 9\\b|line 9\\b[^\\n]*\\b37 words)",
+        "rule-long-sentence",
+        "seamlessly integrates[^\\n]*\\b5\\b",
+        "look no further[^\\n]*\\b11\\b",
+        "rule-banned-phrase",
+        "\\bscript\\b",
+        "\\b(?:jev|agent)\\b",
+        "\\|\\s*[`*_]*question[`*_]*\\s*\\|\\s*[`*_]*bq-002[^|\\n]*\\|\\s*[`*_]*(?:true|yes)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-you[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-numbers[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-no-superlatives[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-name-the-thing[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-answer-first[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-active[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\|\\s*[`*_]*voice[`*_]*\\s*\\|\\s*[`*_]*voice-say-gaps[^|\\n]*\\|\\s*[`*_]*(?:true|false|yes|no|unsure|needs a person)(?![a-z])",
+        "\\bbf-008\\b",
+        "\\bbf-009\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "density[^\\n]*\\d+(?:\\.\\d+)?\\s*%",
+        "\\|\\s*[`*_]*question[`*_]*\\s*\\|\\s*[`*_]*bq-002[^|\\n]*\\|\\s*[`*_~\\s]*(?:false|null|no|unsure|open|unanswered|needs a person)(?![a-z])"
+      ]
+    },
+    "output_has": [
+      "handoff notes",
+      "seamlessly integrates",
+      "look no further"
+    ]
+  }
+}
