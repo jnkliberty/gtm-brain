@@ -89,7 +89,7 @@ A public fork remains public. Use a private repository or a private local copy b
 
 Every content skill works with no key. Add data in this order; each step makes the answers closer to what buyers see.
 
-1. **Keys.** Set an engine key in your shell environment and `python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/` asks that engine your approved questions. The optional keys are `OPENAI_API_KEY`, `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`, and `ANTHROPIC_API_KEY`. An engine without a key is listed as skipped. API answers can differ from the consumer apps.
+1. **Keys.** Set an engine key in your shell environment and `python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/ --company "<company name>"` asks that engine your approved questions. The optional keys are `OPENAI_API_KEY`, `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`, and `ANTHROPIC_API_KEY`. An engine without a key is listed as skipped. API answers can differ from the consumer apps.
 2. **Tracker imports.** Export a CSV from the answer tracker your team already uses and save it in `brain/search/panel-runs/` in the format `brain/search/README.md` defines, with `collected_by` set to `tracker-export`. The skills read it like any other panel run.
 3. **Pasted answers.** Paste an engine's answer into the chat. The `buyer-prompt-panel` skill records it as `collected_by: manual-paste`.
 

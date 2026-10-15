@@ -16,7 +16,12 @@
         "\"phrase\":\\s*\"handoff notes\",\\s*\"count\":\\s*5,\\s*\"rule\":\\s*\"rule-repeat-phrase\"",
         "\"line\":\\s*9,\\s*\"words\":\\s*37,\\s*\"rule\":\\s*\"rule-long-sentence\"",
         "\"phrase\":\\s*\"seamlessly integrates\",\\s*\"line\":\\s*5,\\s*\"rule\":\\s*\"rule-banned-phrase\"",
-        "\"phrase\":\\s*\"look no further\",\\s*\"line\":\\s*11,\\s*\"rule\":\\s*\"rule-banned-phrase\""
+        "\"phrase\":\\s*\"look no further\",\\s*\"line\":\\s*11,\\s*\"rule\":\\s*\"rule-banned-phrase\"",
+        "\"questions\":\\s*\\[[^\\]]*\"id\":\\s*\"bq-001\"",
+        "\"questions\":\\s*\\[[^\\]]*\"id\":\\s*\"bq-002\"",
+        "\"voice\":\\s*\\[[^\\]]*\"id\":\\s*\"voice-you\"",
+        "\"voice\":\\s*\\[[^\\]]*\"id\":\\s*\"voice-say-gaps\"",
+        "\"judged_by\":\\s*\"(?:jev|agent)\""
       ],
       "brain/search/proposals/": [
         "^skill:\\s*cited-brief",
@@ -29,7 +34,7 @@
         "look no further[^\\n]*\\b11\\b",
         "rule-banned-phrase",
         "\\bscript\\b",
-        "\\bagent\\b",
+        "\\b(?:jev|agent)\\b",
         "\\bbq-002\\b",
         "\\bvoice-you\\b",
         "\\bvoice-numbers\\b",
@@ -44,7 +49,8 @@
     },
     "new_file_lacks": {
       "brain/search/proposals/": [
-        "density[^\\n]*\\d+(?:\\.\\d+)?\\s*%"
+        "density[^\\n]*\\d+(?:\\.\\d+)?\\s*%",
+        "\\|\\s*question\\s*\\|\\s*`?bq-002`?\\s*\\|\\s*(?:false|null|no|unsure|open|unanswered)\\b"
       ]
     },
     "output_has": [

@@ -224,44 +224,95 @@ def run(case, model, keep):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
-def plant(root, made, saved):
-    """Put the sentinel in every private evidence location; record what to undo in made and saved."""
+def plant_file(path, text, made, saved):
+    """Append text to a planted file. A file that exists is saved first; only a file this run creates goes in made."""
+    if path.exists():
+        saved[path] = old = path.read_bytes()
+        path.write_bytes(old + (b"" if not old or old.endswith(b"\n") else b"\n") + text.encode())
+    else:
+        made.append(path)
+        path.write_text(text)
+
+
+def make_folder(folder, dirs):
+    """Create folder and record every missing ancestor this call creates, deepest first, to remove later."""
+    missing, probe = [], folder
+    while not probe.exists():
+        missing.append(probe)
+        probe = probe.parent
+    folder.mkdir(parents=True, exist_ok=True)
+    dirs.extend(missing)
+
+
+def plant(root, made, saved, dirs):
+    """Put the sentinel in every private evidence location; record what to undo in made, saved, and dirs."""
     note = f"{SENTINEL}\n"
     for rel in ("brain/search/panel-runs", "brain/themes"):
-        (root / rel).mkdir(parents=True, exist_ok=True)
-        path = root / rel / f"{SENTINEL}.md"
-        path.write_text(note)
-        made.append(path)
+        make_folder(root / rel, dirs)
+        plant_file(root / rel / f"{SENTINEL}.md", note, made, saved)
     for rel, text in (("brain/calls/call-notes.csv", f"{SENTINEL},{SENTINEL},{SENTINEL}\n"),
                       ("brain/crm-export/contacts.csv", f"{SENTINEL},{SENTINEL}@example.invalid,{SENTINEL}\n"),
                       ("brain/voice.md", f"\n{note}"), ("brain/proof.md", f"\n{note}")):
-        path = root / rel
-        saved[path] = path.read_bytes()
-        old = saved[path]
-        path.write_bytes(old + (b"" if old.endswith(b"\n") else b"\n") + text.encode())
+        make_folder((root / rel).parent, dirs)
+        plant_file(root / rel, text, made, saved)
+
+
+def undo(made, saved, dirs):
+    """Delete the files this run created, restore the saved ones byte for byte, drop folders it created."""
+    for p in made:
+        p.unlink(missing_ok=True)
+    for p, old in saved.items():
+        p.write_bytes(old)
+    for d in dirs:
+        try:
+            d.rmdir()
+        except OSError:
+            pass
+
+
+def roundtrip():
+    """Plant into a throwaway folder that already holds files at the marker names. Return the failures."""
+    originals = {"brain/search/panel-runs/PRIVATE-SENTINEL.md": b"kept\n", "brain/themes/PRIVATE-SENTINEL.md": b"kept, no final newline",
+                 "brain/voice.md": b"voice rules\n"}
+    fails = []
+    with tempfile.TemporaryDirectory(dir=RUNS) as tmp:
+        root = pathlib.Path(tmp)
+        for rel, data in originals.items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_bytes(data)
+        before = {p.relative_to(root) for p in root.rglob("*")}
+        made, saved, dirs = [], {}, []
+        plant(root, made, saved, dirs)
+        if len(saved) != 3 or any(p.name == f"{SENTINEL}.md" for p in made):
+            fails.append("roundtrip: a pre-existing marker file was treated as new")
+        undo(made, saved, dirs)
+        for rel, data in originals.items():
+            if not (root / rel).is_file() or (root / rel).read_bytes() != data:
+                fails.append(f"roundtrip: {rel} was not restored byte for byte")
+        left = {p.relative_to(root) for p in root.rglob("*")} ^ before
+        fails += [f"roundtrip: {p} was left behind or removed" for p in sorted(left)]
+    return fails
 
 
 def sentinel():
     """Plant the sentinel, run prepare() into a temp folder, and require it nowhere in the copy."""
-    made, saved, fails = [], {}, []
+    made, saved, dirs = [], {}, []
     RUNS.mkdir(parents=True, exist_ok=True)
+    fails = roundtrip()
     tmp = pathlib.Path(tempfile.mkdtemp(prefix="sentinel-", dir=RUNS))
     try:
-        plant(REPO, made, saved)
+        plant(REPO, made, saved, dirs)
         prepare({"id": "sentinel"}, tmp / "repo")
         for p in (tmp / "repo").rglob("*"):
             if SENTINEL in p.name or (p.is_file() and SENTINEL.encode() in p.read_bytes()):
                 fails.append(str(p.relative_to(tmp / "repo")))
     finally:
-        for p in made:
-            p.unlink(missing_ok=True)
-        for p, old in saved.items():
-            p.write_bytes(old)
+        undo(made, saved, dirs)
         shutil.rmtree(tmp, ignore_errors=True)
     for p, old in saved.items():
         if p.read_bytes() != old:
             fails.append(f"{p.relative_to(REPO)} was not restored")
-    for p in made:
+    for p in made + dirs:
         if p.exists():
             fails.append(f"{p.relative_to(REPO)} was not removed")
     print(f"{'FAIL' if fails else 'PASS'}  sentinel: {len(made) + len(saved)} locations planted")

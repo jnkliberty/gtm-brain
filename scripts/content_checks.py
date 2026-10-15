@@ -16,7 +16,8 @@ script makes the judgment itself. No key value is ever printed or written.
 Exit codes: 0 done, 1 usage or label-file error (or a failed label gate),
 2 the draft or the skills folder cannot be read, 3 labels skipped (no key).
 
-Writes machine reports under brain/search/checks/ only.
+Writes machine reports under brain/search/checks/ only: --out and the Jev log must resolve (links and
+.. followed) to a place inside brain/search/checks/ of --root, or the command exits 2 before any call.
 """
 
 from __future__ import annotations
@@ -24,8 +25,10 @@ from __future__ import annotations
 import argparse
 import contextlib
 import datetime
+import http.client
 import io
 import json
+import math
 import os
 import re
 import socket
@@ -53,6 +56,8 @@ KINDS = ("clear", "ambiguous", "no_valid_answer", "misleading_state")
 COMPOSITION = {"clear": 6, "ambiguous": 2, "no_valid_answer": 1, "misleading_state": 1}
 JEV_CATEGORIES = ("no_key", "timeout", "auth", "credit", "malformed")
 CREDIT_WORDS = ("credit", "quota", "billing", "insufficient", "payment")
+DISTRIBUTION_TOLERANCE = 0.02
+OUT_REFUSED = "refusing to write outside brain/search/checks/ (links and .. are followed)"
 CURLY = {chr(0x2018): "'", chr(0x2019): "'"}
 
 STOPWORDS = frozenset(
@@ -293,7 +298,7 @@ def fetch(request, opener):
         raise JevError(classify_http(exc.code, read_error_body(exc)), f"HTTP {exc.code}") from None
     except (socket.timeout, TimeoutError):
         raise JevError("timeout", "request timed out") from None
-    except OSError:
+    except (OSError, http.client.HTTPException):
         raise JevError("timeout", "network error") from None
 
 
@@ -356,10 +361,21 @@ def validate_answer(spec, answer):
     if not isinstance(choice, str) or choice not in spec["criteria"]:
         raise JevError("malformed", "choice is not an offered option")
     probabilities = answer.get("probabilities")
-    if probabilities is not None:
-        if not isinstance(probabilities, dict) or not all(is_number(v) for v in probabilities.values()):
-            raise JevError("malformed", "probabilities are not numbers")
+    check_distribution(spec["criteria"], choice, probabilities)
     return {"choice": choice, "probabilities": probabilities, "confidence": answer.get("confidence")}
+
+
+def check_distribution(options, choice, probabilities):
+    """A Choice distribution covers exactly the offered options, with finite values in [0, 1] that sum to 1."""
+    if not isinstance(probabilities, dict) or set(probabilities) != set(options):
+        raise JevError("malformed", "probabilities do not cover exactly the offered options")
+    values = list(probabilities.values())
+    if not all(is_number(v) and math.isfinite(v) and 0 <= v <= 1 for v in values):
+        raise JevError("malformed", "probabilities are not finite numbers from 0 to 1")
+    if abs(sum(values) - 1) > DISTRIBUTION_TOLERANCE:
+        raise JevError("malformed", "probabilities do not sum to 1")
+    if probabilities[choice] < max(values) - 1e-6:
+        raise JevError("malformed", "choice is not the most likely option")
 
 
 def read_answer(spec, answer):
@@ -427,9 +443,39 @@ def append_log(path, record):
         print(f"warning: could not write the Jev log ({type(exc).__name__})", file=sys.stderr)
 
 
+def checks_dir(root):
+    return Path(os.path.realpath(root)) / "brain" / "search" / "checks"
+
+
+def jev_log_path(root):
+    return Path(root) / "brain" / "search" / "checks" / "jev-log.jsonl"
+
+
+def inside_checks(path, root):
+    """True when path, after following links and .., sits inside brain/search/checks/ of root."""
+    return checks_dir(root) in Path(os.path.realpath(path)).parents
+
+
+def refuse_outputs(root, out_path=None):
+    """A plain refusal message when the Jev log or a report would land outside brain/search/checks/."""
+    paths = [jev_log_path(root)] + ([out_path] if out_path else [])
+    return None if all(inside_checks(p, root) for p in paths) else OUT_REFUSED
+
+
+def refused(root, out_path=None):
+    """Print the refusal and return True when a write destination is outside the allowed folder."""
+    message = refuse_outputs(root, out_path)
+    if message:
+        print(message, file=sys.stderr)
+    return bool(message)
+
+
 def log_keyed_run(root, settings, result, **extra):
     """Log a keyed run. A run with no key leaves no line."""
     if result["error"] == "no_key":
+        return
+    if not inside_checks(jev_log_path(root), root):
+        print("warning: " + OUT_REFUSED + "; the Jev log was not written", file=sys.stderr)
         return
     record = {
         "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
@@ -441,7 +487,7 @@ def log_keyed_run(root, settings, result, **extra):
         "distribution": distribution_of(result),
     }
     record.update(extra)
-    append_log(Path(root) / "brain" / "search" / "checks" / "jev-log.jsonl", record)
+    append_log(jev_log_path(root), record)
 
 
 # ---------------------------------------------------------------------------
@@ -556,6 +602,8 @@ def cmd_check(args, env, opener):
         print(f"cannot read the draft: {draft}", file=sys.stderr)
         return 2
     root = Path(args.root)
+    if refused(root, args.out):
+        return 2
     warnings = []
     banned_path = args.banned or root / "brain" / "search" / "banned-phrases.txt"
     voice_path = args.voice or root / "brain" / "voice.md"
@@ -677,6 +725,8 @@ def cmd_route(args, env, opener):
     if not request:
         print("the request text is empty", file=sys.stderr)
         return 1
+    if refused(Path(args.root)):
+        return 2
     try:
         skills = load_skills(args.skills)
     except OSError:
@@ -808,6 +858,8 @@ def format_outcome(outcome, status):
 
 
 def cmd_labels(args, env, opener):
+    if refused(Path(args.root), args.out):
+        return 2
     labels, errors = load_labels(args.dir)
     errors += composition_errors(labels) if labels else []
     if errors:
@@ -1085,7 +1137,7 @@ def test_check_command_and_log():
         draft.write_text("Dive into this.\nWe dive into that.\n", encoding="utf-8")
         questions = Path(base) / "questions.md"
         questions.write_text("| bq-001 | How much? | /p | s | a | d |\n", encoding="utf-8")
-        out = Path(base) / "checks" / "report.json"
+        out = root / "brain" / "search" / "checks" / "report.json"
         args = ["check", str(draft), "--questions", str(questions), "--out", str(out), "--root", str(root)]
         code, stdout, stderr = silent(main, args, {}, fake_opener(noul_payload()))
         report = json.loads(out.read_text(encoding="utf-8"))
@@ -1099,6 +1151,106 @@ def test_check_command_and_log():
         assert record["distribution"]["noul"]["bq-001"] == 0.8 and record["usage"] == {"total_tokens": 7}
         everything = stdout + stderr + "".join(log) + out.read_text(encoding="utf-8")
         assert TEST_KEY not in everything, "a key value leaked"
+
+
+def test_output_containment():
+    with tempfile.TemporaryDirectory() as base:
+        root = make_tree(Path(base) / "root")
+        draft = Path(base) / "draft.md"
+        draft.write_text("Dive into this.\n", encoding="utf-8")
+        questions = Path(base) / "questions.md"
+        questions.write_text("| bq-001 | How much? | /p | s | a | d |\n", encoding="utf-8")
+        approved = root / "brain" / "search" / "brand-facts.md"
+        approved.write_text("APPROVED", encoding="utf-8")
+        elsewhere = Path(base) / "elsewhere"
+        elsewhere.mkdir()
+        checks = root / "brain" / "search" / "checks"
+        checks.mkdir()
+        (checks / "link").symlink_to(elsewhere, target_is_directory=True)
+        outsiders = (approved, checks / ".." / "brand-facts.md", checks / "link" / "report.json", Path(base) / "stray.json", checks)
+        for out in outsiders:
+            opener = fake_opener(noul_payload(**{"bq-001": 0.9, "voice-you": 0.9}))
+            args = ["check", str(draft), "--questions", str(questions), "--out", str(out), "--root", str(root)]
+            code, _, err = silent(main, args, keyed_env(), opener)
+            assert code == 2 and "brain/search/checks" in err, (out, code, err)
+            assert opener.calls == [], "a refused destination must stop before any Jev call"
+        assert approved.read_text(encoding="utf-8") == "APPROVED" and not list(elsewhere.iterdir())
+        assert not (Path(base) / "stray.json").exists()
+        labels = Path(base) / "labels"
+        assert write_label_files(labels) == 30
+        code, _, err = silent(main, ["labels", str(labels), "--out", str(approved), "--root", str(root)], keyed_env(), fake_opener({}))
+        assert code == 2 and approved.read_text(encoding="utf-8") == "APPROVED"
+        # A checks folder that is itself a link out would send the Jev log elsewhere: refuse every command.
+        (checks / "link").unlink()
+        checks.rmdir()
+        checks.symlink_to(elsewhere, target_is_directory=True)
+        for argv in (["check", str(draft), "--root", str(root)], ["route", "Do alpha work", "--skills", str(root / "skills"), "--root", str(root)]):
+            opener = fake_opener(noul_payload())
+            code, _, err = silent(main, argv, keyed_env(), opener)
+            assert code == 2 and opener.calls == [] and not list(elsewhere.iterdir()), (argv[0], code, err)
+        # The log writer refuses on its own as well when called directly.
+        result = {"error": None, "model": "m", "usage": None, "request_id": None, "answers": {}}
+        _, _, err = silent(log_keyed_run, root, settings_from_env(keyed_env()), result)
+        assert "not written" in err and not list(elsewhere.iterdir())
+
+
+def test_truncated_response():
+    questions, voice = sample_items()
+    calls = []
+
+    class Truncated(FakeResponse):
+        def read(self):
+            raise http.client.IncompleteRead(b"part", 40)
+
+    def opener(request, timeout=None):
+        calls.append(request)
+        return Truncated({})
+
+    report, result = run_check("Dive into this.", "d.md", questions, voice, banned=["dive into"], settings=settings_from_env(keyed_env()), opener=opener)
+    assert len(calls) == 2, "a cut-off body counts as a network error and retries once"
+    assert report["jev"]["status"] == "timeout" and result["error"] == "timeout"
+    assert report["questions"][0]["jev_error"] == "timeout" and report["voice"][0]["judged_by"] == "agent"
+    assert len(report["banned_hits"]) == 1, "countable results survive"
+    with tempfile.TemporaryDirectory() as base:
+        root = make_tree(Path(base) / "root")
+        draft = Path(base) / "draft.md"
+        draft.write_text("Dive into this.\n", encoding="utf-8")
+        out = root / "brain" / "search" / "checks" / "report.json"
+        before = len(calls)
+        code, _, _ = silent(main, ["check", str(draft), "--out", str(out), "--root", str(root)], keyed_env(), opener)
+        written = json.loads(out.read_text(encoding="utf-8"))
+        assert code == 0 and len(calls) == before + 2, "the countable report is still written"
+        assert len(written["banned_hits"]) == 1 and written["jev"]["status"] == "timeout"
+
+
+def test_choice_distribution():
+    spec = choice_spec("pick", {"a": "A", "unknown": "U"})
+    good = {"choice": "a", "probabilities": {"a": 0.7, "unknown": 0.3}}
+    assert read_answer(spec, good)["error"] is None
+    assert read_answer(spec, {"choice": "a", "probabilities": {"a": 0.51, "unknown": 0.49}})["error"] is None
+    bad = {
+        "missing distribution": {"choice": "a"},
+        "null distribution": {"choice": "a", "probabilities": None},
+        "missing option": {"choice": "a", "probabilities": {"a": 1.0}},
+        "extra option": {"choice": "a", "probabilities": {"a": 0.6, "unknown": 0.3, "gamma": 0.1}},
+        "negative and over one": {"choice": "unknown", "probabilities": {"a": -2, "unknown": 3}},
+        "not finite": {"choice": "a", "probabilities": {"a": float("nan"), "unknown": 1.0}},
+        "infinite": {"choice": "a", "probabilities": {"a": float("inf"), "unknown": 0.0}},
+        "sum too high": {"choice": "a", "probabilities": {"a": 0.9, "unknown": 0.9}},
+        "sum too low": {"choice": "a", "probabilities": {"a": 0.2, "unknown": 0.2}},
+        "choice is not the leader": {"choice": "a", "probabilities": {"a": 0.2, "unknown": 0.8}},
+        "text value": {"choice": "a", "probabilities": {"a": "0.5", "unknown": 0.5}},
+        "boolean value": {"choice": "a", "probabilities": {"a": True, "unknown": 0.0}},
+    }
+    for label, answer in bad.items():
+        assert read_answer(spec, answer)["error"] == "malformed", label
+    with tempfile.TemporaryDirectory() as base:
+        root = make_tree(base)
+        args = ["route", "Do alpha work", "--skills", str(root / "skills"), "--root", str(root)]
+        skewed = {"model": "m", "usage": {}, "answers": {"route_pick": {"type": "choice", "choice": "alpha-skill", "probabilities": {"alpha-skill": -2, "beta-skill": 3, "none": 0}}}}
+        code, out, _ = silent(main, args, keyed_env(), fake_opener(skewed))
+        outcome = json.loads(out)
+        assert code == 0 and outcome["judged_by"] == "agent" and outcome["jev_error"] == "malformed" and outcome["skill"] is None
 
 
 def test_unreadable_draft_exits_two():
@@ -1225,7 +1377,8 @@ def test_no_network_guard():
 TESTS = [
     test_repeated_phrases, test_long_sentences, test_banned_hits, test_parsers, test_thresholds, test_no_key,
     test_timeout_retries_once, test_auth_and_credit, test_malformed, test_request_shape_and_bands,
-    test_check_command_and_log, test_unreadable_draft_exits_two, test_route, test_label_composition,
+    test_check_command_and_log, test_output_containment, test_truncated_response, test_choice_distribution,
+    test_unreadable_draft_exits_two, test_route, test_label_composition,
     test_label_grading, test_labels_command, test_no_network_guard,
 ]
 
