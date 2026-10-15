@@ -292,13 +292,18 @@ def make_row(run_id, engine, prompt_id, prompt, answer, cited, names, collected_
     }
 
 
-def next_run_path(out_dir, date, engine, label, start):
-    """Return (path, run_id) for the first unused run number from start. Never overwrites."""
+def next_run_path(out_dir, date, engine, label, start, reserved=None):
+    """Return (path, run_id) for the first unused run number from start. Never overwrites.
+
+    `reserved` holds paths already promised to earlier items of the same plan; the pick is added to it.
+    """
     n = start
     while True:
         run_id = f"{date}-{engine}{label}-run{n}"
         path = out_dir / f"{run_id}.csv"
-        if not path.exists():
+        if not path.exists() and (reserved is None or path not in reserved):
+            if reserved is not None:
+                reserved.add(path)
             return path, run_id
         n += 1
 
@@ -404,9 +409,9 @@ def run_canned(path, args, out, questions, names):
     date = checked_date(args.date) if args.date else data.get("date") or datetime.date.today().isoformat()
     by_run = canned_rows(data, questions, names)
     base = panel_base(args.root)
-    plan = []
+    plan, reserved = [], set()
     for run in sorted(by_run):
-        run_path, run_id = next_run_path(out, date, data["engine"], "-canned", run)
+        run_path, run_id = next_run_path(out, date, data["engine"], "-canned", run, reserved)
         require_inside(run_path, base)
         plan.append((run_path, run_id, by_run[run]))
     out.mkdir(parents=True, exist_ok=True)
@@ -751,6 +756,7 @@ def _test_files(failures):
         _check("key value never reaches a file", "sk-SELFTEST-SECRET" not in text, failures)
         run_main(_ns(tmp, questions=str(qfile), runs=1), env, _fake([good]))
         _check("existing CSV is never overwritten", (out / "2026-10-14-chatgpt-run3.csv").exists(), failures)
+        _test_canned_reserve(tmp, qfile, failures)
         _test_no_key_and_input(tmp, qfile, failures)
         _test_canned(tmp, qfile, failures)
         _test_canned_flag(tmp, qfile, failures)
@@ -798,6 +804,24 @@ def _test_canned(tmp, qfile, failures):
     payload["answers"][0]["prompt_id"] = "bq-999"
     _write_canned(canned, payload)
     _check("canned answer for an unknown question exits 2", run_main(_ns(tmp, "canned-out", questions=str(qfile), canned=str(canned)), {}, boom) == EXIT_INPUT, failures)
+
+
+def _test_canned_reserve(tmp, qfile, failures):
+    """Two stored runs for one engine and date, with run1 and run2 already on disk: run3 and run4, no crash."""
+    out = tmp / "brain" / "search" / "panel-runs" / "reserve"
+    out.mkdir(parents=True)
+    for n in (1, 2):
+        (out / f"2026-10-14-chatgpt-canned-run{n}.csv").write_text("old", encoding="utf-8")
+    canned = tmp / "reserve.json"
+    _write_canned(canned, {"engine": "chatgpt", "company": "Contoso", "answers": [
+        {"prompt_id": "bq-001", "answer": "one", "run": 1}, {"prompt_id": "bq-002", "answer": "two", "run": 2}]})
+    try:
+        code = run_main(_ns(tmp, "reserve", questions=str(qfile), canned=str(canned)), {}, _fake([PanelError("auth")]))
+    except FileExistsError:
+        code = "FileExistsError"
+    names = sorted(p.name for p in out.glob("*.csv"))
+    _check("canned plan reserves unique run numbers", code == 0 and names == [f"2026-10-14-chatgpt-canned-run{n}.csv" for n in (1, 2, 3, 4)], failures)
+    _check("canned plan leaves old files unchanged", (out / "2026-10-14-chatgpt-canned-run1.csv").read_text(encoding="utf-8") == "old", failures)
 
 
 def _test_canned_flag(tmp, qfile, failures):

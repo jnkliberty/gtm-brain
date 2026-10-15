@@ -281,7 +281,7 @@ def classify_http(code, body_text):
 def read_error_body(exc):
     try:
         return exc.read().decode("utf-8", errors="replace")[:300]
-    except (OSError, ValueError, AttributeError):
+    except (OSError, ValueError, AttributeError, http.client.HTTPException):
         return ""
 
 
@@ -366,12 +366,20 @@ def validate_answer(spec, answer):
     return {"choice": choice, "probabilities": probabilities, "confidence": answer.get("confidence")}
 
 
+def in_unit_range(value):
+    """True for a finite number from 0 to 1. Bounds come first: a huge int overflows isfinite."""
+    try:
+        return 0 <= value <= 1 and math.isfinite(value)
+    except (OverflowError, ValueError):
+        return False
+
+
 def check_distribution(options, choice, probabilities):
     """A Choice distribution covers exactly the offered options, with finite values in [0, 1] that sum to 1."""
     if not isinstance(probabilities, dict) or set(probabilities) != set(options):
         raise JevError("malformed", "probabilities do not cover exactly the offered options")
     values = list(probabilities.values())
-    if not all(is_number(v) and math.isfinite(v) and 0 <= v <= 1 for v in values):
+    if not all(is_number(v) and in_unit_range(v) for v in values):
         raise JevError("malformed", "probabilities are not finite numbers from 0 to 1")
     if abs(sum(values) - 1) > DISTRIBUTION_TOLERANCE:
         raise JevError("malformed", "probabilities do not sum to 1")
@@ -1229,6 +1237,27 @@ def test_truncated_response():
         assert len(written["banned_hits"]) == 1 and written["jev"]["status"] == "timeout"
 
 
+def test_error_body_read_failures():
+    class Cut(urllib.error.HTTPError):
+        def __init__(self, code):
+            super().__init__("https://jev.example", code, "x", {}, io.BytesIO(b""))
+
+        def read(self, *_args):
+            raise http.client.IncompleteRead(b"part", 40)
+
+    assert read_error_body(Cut(500)) == "", "a cut-off error body reads as empty"
+    for code, category in ((500, "timeout"), (401, "auth"), (422, "malformed")):
+        def opener(request, timeout=None, code=code):
+            raise Cut(code)
+
+        try:
+            fetch(object(), opener)
+        except JevError as exc:
+            assert exc.category == category, (code, exc.category)
+        else:
+            raise AssertionError("fetch should raise JevError")
+
+
 def test_choice_distribution():
     spec = choice_spec("pick", {"a": "A", "unknown": "U"})
     good = {"choice": "a", "probabilities": {"a": 0.7, "unknown": 0.3}}
@@ -1247,6 +1276,8 @@ def test_choice_distribution():
         "choice is not the leader": {"choice": "a", "probabilities": {"a": 0.2, "unknown": 0.8}},
         "text value": {"choice": "a", "probabilities": {"a": "0.5", "unknown": 0.5}},
         "boolean value": {"choice": "a", "probabilities": {"a": True, "unknown": 0.0}},
+        "huge integer": {"choice": "a", "probabilities": {"a": 10**400, "unknown": 0.0}},
+        "huge negative integer": {"choice": "a", "probabilities": {"a": -(10**400), "unknown": 1.0}},
     }
     for label, answer in bad.items():
         assert read_answer(spec, answer)["error"] == "malformed", label
@@ -1392,7 +1423,7 @@ def test_no_network_guard():
 TESTS = [
     test_repeated_phrases, test_long_sentences, test_banned_hits, test_parsers, test_thresholds, test_no_key,
     test_timeout_retries_once, test_auth_and_credit, test_malformed, test_request_shape_and_bands,
-    test_check_command_and_log, test_output_containment, test_truncated_response, test_choice_distribution,
+    test_check_command_and_log, test_output_containment, test_truncated_response, test_error_body_read_failures, test_choice_distribution,
     test_unreadable_draft_exits_two, test_route, test_label_composition,
     test_label_grading, test_labels_command, test_no_network_guard,
 ]
