@@ -1,3 +1,7 @@
+---
+description: "Account stages and their owners, the ordered handoff rules (skip, route to owner, act now, nurture), what every handoff must name, and the weekly handoff budget. Read it to decide what happens to a signal."
+---
+
 # Stages and handoff rules
 
 Who owns an account at each stage, and what moves it. Marketing and sales both read and write these records. Edit this file to change the team's policy.
@@ -22,7 +26,7 @@ Apply them in order. The first rule that matches decides. Corrections point at t
    - the account is at stage Target or Engaged and fits the ICP,
    - the signal's `signalStrength` is High or Medium,
    - the signal has a concrete `whyNow`: it names the event and the event's calendar date (a relative date such as "two days ago" is not concrete),
-   - the current signal matches one play's trigger in `brain/plays.md`,
+   - the current signal matches one play's trigger in [`brain/plays.md`](plays.md),
    - the handoff budget has room (`rule-handoff-budget` below).
 4. **`rule-nurture`: nurture** in every other case, including a missing or unfamiliar `relevanceVerdict` (list it under Gaps). Name the next check that would move the account to act now.
 
@@ -38,7 +42,7 @@ A missing contact or email does not change the decision. It goes under Gaps and 
 | Follow-up owner | The company's `owner`, who works a reply | The same person as the recipient | "Deal stage, amount, and owner" | `no owner` |
 | Reason | The event and its calendar date, quoted from the signal's `whyNow` | The same, in the owner note | "Signals on accounts" | `no dated reason` |
 
-- Owner and email come from the export, a copy: cite the read date and let `source-export-copy` settle a disagreement. A blank `owner`, or "none assigned" in the account file, means no owner. Never take the owner from a contact row or guess one.
+- Owner and email come from the export, a copy: cite the read date and let [`source-export-copy`](sources.md) settle a disagreement. A blank `owner`, or "none assigned" in the account file, means no owner. Never take the owner from a contact row or guess one.
 - A missing part never ships silently. The decision stays as decided, the gap is written down, and `signal-sweep` reports it with the handoff. For `act-now`, the draft's `To:` line follows `draft-recipient` (the named contact, the role, or `none`). For `route-to-owner` with no owner there is nobody to route to: write no draft, and the person who approves names an owner.
 - A skill never fills a part in. The person who approves names the recipient or owner at its source, then runs the handoff again on a later day, since today's decision file already exists. The new decision names the earlier one in `supersedes`.
 

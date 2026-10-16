@@ -1,6 +1,10 @@
+---
+description: "Approved facts about competitors, each with a source and the date it was checked, and the gaps no fact covers. Read it before you compare the company with a competitor."
+---
+
 # Approved competitor facts (invented sample)
 
-Invented sample data. The competitors of Contoso are fictional. Format: `brain/search/README.md`. Every fact comes from the competitor's own public page, read on the date shown.
+Invented sample data. The competitors of Contoso are fictional. Format: [`brain/search/README.md`](README.md). Every fact comes from the competitor's own public page, read on the date shown.
 
 | ID | Competitor | Fact | Source | Checked on | Approved by |
 | --- | --- | --- | --- | --- | --- |

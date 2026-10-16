@@ -1,3 +1,7 @@
+---
+description: "Example rules for turning call excerpts into themes: when an excerpt counts as confirmed, the two-domain minimum for a recurring pain, how conflicting excerpts are handled, and privacy. Read it before you read call notes or write a theme."
+---
+
 # Call rules (example)
 
 The notes in this starter brain are invented and private. Replace the rules with your team's approved call process.

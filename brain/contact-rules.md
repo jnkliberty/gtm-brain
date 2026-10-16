@@ -1,3 +1,7 @@
+---
+description: "Example rules for contacts at each account: target functions, how many to hold per tier, the order to add them, and when to keep, hold, archive, or treat a job change as a verified move. Read it before you build, prune, or route contacts."
+---
+
 # Contact rules (example)
 
 Which people to hold at each account, how many, and when to let a record go. Replace the numbers with your own. Corrections point at these IDs.
@@ -5,7 +9,7 @@ Which people to hold at each account, how many, and when to let a record go. Rep
 ## Building contacts
 
 - `contacts-functions`: target functions are Executive, Sales, RevOps, and Marketing at every tier.
-- `contacts-opening-pull`: a new build fills each account to its opening pull: Tier 1: 5, Tier 2: 4, Tier 3: 3 contacts in target functions.
+- `contacts-opening-pull`: a new build fills each account to its opening pull: [Tier 1](tiers.md): 5, Tier 2: 4, Tier 3: 3 contacts in target functions.
 - `contacts-ceiling`: ceilings are Tier 1: 15, Tier 2: 8, Tier 3: 5. Count every current contact record at the account, across all functions and email statuses. An account above its ceiling is escalated to its owner, never trimmed.
 - `contacts-order`: when adding contacts, add in this order: RevOps, Sales, Marketing, Executive. Within a function, the more senior title first.
 - `contacts-audit-first`: count and check the contacts an account already has before adding new ones.

@@ -1,3 +1,7 @@
+---
+description: "The format of a CRM change proposal: file name, status fields, one row per field change, and the record actions (create, archive, merge, task for owner). Read it before you write or review a proposal."
+---
+
 # Proposals
 
 A proposal is a set of CRM changes a skill suggests and a person approves. Nothing in a proposal reaches a CRM until a person approves it; in this version no skill applies proposals at all.

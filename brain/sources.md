@@ -1,3 +1,7 @@
+---
+description: "Where each kind of fact lives, which place wins when two disagree, and how many days a copy stays fresh. Read it before you propose, audit, or quote a CRM value or any other fact a skill relies on."
+---
+
 # Sources
 
 Where each kind of fact lives, which place wins when two disagree, and how fresh a copy must be. This is the one source-authority policy. Every skill that reads, proposes, or audits CRM data reads it before it proposes a value or a record. A skill keeps only its own safeguards and never ranks sources itself. Edit this file to change who wins. Dated evidence stays in its own files (`brain/crm-export/` snapshots, `brain/decisions/`, `brain/audits/`, `brain/provenance/`); editing this file never rewrites it. Every system, owner, and date below is invented. Replace them with your own.
@@ -61,4 +65,4 @@ When two places disagree, the first matching rule decides.
 
 When the order above picks no winner, or the only value is stale, a skill reports both values, both read dates, and the rule ID. It proposes nothing for that field until a person resolves it at the source. It never picks one value silently.
 
-Inside one record, `brain/field-rules.md` decides between a detected and a confirmed value. This file decides between places.
+Inside one record, [`brain/field-rules.md`](field-rules.md) decides between a detected and a confirmed value. This file decides between places.

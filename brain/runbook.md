@@ -1,3 +1,7 @@
+---
+description: "The example CRM maintenance checks with owner, interval, and first due date, and the evidence a completion claim must meet. Read it when you check whether a maintenance review is current, due, overdue, or blocked."
+---
+
 # CRM maintenance runbook (example)
 
 Every check is local practice for this invented starter brain. The owner reviews evidence and decides the follow-up. This file starts no schedule.
@@ -21,4 +25,4 @@ Every check is local practice for this invented starter brain. The owner reviews
 
 ## Evidence contract
 
-`brain/maintenance/history.csv` records claimed completions. Each evidence file for a claimed completion contains `check_id`, `evidence_type`, and `completed_at` matching its runbook and history row. Resolve the evidence path before reading it. Only a readable file whose resolved path is under `brain/maintenance/evidence/` can support completion. A missing history row has no completion claim; classify it from its first due date. A missing owner or invalid completion claim is `blocked` before any due-date result. Put team-wide follow-ups in the dated maintenance review, with the named owner or an owner gap. A CRM proposal task needs a named company or contact record.
+[`brain/maintenance/history.csv`](maintenance/history.csv) records claimed completions. Each evidence file for a claimed completion contains `check_id`, `evidence_type`, and `completed_at` matching its runbook and history row. Resolve the evidence path before reading it. Only a readable file whose resolved path is under [`brain/maintenance/evidence/`](maintenance/evidence/) can support completion. A missing history row has no completion claim; classify it from its first due date. A missing owner or invalid completion claim is `blocked` before any due-date result. Put team-wide follow-ups in the dated maintenance review, with the named owner or an owner gap. A CRM proposal task needs a named company or contact record.

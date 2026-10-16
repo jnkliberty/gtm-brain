@@ -16,19 +16,20 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 
 ## Steps
 
-1. **Read the request.** Take the person's words as they are. An empty request, or one that only asks "what can you do", skips to step 5 with `none`. The step is done when the request is one plain sentence you can hold against a description.
-2. **Ask the script first.** Run from the repo root, with or without a key:
+1. **Read the index.** Open `brain/index.md`. It groups every brain file by task and names the skills that read each one, so you know what the brain holds before you route. The route still comes from the skill descriptions. The step is done when you have read the index.
+2. **Read the request.** Take the person's words as they are. An empty request, or one that only asks "what can you do", skips to step 6 with `none`. The step is done when the request is one plain sentence you can hold against a description.
+3. **Ask the script first.** Run from the repo root, with or without a key:
 
    `python3 scripts/content_checks.py route "<the request>" --skills skills/`
 
    The script checks for `TYPESAFE_API_KEY` itself. Never print, read aloud, or ask for the key value. With the key set, the request text goes to TypeSafe (the **privacy** rule in `brain/search/README.md`); without it, nothing leaves the machine. The step is done when the script has printed its JSON.
-3. **Get the answer.**
-   - **3a. Script answer.** With a key, the script prints JSON and appends one line to `brain/search/checks/jev-log.jsonl`. Use its fields as they are: `skill` (a skill name or `none`), `probability` (the top pick's), `distribution` (every skill's probability), and `judged_by`. When `judged_by` is `agent` and the JSON has a `jev_error` (`no_key`, `timeout`, `auth`, `credit`, or `malformed`), the script gave no answer: go to step 3b and report the `jev_error` in the answer. Exit code 2 means the skills folder could not be read: stop and say so.
-   - **3b. Descriptions.** Read the `name` and `description` in every `skills/*/SKILL.md` except this one. Compare the request to each description and pick the one skill whose "Use when" matches the request. Pick `none` when no description matches. When two descriptions fit the request equally, there is no pick yet: go to step 4. The answer carries `judged_by: agent`.
+4. **Get the answer.**
+   - **4a. Script answer.** With a key, the script prints JSON and appends one line to `brain/search/checks/jev-log.jsonl`. Use its fields as they are: `skill` (a skill name or `none`), `probability` (the top pick's), `distribution` (every skill's probability), and `judged_by`. When `judged_by` is `agent` and the JSON has a `jev_error` (`no_key`, `timeout`, `auth`, `credit`, or `malformed`), the script gave no answer: go to step 4b and report the `jev_error` in the answer. Exit code 2 means the skills folder could not be read: stop and say so.
+   - **4b. Descriptions.** Read the `name` and `description` in every `skills/*/SKILL.md` except this one. Compare the request to each description and pick the one skill whose "Use when" matches the request. Pick `none` when no description matches. When two descriptions fit the request equally, there is no pick yet: go to step 5. The answer carries `judged_by: agent`.
 
    The step is done when the answer is one skill name or `none`, with its `judged_by`, or when two skills tie.
-4. **Check the pick.** The request is close when the top two probabilities in `distribution` are within 0.25 of each other, or when the agent path found two descriptions that fit equally. A close request goes through the tie-breakers below first. A tie-breaker that the request's own words settle gives the answer. When none settles it, ask the person one question in the chat shape below and stop. When one of the two is `none`, the question names it as "none: GTM Brain has no skill for this". The step is done when the answer is firm or the one question is asked.
-5. **Answer in chat.** Write nothing to a file. For a firm answer, use these four lines:
+5. **Check the pick.** The request is close when the top two probabilities in `distribution` are within 0.25 of each other, or when the agent path found two descriptions that fit equally. A close request goes through the tie-breakers below first. A tie-breaker that the request's own words settle gives the answer. When none settles it, ask the person one question in the chat shape below and stop. When one of the two is `none`, the question names it as "none: GTM Brain has no skill for this". The step is done when the answer is firm or the one question is asked.
+6. **Answer in chat.** Write nothing to a file. For a firm answer, use these four lines:
 
    - `Skill:` the skill name, or `none`.
    - `Judged by:` `jev` with the picked skill's own probability, read from `distribution` (for `none`, the `none` entry), or `agent`, with the `jev_error` when there is one. Never show the script's top probability when it belongs to another skill.
