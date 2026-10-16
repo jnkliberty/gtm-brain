@@ -1,3 +1,7 @@
+---
+description: "The plays, each with a trigger, an angle, and an offer, in priority order, plus the draft rules every first-touch message follows. Read it to pick a play or write a draft."
+---
+
 # Plays
 
 Each play has an ID (its heading), the trigger it answers, the angle, and the offer. Plays are in priority order: when one signal matches two triggers, the play listed first wins. Edit this file to change what sales says and when.

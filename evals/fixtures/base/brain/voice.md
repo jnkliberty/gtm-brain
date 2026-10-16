@@ -1,3 +1,7 @@
+---
+description: "Voice rules for drafts, each an ID with one yes/no question a reader can check. Read it when you write or check a draft."
+---
+
 # Voice rules (example)
 
 The voice of the invented company Contoso. Ten rules at most, each an ID and one yes/no question about a draft. The answer `yes` means the draft follows the rule. A rule is a condition a reader can check; replace these with your team's own.

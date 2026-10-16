@@ -1,6 +1,10 @@
+---
+description: "Customer proof points with their evidence and whether each may be published. Read it before a page cites a customer result."
+---
+
 # Proof points (invented sample)
 
-Invented sample data for Contoso. The customers named here are fictional. Format: `brain/search/README.md`. A page uses a row only when `May publish` is `yes`.
+Invented sample data for Contoso. The customers named here are fictional. Format: [`brain/search/README.md`](search/README.md). A page uses a row only when `May publish` is `yes`.
 
 | ID | Claim | Evidence | May publish | Approved by | Approved on |
 | --- | --- | --- | --- | --- | --- |

@@ -1,6 +1,10 @@
+---
+description: "The approved buyer questions, each with the page that answers it and the sources it came from. Read it to see which questions a page or a prompt panel covers."
+---
+
 # Approved buyer questions (invented sample)
 
-Invented sample data for Contoso. Format: `brain/search/README.md`. The file changes only when a person approves a proposal from `objections-to-questions`.
+Invented sample data for Contoso. Format: [`brain/search/README.md`](README.md). The file changes only when a person approves a proposal from `objections-to-questions`.
 
 | ID | Question | Page | Source | Approved by | Approved on |
 | --- | --- | --- | --- | --- | --- |

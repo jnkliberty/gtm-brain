@@ -1,3 +1,7 @@
+---
+description: "The map of the content engineering files: the shared rules for content skills, what each file holds and its columns, and the proposal record format. Read it before any content engineering task."
+---
+
 # Search and answer-engine files
 
 These files hold what the content engineering skills read and write: buyer questions, approved company facts, AI answer runs, traffic, and deals. Every record here is invented sample data for the invented company Contoso, which sells handoff and pipeline tooling to B2B sales and marketing teams. In the sample, Contoso is the company that owns this brain: `brain/icp.md` is its ICP, `brain/calls/` holds its sales calls, and the accounts in `brain/crm-export/` (Northwind Robotics among them) are its prospects. Replace the sample records with your own only in a private copy of this repo.

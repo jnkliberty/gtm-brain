@@ -1,3 +1,7 @@
+---
+description: "Column meanings for the CRM export CSVs: companies, contacts, vendor candidates, and the synthetic ceiling and move test files. Read it before you read or write a file in this folder."
+---
+
 # CRM export format
 
 The skills read `companies.csv` and `contacts.csv` when no live CRM connection is available. The two `candidates-*.csv` files are invented vendor inputs for build skills. Export from any CRM into these columns. Every company, person, and value in the example files is invented. Sample domains and profile URLs use reserved `.example` hosts.

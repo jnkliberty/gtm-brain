@@ -16,6 +16,8 @@ When the request names no skill and you cannot tell which one applies, read `ski
 
 The facts the skills read are in `brain/`. The README's "What is here" table says what each file holds.
 
+Start at `brain/index.md`. It groups every file by task and says when to open each one. Scan the one-line `description` at the top of a file before you open the rest of it.
+
 ## Content engineering files and scripts
 
 - `brain/search/` holds the approved questions, brand facts, competitor facts, rules, exports, and panel runs. `brain/search/README.md` defines every file.

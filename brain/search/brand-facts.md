@@ -1,6 +1,10 @@
+---
+description: "Approved facts about the company with their evidence, and the claims nobody approved. Read it before you state a company fact in a page, brief, or audit."
+---
+
 # Approved brand facts (invented sample)
 
-Invented sample data for Contoso, the invented company that owns this brain. Format: `brain/search/README.md`. A person edits this file after approving a proposal. Nothing else writes to it.
+Invented sample data for Contoso, the invented company that owns this brain. Format: [`brain/search/README.md`](README.md). A person edits this file after approving a proposal. Nothing else writes to it.
 
 | ID | Fact | Evidence | Approved by | Approved on |
 | --- | --- | --- | --- | --- |

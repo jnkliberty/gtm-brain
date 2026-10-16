@@ -1,3 +1,7 @@
+---
+description: "The example ideal customer profile: company size, sales motion, stack, what fails the cut, and how many accounts the filter should return. Read it to judge whether an account fits."
+---
+
 # Ideal customer profile (example)
 
 An example ICP for the starter brain. Replace it with your own.

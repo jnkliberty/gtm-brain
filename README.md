@@ -49,6 +49,7 @@ A public fork remains public. Use a private repository or a private local copy b
 
 | Path | What it holds |
 | --- | --- |
+| `brain/index.md` | The entry point: every brain file grouped by task, when to open it, and which skills read it |
 | `brain/icp.md` | Who you sell to, and who fails the cut |
 | `brain/stages.md` | Lifecycle stages, who owns each, the handoff rules, and what every handoff must name (recipient, owner, dated reason) |
 | `brain/plays.md` | Your plays, their triggers, and the draft rules |

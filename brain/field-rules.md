@@ -1,3 +1,7 @@
+---
+description: "The split between values detected by enrichment and values confirmed by a person, for revenue and CRM, and the rules that keep automation from overwriting a confirmed value. Read it when a record holds two values for one field."
+---
+
 # Field rules
 
 Some values come from enrichment and some from a person. They live in separate fields so automation never overwrites what a person confirmed. Corrections point at these IDs.
