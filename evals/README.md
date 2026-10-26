@@ -6,9 +6,13 @@ Fixed cases with known answers. Each case runs a skill headless on a fresh copy 
 python3 evals/run.py                      # every case, 4 at a time, Sonnet 5.5
 python3 evals/run.py sweep-budget --keep  # one case; keep its work folder and output
 python3 evals/run.py --jobs 8 --model claude-haiku-4-5-20251001
+python3 evals/run.py follow-through-ready --engine codex --dry-run
+python3 evals/run.py follow-through-ready --engine codex --keep
 ```
 
-Needs the `claude` CLI, signed in. Each case runs in its own copy under `~/.cache/gtm-brain-evals/`, so your `brain/` is never touched. A run costs one headless session per case.
+Needs the selected CLI, signed in. Claude remains the default. `--engine codex` uses the model from Codex's config unless `--model` is supplied. Each case runs in its own copy under `~/.cache/gtm-brain-evals/`. A run costs one headless session per case. `--dry-run` prepares and retains the copies, prompts, and command files without starting a model. It proves preparation only. With `--keep`, a live run also retains the event output, Codex final message, result, and resulting files.
+
+Each copy has its own initialized Git repository, so Git and the Codex workspace do not resolve to an ancestor repository. The file checks exclude that copy's `.git/` metadata.
 
 ## What the copy leaves out
 
@@ -17,8 +21,8 @@ Your own records never reach a case. Before the fixtures are copied in, the runn
 - every file under `brain/search/` except the four rule files (`README.md`, `question-rules.md`, `writing-rules.md`, `banned-phrases.txt`), including `brain/search/panel-runs/`;
 - every file under `brain/themes/`;
 - `brain/calls/*.csv` and `brain/crm-export/*.csv`;
-- `brain/voice.md` and `brain/proof.md`;
-- the accounts, signals, and decisions in `brain/`.
+- `brain/voice.md`, `brain/proof.md`, and `brain/corrections.md`;
+- all files below the accounts, signals, and decisions directories, including nested Follow-through records.
 
 `evals/fixtures/base/` then restores the invented Contoso and Northwind versions, including byte-identical copies of `brain/voice.md` and `brain/proof.md`. If you change either committed file, copy it to `evals/fixtures/base/brain/` too.
 
@@ -28,11 +32,13 @@ Check this with the sentinel test, which needs no `claude` session:
 python3 evals/run.py --sentinel
 ```
 
-It adds the marker `PRIVATE-SENTINEL` to `brain/search/panel-runs/`, `brain/themes/`, `brain/calls/call-notes.csv`, `brain/crm-export/contacts.csv`, `brain/voice.md`, and `brain/proof.md`, builds an eval copy, and fails if the marker appears in any file name or file in that copy. It then puts every planted file back exactly, so `git status` stays clean.
+It plants `PRIVATE-SENTINEL` in eight private locations, including a nested Follow-through decision and the corrections log. It builds an eval copy and fails if the marker appears in any file name or content. It then restores every planted file byte for byte.
 
 ## Tools a case may use
 
-A case session may read and write files, and it may run two commands only: `python3 scripts/content_checks.py` and `python3 scripts/panel_run.py --canned`. The canned mode reads stored answers from a file in the case and makes no network call. If `TYPESAFE_API_KEY` is set in your shell, `content_checks.py` can call Jev; with no key, every judgment field reads `judged_by: agent`.
+The Claude engine allows file tools and two commands: `python3 scripts/content_checks.py` and `python3 scripts/panel_run.py --canned`. The canned mode reads stored answers without a network call. If `TYPESAFE_API_KEY` is set in your shell, Claude's check script can call Jev; without a key, judgment fields read `judged_by: agent`.
+
+The Codex engine uses its workspace-write sandbox with model-command network access disabled. It disables configured MCP servers, plugins, apps, and web search. It removes `TYPESAFE_API_KEY` from the child environment. Normal hooks stay enabled. The prompt carries an automation marker recognized by Julian's existing Jev router, which skips its call and skill injection. These limits do not isolate Codex's provider transport or all inherited host hooks. Use fictional data in evaluations.
 
 ## What a case checks
 
@@ -112,6 +118,9 @@ Every case starts from `evals/fixtures/base/` (the Northwind account, signal, an
 
 - `"verdict_files": ["brain/decisions/<file>"]` lets those decision files change their `status`, `verdict_reason`, `approved_by`, and `verdict_date` lines only. The fixture must already carry those lines, empty. Any other edit fails.
 - `"append_only": ["brain/corrections.md"]` lets those files gain lines at the end. Editing or removing an earlier line fails. A case without these keys behaves as before.
+- A file listed in both `verdict_files` and `append_only` may receive both changes. Its original body must stay byte-identical. This supports a human verdict and a reported outcome on the same Follow-through record.
+- `"no_brain": true` removes the entire `brain/` directory after all fixtures are prepared. Use it for standalone paste cases and feedback reruns. The runner asserts the directory is absent before starting the model.
+- `"codex_no_read_paths": ["brain/"]` checks Codex command events for literal access to those paths, including absolute paths and directory changes. This catches reads even when no file changes. It is a trace check, not a general code-access detector, and does not run for the Claude engine.
 - `"new_files": ["brain/proposals/"]` lets the run create new files under those folders, for skills that write a proposal instead of a decision. New files anywhere else still fail. Each new file there must stay `status: proposed` with `approved_by` empty. `"new_file_has": {"brain/proposals/": ["regex", ...]}` requires a new file in that folder and each regex to match it; `"new_file_lacks"` fails on any match, such as a forbidden action row.
 - `"edited_files": {"brain/stages.md": {"old": "...", "new": "..."}}` lets that file change by one exact replacement, for a case where a person approves a rule edit. `old` must appear once in the file before the run, and the file after the run must equal the file before with `old` replaced by `new`. Any other change, a missing edit, or a repeated edit fails.
 - `"no_status_files": ["brain/calibration/"]` exempts new files under those paths from the `status: proposed` requirement, for a record format with no status field (a calibration record or a rebuilt filter). They must still have `approved_by` empty. List the same paths in `new_files`.
@@ -119,3 +128,5 @@ Every case starts from `evals/fixtures/base/` (the Northwind account, signal, an
 - `"file_has": {"brain/corrections.md": ["regex", ...]}` requires each regex to match in that file after the run (case-insensitive; `^` and `$` match at line breaks).
 
 Write the expected answer from the rules before you run the case, never from the run's output.
+
+Follow-through cases use `new_files: ["brain/decisions/follow-through/"]` and inspect its proposal format with `new_file_has`. The account/signal fields in `decisions` apply to account-handoff only. Run `python3 -m unittest discover -s tests -p 'test_eval_runner.py'` to check engine selection, dry-run behavior, private-record removal, and combined verdict/outcome permissions without starting a model.

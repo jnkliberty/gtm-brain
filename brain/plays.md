@@ -1,5 +1,5 @@
 ---
-description: "The plays, each with a trigger, an angle, and an offer, in priority order, plus the draft rules every first-touch message follows. Read it to pick a play or write a draft."
+description: "The first-touch plays and draft rules for account-handoff, plus the separate post-call rules for follow-through. Read the section for the skill in use."
 ---
 
 # Plays
@@ -24,7 +24,7 @@ Each play has an ID (its heading), the trigger it answers, the angle, and the of
 - **Angle:** ask whether their mail reaches the inbox. State a problem only when a check in the account file confirms it.
 - **Offer:** a deliverability check on one sending domain.
 
-## Draft rules
+## Draft rules: first touch, account-handoff only
 
 Every draft follows these. A correction about wording points at the one rule it broke.
 
@@ -34,3 +34,12 @@ Every draft follows these. A correction about wording points at the one rule it 
 - `draft-public-only`: every company detail in the message cites a public source whose type a brain file states and whose text it quotes: a job post, a press release, the company's website, or a public post, with a URL when the brain file has one. Private conversations and tracked activity (calls, content reads, page visits) can shape the angle and stay out of the message. When no public source supports the detail the draft needs, write no draft and list the gap.
 - `draft-plain`: plain words. Name the tool or the metric instead of a category.
 - `draft-recipient`: address the draft to the person the account file names. When it names no one, address the role and list the contact under Gaps. When the signal doubts that the named person is the right recipient, still address them and list the right recipient under Gaps.
+
+## Post-call rules: follow-through only
+
+These IDs support Follow-through corrections. First-touch plays and draft rules do not apply to post-call drafts.
+
+- `follow-through-evidence`: preserve each commitment's meaning, owner, date, and status as stated. Invent none of them.
+- `follow-through-owner`: For an unknown customer-side owner or status, ask a clarification question. For an unknown internal owner, omit the detail from the draft and ask in the action table and repair notes.
+- `follow-through-draft`: produce one supported customer draft, marked DRAFT, not sent. A draft proves no send, reply, meeting, or completed action.
+- `follow-through-privacy`: confirm a private copy before reading any `brain/` file; require write authority before saves. Otherwise use chat only.

@@ -52,6 +52,7 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 - AI answers stating wrong facts about the company: `brand-facts-audit`. Whether AI answers name the company at all: `buyer-prompt-panel`. Mentions lined up with traffic and deals: `mention-to-deal-ledger`.
 - "What does ChatGPT or an AI engine say about us" with neither a name check nor wrong facts mentioned: ask the question between `buyer-prompt-panel` (does it name us) and `brand-facts-audit` (does it get our facts wrong).
 - Call notes turned into pain themes: `call-intel-to-themes`. Call notes turned into buyer questions: `objections-to-questions`.
+- Post-call recap, commitments, or a customer follow-up draft: `follow-through`. A verdict or outcome on its proposal also routes there. A verdict on a signal decision routes to `account-handoff`.
 - CRM field values checked against machine and human rules: `crm-field-provenance`. A sampled accuracy score: `data-accuracy-audit`.
 
 ## What GTM Brain can do
@@ -59,7 +60,7 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 For a `none` answer, say it in three groups, in plain words:
 
 - **CRM and outbound:** turn signals into sales decisions, set up the brain, build and audit accounts and contacts, route job changes, and review maintenance.
-- **Call intelligence:** turn private call notes into evidence-backed themes.
+- **Call intelligence:** turn call notes into a recap, actions, and a customer draft, or turn private call notes into evidence-backed themes.
 - **Content engineering:** buyer questions from objections, cited briefs, AI answer panels, brand-fact audits, comparison pages, and a monthly mention-to-deal view.
 
 GTM Brain proposes and a person approves. It sends no email, posts nothing, and writes to no CRM, so a request to send, post, or edit a live system is `none`.

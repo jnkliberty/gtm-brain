@@ -1,0 +1,33 @@
+{
+  "today": "2026-10-25",
+  "fixtures": [
+    "follow-through-three"
+  ],
+  "append": [
+    {
+      "file": "brain/corrections.md",
+      "text": "- 2026-10-24 | northwind-robotics | decision: brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md | wrong: used an unconfirmed send date | source: none | applies when: the call gives no send date | points at: follow-through-evidence\n- 2026-10-24 | aldermetric | decision: brain/decisions/follow-through/2026-10-24-aldermetric-call2.md | wrong: used an unconfirmed send date | source: none | applies when: the call gives no send date | points at: follow-through-evidence\n"
+    }
+  ],
+  "request": "Run follow-through to record my verdict. I am Sam Lee. This is a private copy and I authorize a local feedback update. Reject brain/decisions/follow-through/2026-10-24-coppercloud-call3.md because the call gave no send date but the draft assigned one. Company coppercloud. Correction applies when: the call gives no send date. Points at: follow-through-evidence. No source line is disputed. I have not approved any rule edit.",
+  "expect": {
+    "decision_count": 0,
+    "verdict_files": [
+      "brain/decisions/follow-through/2026-10-24-coppercloud-call3.md"
+    ],
+    "append_only": [
+      "brain/corrections.md"
+    ],
+    "file_has": {
+      "brain/decisions/follow-through/2026-10-24-coppercloud-call3.md": [
+        "^status: rejected\\s*$"
+      ],
+      "brain/corrections.md": [
+        "coppercloud.*points at: follow-through-evidence"
+      ]
+    },
+    "output_has": [
+      "Proposed rule edit:\\W*follow-through-evidence"
+    ]
+  }
+}

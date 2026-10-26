@@ -1,0 +1,24 @@
+{
+  "today": "2026-10-25",
+  "fixtures": [
+    "follow-through-record"
+  ],
+  "request": "Run follow-through to record feedback on brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md. I am Sam Lee. I approve this exact draft for human review because it matches the call. I confirm this is a private copy and authorize this local feedback update. My reported outcome today: Dana replied that she expects to return the export on October 28. I did not report sending the field map. Record my verdict and append this reported outcome; leave the proposal text intact.",
+  "expect": {
+    "decision_count": 0,
+    "verdict_files": [
+      "brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md"
+    ],
+    "append_only": [
+      "brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md"
+    ],
+    "file_has": {
+      "brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md": [
+        "^status: approved\\s*$",
+        "^approved_by: .*Sam",
+        "^verdict_date: 2026-10-25\\s*$",
+        "(?s)## outcome_log.*2026-10-25.*(?:Sam|Dana).*October 28"
+      ]
+    }
+  }
+}

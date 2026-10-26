@@ -1,0 +1,13 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through. I do not have permission to use or store these call notes. Do not process the call content or write files. Company: Northwind Robotics.",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "Stopped"
+    ],
+    "output_lacks": [
+      "GTM\\.run"
+    ]
+  }
+}

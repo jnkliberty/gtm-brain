@@ -1,6 +1,6 @@
 ---
 name: signal-sweep
-description: "Use when the team wants every new signal turned into a decision in one run, for example each weekday morning. Runs account-handoff on each signal in brain/signals/ that has no decision yet, strongest first, and reports only the accounts that need a person. Says one line when nothing does, and warns when the signal feed has gone stale."
+description: "Use when the team wants every new signal turned into a sales decision in one run. Runs account-handoff on signals with no top-level signal decision, strongest first, and reports accounts that need a person. Excludes post-call Follow-through records and warns when the signal feed is stale."
 license: MIT
 ---
 
@@ -9,6 +9,8 @@ license: MIT
 Turns every new signal into a proposed decision, then tells the person only what needs them. The decisions come from the `account-handoff` skill. The sweep owns which signals run, in what order, and what the person hears.
 
 ## Quiet by default
+
+Use top-level `brain/decisions/*.md` only for signal matching, supersession, pending reports, and budget counts. Exclude subdirectories, including `follow-through/`.
 
 **Quiet** is the leading word. The person hears about an account only when someone has to act on it.
 

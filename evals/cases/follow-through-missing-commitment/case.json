@@ -1,0 +1,29 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through for the supplied fictional call. I confirm this is a private copy, I may use these notes, and you may save a local proposal. I have not authorized sending. Northwind Robotics, 2026-10-25. [00:01 Dana, customer] \"We discussed the export, but the recording stopped before we agreed the next action. I do not have that part of the notes.\" Sam is our consultant.",
+  "expect": {
+    "decision_count": 1,
+    "new_files": [
+      "brain/decisions/follow-through/"
+    ],
+    "new_file_has": {
+      "brain/decisions/follow-through/": [
+        "^record_type: follow-through\\s*$",
+        "^exit: Held\\s*$",
+        "^status: proposed\\s*$",
+        "## Recap",
+        "## Action table",
+        "## Customer draft",
+        "## Evidence",
+        "## Repair notes",
+        "## outcome_log"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/decisions/follow-through/": [
+        "GTM\\.run",
+        "(?:I|We|we) will send"
+      ]
+    }
+  }
+}

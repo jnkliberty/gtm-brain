@@ -1,6 +1,6 @@
 ---
 name: account-handoff
-description: "Use when a marketing signal on an account needs a sales decision: act now, nurture, skip, or route to the owner. Reads the account file, the account's row in the CRM export, and a signal already interpreted by signal-interpreter, picks a play, drafts the first touch with evidence on every claim, and logs a proposed decision for a person to approve. Also use to record a person's verdict on a proposed decision."
+description: "Use when a marketing signal needs a sales decision: act now, nurture, skip, or route to the owner. Reads account and CRM evidence, picks a play, and drafts the first touch for approval. Also records a person's verdict on a top-level signal decision. Post-call proposals and their verdicts belong to follow-through."
 license: MIT
 ---
 
@@ -16,6 +16,10 @@ Turns what marketing knows about an account into a sales decision a person can a
 - A **hypothesis** is an interpretation: every field the signal interpreter wrote, including `cleanSummary`, `likelyMeaning`, `businessImplication`, `whyNow`, `signalStrength`, and `confidence`. Hypotheses support the decision and stay inside the decision file, labeled as hypotheses. They never appear as claims in the draft.
 - A **gap** is anything the decision needs that no file states. A gap is written down as a gap and left open.
 - A **copy** is a value recorded in one file whose truth `brain/sources.md` places somewhere else, for example a stage or owner in an account file when the map places live status in the CRM. A copy is cited with the date it was read from its source.
+
+## Signal records only
+
+Read and write top-level `brain/decisions/*.md` only. Exclude subdirectories, including `follow-through/`, from signal matching, supersession, verdict updates, and `rule-handoff-budget` counts.
 
 ## Inputs
 
