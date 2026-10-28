@@ -1,0 +1,18 @@
+{
+  "today": "2026-10-28",
+  "request": "Run account-handoff for this supplied conversation reply in chat. These are fictional excerpts; no private brain access is authorized. Company: Northwind Robotics. Our owner: Sam Lee. Prior message from Sam: \"Can we discuss the export mapping?\" Reply from Dana: \"Does it support CSV imports?\" We have supplied no product answer.",
+  "no_brain": true,
+  "expect": {
+    "codex_no_read_paths": [
+      "brain/"
+    ],
+    "decision_count": 0,
+    "output_has": [
+      "Intent:\\W*question",
+      "CSV",
+      "(?i)(unknown|gap|unverified)",
+      "Sam Lee"
+    ],
+    "output_lacks": []
+  }
+}

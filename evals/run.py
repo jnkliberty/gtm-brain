@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the golden eval cases headless and check each result on disk.
 
-Usage: python3 evals/run.py [case ...] [--model M] [--jobs N] [--keep]
+Usage: python3 evals/run.py [case ...] [--engine claude|codex] [--model M] [--jobs N] [--keep]
        python3 evals/run.py --sentinel     # prove private records never reach an eval copy
 """
 import argparse
@@ -10,6 +10,7 @@ import json
 import os
 import pathlib
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -35,8 +36,9 @@ def clear_private(work):
     # voice, and proof would change what each case decides, so none reach the copy.
     brain = work / "brain"
     for folder in ("accounts", "signals", "decisions"):
-        for old in (brain / folder).glob("*.md"):
-            old.unlink()
+        for old in (brain / folder).rglob("*"):
+            if old.is_file():
+                old.unlink()
     for old in (brain / "search").rglob("*"):
         if old.is_file() and not (old.parent == brain / "search" and old.name in SEARCH_RULES):
             old.unlink()
@@ -46,7 +48,7 @@ def clear_private(work):
     for folder in ("calls", "crm-export"):
         for old in (brain / folder).glob("*.csv"):
             old.unlink()
-    for name in ("voice.md", "proof.md"):
+    for name in ("voice.md", "proof.md", "corrections.md"):
         (brain / name).unlink(missing_ok=True)
 
 
@@ -70,10 +72,16 @@ def prepare(case, work):
         if text.count(r["old"]) != 1:
             raise ValueError(f"{case['id']}: replace text must appear once in {r['file']}")
         p.write_text(text.replace(r["old"], r["new"]))
+    if case.get("no_brain"):
+        shutil.rmtree(work / "brain")
+        assert not (work / "brain").exists()
+    # Git and Codex must stop here instead of discovering a repository above the copy.
+    subprocess.check_call(["git", "init", "--quiet", str(work)])
 
 
 def snapshot(root):
-    return {str(p.relative_to(root)): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    return {str(p.relative_to(root)): p.read_bytes() for p in root.rglob("*")
+            if p.is_file() and p.relative_to(root).parts[0] != ".git"}
 
 
 def field(text, key):
@@ -100,9 +108,8 @@ def section(text, name):
     return m.group(1) if m else ""
 
 
-def check(case, before, after, output):
-    exp, fails = case["expect"], []
-    new = {k: v.decode() for k, v in after.items() if k not in before and k.startswith("brain/decisions/")}
+def check_writes(exp, before, after):
+    fails = []
     changed = [k for k in after if k in before and after[k] != before[k]]
     stray = [k for k in after if k not in before
              and not k.startswith(("brain/decisions/", *exp.get("new_files", [])))]
@@ -112,6 +119,9 @@ def check(case, before, after, output):
                   and strip_verdict(before[k]) == strip_verdict(after[k])}
     append_ok = {k for k in exp.get("append_only", []) if k in before and k in after
                  and appended(before[k], after[k])}
+    both = set(exp.get("verdict_files", [])) & set(exp.get("append_only", []))
+    combined_ok = {k for k in both if k in before and k in after
+                   and appended(strip_verdict(before[k]), strip_verdict(after[k]))}
     # An edited file must equal its before text with the one listed replacement, and nothing else.
     edited_ok = set()
     for k, e in exp.get("edited_files", {}).items():
@@ -120,9 +130,15 @@ def check(case, before, after, output):
             edited_ok.add(k)
         else:
             fails.append(f"{k}: not changed by exactly the one approved edit")
-    changed = [k for k in changed if k not in verdict_ok | append_ok | edited_ok]
+    changed = [k for k in changed if k not in verdict_ok | append_ok | combined_ok | edited_ok]
     if changed or stray or gone:
         fails.append(f"files outside new decisions touched: {sorted(changed + stray + gone)}")
+    return fails
+
+
+def check_decisions(case, before, after):
+    exp, fails = case["expect"], []
+    new = {k: v.decode() for k, v in after.items() if k not in before and k.startswith("brain/decisions/")}
     for k, t in new.items():
         if field(t, "status") != "proposed":
             fails.append(f"{k}: status is {field(t, 'status')!r}; only a person approves")
@@ -132,31 +148,40 @@ def check(case, before, after, output):
     if "decision_count" in exp and len(new) != exp["decision_count"]:
         fails.append(f"expected {exp['decision_count']} new decision files, got {len(new)}: {sorted(new)}")
     for want in exp.get("decisions", []):
-        hits = [(k, t) for k, t in new.items()
-                if field(t, "account") == want["account"] and field(t, "signal") == want["signal"]]
-        if len(hits) != 1:
-            fails.append(f"{want['account']}: expected 1 new decision file for {want['signal']}, got {len(hits)}")
-            continue
-        name, t = hits[0]
-        sig = want["signal"]
-        if name != f"brain/decisions/{case['today']}-{want['account']}-{pathlib.Path(sig).stem}.md":
-            fails.append(f"{want['account']}: file name {name} does not match today, account, and signal")
-        if field(t, "decided_at") != case["today"]:
-            fails.append(f"{want['account']}: decided_at is {field(t, 'decided_at')!r}, expected {case['today']!r}")
-        if want.get("no_draft"):
-            draft = section(t, r"Draft \(DRAFT, not sent\)").split("Draft evidence")[0]
-            if [line.strip() for line in draft.splitlines() if line.strip()] != ["To: none", "none"]:
-                fails.append(f"{want['account']}: wrote a draft")
-        for key in ("decision", "rule", "play"):
-            if key in want and field(t, key) != want[key]:
-                fails.append(f"{want['account']}: {key} is {field(t, key)!r}, expected {want[key]!r}")
-        gaps = section(t, "Gaps").lower()
-        for g in want.get("gaps", []):
-            if g.lower() not in gaps:
-                fails.append(f"{want['account']}: Gaps lacks {g!r}")
-        for g in want.get("no_gaps", []):
-            if g.lower() in gaps:
-                fails.append(f"{want['account']}: Gaps has {g!r}")
+        fails.extend(check_signal_decision(case, new, want))
+    return fails
+
+
+def check_signal_decision(case, new, want):
+    hits = [(k, t) for k, t in new.items()
+            if field(t, "account") == want["account"] and field(t, "signal") == want["signal"]]
+    if len(hits) != 1:
+        return [f"{want['account']}: expected 1 new decision file for {want['signal']}, got {len(hits)}"]
+    name, t = hits[0]
+    sig, fails = want["signal"], []
+    if name != f"brain/decisions/{case['today']}-{want['account']}-{pathlib.Path(sig).stem}.md":
+        fails.append(f"{want['account']}: file name {name} does not match today, account, and signal")
+    if field(t, "decided_at") != case["today"]:
+        fails.append(f"{want['account']}: decided_at is {field(t, 'decided_at')!r}, expected {case['today']!r}")
+    if want.get("no_draft"):
+        draft = section(t, r"Draft \(DRAFT, not sent\)").split("Draft evidence")[0]
+        if [line.strip() for line in draft.splitlines() if line.strip()] != ["To: none", "none"]:
+            fails.append(f"{want['account']}: wrote a draft")
+    for key in ("decision", "rule", "play"):
+        if key in want and field(t, key) != want[key]:
+            fails.append(f"{want['account']}: {key} is {field(t, key)!r}, expected {want[key]!r}")
+    gaps = section(t, "Gaps").lower()
+    for g in want.get("gaps", []):
+        if g.lower() not in gaps:
+            fails.append(f"{want['account']}: Gaps lacks {g!r}")
+    for g in want.get("no_gaps", []):
+        if g.lower() in gaps:
+            fails.append(f"{want['account']}: Gaps has {g!r}")
+    return fails
+
+
+def check_new_files(exp, before, after):
+    fails = []
     # New files in `new_files` folders are proposals too: still proposed, approved by no one.
     made = {k: v.decode() for k, v in after.items() if k not in before
             and exp.get("new_files") and k.startswith(tuple(exp["new_files"]))}
@@ -179,6 +204,11 @@ def check(case, before, after, output):
         for pat in pats:
             if re.search(pat, text, re.I | re.M):
                 fails.append(f"new file under {folder} has /{pat}/")
+    return fails
+
+
+def check_text(exp, after, output):
+    fails = []
     for path, pats in exp.get("file_has", {}).items():
         text = after.get(path, b"").decode()
         for pat in pats:
@@ -198,29 +228,93 @@ def check(case, before, after, output):
     return fails
 
 
-def run(case, model, keep):
+def check(case, before, after, output):
+    exp = case["expect"]
+    return (check_writes(exp, before, after) + check_decisions(case, before, after)
+            + check_new_files(exp, before, after) + check_text(exp, after, output))
+
+
+def check_codex_reads(exp, events):
+    # This detects literal shell-path access in Codex traces, not arbitrary code behavior.
+    paths = exp.get("codex_no_read_paths", [])
+    failures = set()
+    for line in events.splitlines():
+        try:
+            item = json.loads(line).get("item", {})
+        except (ValueError, AttributeError):
+            continue
+        command_text = item.get("command", "")
+        try:
+            args = shlex.split(command_text)
+            if len(args) == 3 and args[1] in ("-c", "-lc"):
+                args = shlex.split(args[2])
+            # A negative search glob excludes a path; it does not read that path.
+            access_text = " ".join(arg for i, arg in enumerate(args)
+                                   if not (arg.startswith("!") and i and args[i - 1] in ("-g", "--glob", "--iglob"))
+                                   and not arg.startswith(("--glob=!", "--iglob=!", "-g!")))
+        except ValueError:
+            access_text = command_text
+        for path in paths:
+            pattern = r"(?<![\w-])" + re.escape(path.rstrip("/")) + r"(?=/|[\s'\";)]|$)"
+            if re.search(pattern, access_text):
+                failures.add(f"Codex command accessed forbidden path {path}: {command_text}")
+    return sorted(failures)
+
+
+def command(engine, prompt, model, final):
+    if engine == "claude":
+        return ["claude", "-p", prompt, "--model", model or "claude-sonnet-5-5", "--plugin-dir", str(REPO),
+                "--allowedTools", TOOLS, "--permission-mode", "acceptEdits",
+                "--setting-sources", "project", "--strict-mcp-config", "--no-session-persistence"]
+    cmd = ["codex", "exec", "--sandbox", "workspace-write", "--ephemeral", "--json",
+           "-c", 'approval_policy="never"', "-c", "sandbox_workspace_write.network_access=false",
+           "-c", "features.plugins=false", "-c", "features.apps=false", "-c", 'web_search="disabled"']
+    config = pathlib.Path(os.environ.get("CODEX_HOME", pathlib.Path.home() / ".codex")) / "config.toml"
+    if config.exists():
+        # Keep hooks enabled; disable each configured MCP server without copying credentials.
+        for name in re.findall(r'(?m)^\s*\[mcp_servers\.([\w-]+|"[^"]+")\]\s*$', config.read_text()):
+            cmd.extend(["-c", f"mcp_servers.{name}.enabled=false"])
+    if model:
+        cmd.extend(["--model", model])
+    return cmd + ["-o", str(final), prompt]
+
+
+def run(case, model, keep, engine="claude", dry_run=False):
     RUNS.mkdir(parents=True, exist_ok=True)
     tmp = pathlib.Path(tempfile.mkdtemp(prefix=f"{case['id']}-", dir=RUNS))
     work = tmp / "repo"
     try:
         prepare(case, work)
         before = snapshot(work)
-        prompt = (f"{case['request']} Today's date is {case['today']}. Work only in the current folder. "
+        prompt = ("Automation marker for the local skill router: non-interactive --print mode.\n"
+                  f"{case['request']} Today's date is {case['today']}. Work only in the current folder. "
                   "Follow the skill exactly and write only what it allows. Your final message is exactly what you would "
                   "show the person, with nothing added.")
+        final = tmp / "final.txt"
+        cmd = command(engine, prompt, model, final)
+        (tmp / "prompt.txt").write_text(prompt)
+        (tmp / "command.json").write_text(json.dumps(cmd, indent=2) + "\n")
+        if dry_run:
+            print(f"DRY RUN {case['id']}: {engine}; command: {tmp / 'command.json'}", flush=True)
+            return case["id"], [], tmp
+        env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
+        if engine == "codex":
+            env.pop("TYPESAFE_API_KEY", None)
         proc = subprocess.run(
-            ["claude", "-p", prompt, "--model", model, "--plugin-dir", str(REPO),
-             "--allowedTools", TOOLS, "--permission-mode", "acceptEdits",
-             "--setting-sources", "project", "--strict-mcp-config", "--no-session-persistence"],
-            cwd=work, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=case.get("timeout", 900))
+            cmd, cwd=work, env=env, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=case.get("timeout", 900))
         (tmp / "output.txt").write_text(proc.stdout + "\n--- stderr ---\n" + proc.stderr)
         if proc.returncode != 0:
-            return case["id"], [f"claude exited {proc.returncode}: {proc.stderr.strip()[-300:]}"], tmp
-        return case["id"], check(case, before, snapshot(work), proc.stdout), tmp
+            return case["id"], [f"{engine} exited {proc.returncode}: {proc.stderr.strip()[-300:]}"], tmp
+        output = final.read_text() if engine == "codex" else proc.stdout
+        failures = check(case, before, snapshot(work), output)
+        if engine == "codex":
+            failures.extend(check_codex_reads(case["expect"], proc.stdout))
+        (tmp / "result.json").write_text(json.dumps({"case": case["id"], "engine": engine, "failures": failures}, indent=2) + "\n")
+        return case["id"], failures, tmp
     except Exception as e:  # a crashed case is a failed case, not a crashed run
         return case["id"], [f"{type(e).__name__}: {e}"], tmp
     finally:
-        if not keep:
+        if not keep and not dry_run:
             shutil.rmtree(tmp, ignore_errors=True)
 
 
@@ -247,12 +341,13 @@ def make_folder(folder, dirs):
 def plant(root, made, saved, dirs):
     """Put the sentinel in every private evidence location; record what to undo in made, saved, and dirs."""
     note = f"{SENTINEL}\n"
-    for rel in ("brain/search/panel-runs", "brain/themes"):
+    for rel in ("brain/search/panel-runs", "brain/themes", "brain/decisions/follow-through"):
         make_folder(root / rel, dirs)
         plant_file(root / rel / f"{SENTINEL}.md", note, made, saved)
     for rel, text in (("brain/calls/call-notes.csv", f"{SENTINEL},{SENTINEL},{SENTINEL}\n"),
                       ("brain/crm-export/contacts.csv", f"{SENTINEL},{SENTINEL}@example.invalid,{SENTINEL}\n"),
-                      ("brain/voice.md", f"\n{note}"), ("brain/proof.md", f"\n{note}")):
+                      ("brain/voice.md", f"\n{note}"), ("brain/proof.md", f"\n{note}"),
+                      ("brain/corrections.md", f"\n{note}")):
         make_folder((root / rel).parent, dirs)
         plant_file(root / rel, text, made, saved)
 
@@ -273,7 +368,9 @@ def undo(made, saved, dirs):
 def roundtrip():
     """Plant into a throwaway folder that already holds files at the marker names. Return the failures."""
     originals = {"brain/search/panel-runs/PRIVATE-SENTINEL.md": b"kept\n", "brain/themes/PRIVATE-SENTINEL.md": b"kept, no final newline",
-                 "brain/voice.md": b"voice rules\n"}
+                 "brain/voice.md": b"voice rules\n",
+                 "brain/decisions/follow-through/PRIVATE-SENTINEL.md": b"private call\n",
+                 "brain/corrections.md": b"private feedback\n"}
     fails = []
     with tempfile.TemporaryDirectory(dir=RUNS) as tmp:
         root = pathlib.Path(tmp)
@@ -283,7 +380,7 @@ def roundtrip():
         before = {p.relative_to(root) for p in root.rglob("*")}
         made, saved, dirs = [], {}, []
         plant(root, made, saved, dirs)
-        if len(saved) != 3 or any(p.name == f"{SENTINEL}.md" for p in made):
+        if len(saved) != len(originals) or any(p.name == f"{SENTINEL}.md" for p in made):
             fails.append("roundtrip: a pre-existing marker file was treated as new")
         undo(made, saved, dirs)
         for rel, data in originals.items():
@@ -326,7 +423,9 @@ def main():
     ap.add_argument("--sentinel", action="store_true",
                     help="plant a private marker in each evidence location and prove no eval copy carries it")
     ap.add_argument("cases", nargs="*")
-    ap.add_argument("--model", default="claude-sonnet-5-5")
+    ap.add_argument("--engine", choices=("claude", "codex"), default="claude")
+    ap.add_argument("--model", help="engine model; defaults to Sonnet 5.5 for Claude or Codex's own config")
+    ap.add_argument("--dry-run", action="store_true", help="prepare and retain case copies and commands without starting a model")
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--keep", action="store_true", help="keep each case's work folder for inspection")
     a = ap.parse_args()
@@ -339,14 +438,15 @@ def main():
     if a.cases:
         cases = [c for c in cases if c["id"] in a.cases]
     with concurrent.futures.ThreadPoolExecutor(a.jobs) as pool:
-        results = list(pool.map(lambda c: run(c, a.model, a.keep), cases))
+        results = list(pool.map(lambda c: run(c, a.model, a.keep, a.engine, a.dry_run), cases))
     failed = 0
     for cid, fails, tmp in results:
-        print(f"{'PASS' if not fails else 'FAIL'}  {cid}" + (f"  ({tmp})" if a.keep else ""))
+        label = "PREPARED" if a.dry_run and not fails else "PASS" if not fails else "FAIL"
+        print(f"{label}  {cid}" + (f"  ({tmp})" if a.keep or a.dry_run else ""))
         for f in fails:
             print(f"      - {f}")
         failed += bool(fails)
-    print(f"\n{len(results) - failed} of {len(results)} passed with {a.model}")
+    print(f"\n{len(results) - failed} of {len(results)} {'prepared' if a.dry_run else 'passed'} with {a.engine} ({a.model or 'default model'})")
     sys.exit(1 if failed else 0)
 
 

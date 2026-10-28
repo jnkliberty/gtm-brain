@@ -1,0 +1,16 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through in chat. I may use these fictional notes. Company context: we are Sam Lee's consultancy, the customer is Northwind Robotics, tone is direct, next step is the exchange below, and I have no prior feedback. Fictional call: Northwind Robotics, 2026-10-25. Sam Lee is our consultant; Dana Reyes is the customer.\n[00:01 Sam] \"I will send the field map to Dana by 2026-10-27. It is not sent.\"\n[00:02 Dana] \"I will return the export to Sam by 2026-10-28. It is not started.\"\n",
+  "no_brain": true,
+  "expect": {
+    "codex_no_read_paths": ["brain/"],
+    "decision_count": 0,
+    "output_has": [
+      "Ready",
+      "outcome_log"
+    ],
+    "output_lacks": [
+      "GTM\\.run"
+    ]
+  }
+}

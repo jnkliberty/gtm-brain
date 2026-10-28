@@ -16,7 +16,7 @@ The brain holds a marketing and sales team's facts as plain files. It covers rul
 - Open [contact-rules.md](contact-rules.md) to decide how many contacts an account holds, which to keep, and when a job change counts as a move. Read by `contact-move-routing`, `contact-retention-review`, and `tiered-contact-build`.
 - Open [accounts/](accounts/) for what marketing and sales know about one account. Each file is named `<company>.md`, such as `northwind-robotics.md`. Read by `account-handoff`, `brain-setup`, and `signal-sweep`.
 - Open [signals/](signals/) for the interpreted signals on accounts, one file each, with the date first in the name, such as `2026-09-24-northwind-founding-gtm-engineer.md`. Read by `account-handoff` and `signal-sweep`.
-- Open [decisions/](decisions/) for proposed decisions that wait on a person's verdict. Each file is named `<date>-<company>-<signal file name>.md`. `account-handoff` writes them and reads earlier ones to count the budget; `signal-sweep` reads them to find signals with no decision.
+- Open [decisions/](decisions/) for proposed signal decisions that wait on a person's verdict. Top-level files use `<date>-<company>-<signal file name>.md`. `account-handoff` and `signal-sweep` use only these top-level files for signal matching, supersession, and budget counts. They exclude the `follow-through/` subdirectory.
 
 ## CRM upkeep
 
@@ -28,6 +28,8 @@ The brain holds a marketing and sales team's facts as plain files. It covers rul
 - Open [maintenance/](maintenance/) for the completion history (`history.csv`), the evidence files in `evidence/`, and the dated reviews named `<as-of-date>-review-<short-topic>.md`. `crm-maintenance-runbook` reads the history and evidence and writes the reviews.
 
 ## Call intelligence
+
+- Read [follow-through](../skills/follow-through/SKILL.md) after a call for a recap, actions, and a customer draft. Confirm a private copy before company-brain reads. It reads relevant company context, post-call rules in [plays.md](plays.md), [corrections.md](corrections.md), and its own prior records. It creates `decisions/follow-through/` on its first authorized write; records have unique IDs, human verdicts, and final outcome logs. These records never consume the signal budget.
 
 - Open [call-rules.md](call-rules.md) before you read call notes or write a theme. It says when an excerpt counts as confirmed and when a pain recurs. Read by `call-intel-to-themes` and `objections-to-questions`.
 - Open [calls/call-notes.csv](calls/call-notes.csv) for call excerpts, one quote per row. Read by `call-intel-to-themes`, `objections-to-questions`, and `cited-brief`.

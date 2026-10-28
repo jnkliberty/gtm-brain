@@ -1,0 +1,31 @@
+{
+  "today": "2026-10-25",
+  "fixtures": [
+    "follow-through-history"
+  ],
+  "append": [
+    {
+      "file": "brain/corrections.md",
+      "text": "- 2026-10-24 | northwind-robotics | decision: brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md | wrong: proposed PDF instead of CSV | source: none | applies when: selecting the export format for Northwind | points at: follow-through-draft\n"
+    }
+  ],
+  "request": "Run follow-through for a new fictional Northwind Robotics call. I may use these notes, confirm the copy is private, and authorize a new local proposal. Use the prior company feedback. [00:01 Sam, our consultant] \"I will send the field map to Dana by 2026-10-27. It is not sent.\" [00:02 Dana, customer] \"I will return the export to Sam by 2026-10-28, using the format I requested last time. It is not started.\"",
+  "expect": {
+    "decision_count": 1,
+    "new_files": [
+      "brain/decisions/follow-through/"
+    ],
+    "new_file_has": {
+      "brain/decisions/follow-through/": [
+        "^exit: Ready\\s*$",
+        "CSV",
+        "(?s)## Evidence.*(?:corrections|call1)"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/decisions/follow-through/": [
+        "(?:I|We|we) (?:have )?sent the field map"
+      ]
+    }
+  }
+}

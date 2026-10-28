@@ -1,0 +1,17 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through in chat using my prior reusable record and these new notes. I may use them. Company Northwind Robotics; our sender Sam Lee; tone direct. Prior proposal: exchange the field map and export. Verdict: edited by Sam on 2026-10-24. Correction: - 2026-10-24 | northwind-robotics | decision: chat-record-1 | wrong: called the file a blueprint | source: none | applies when: naming the agreed deliverable | points at: follow-through-draft. Approved wording for this company: field map. Reported outcome: on 2026-10-24 Sam reported that Dana asked for the field map; Sam did not report sending it. New notes: Fictional call: Northwind Robotics, 2026-10-25. Sam Lee is our consultant; Dana Reyes is the customer.\n[00:01 Sam] \"I will send the field map to Dana by 2026-10-27. It is not sent.\"\n[00:02 Dana] \"I will return the export to Sam by 2026-10-28. It is not started.\"\n",
+  "no_brain": true,
+  "expect": {
+    "codex_no_read_paths": ["brain/"],
+    "decision_count": 0,
+    "output_has": [
+      "Ready",
+      "field map",
+      "outcome_log"
+    ],
+    "output_lacks": [
+      "(?:we|I) (?:have )?sent the field map"
+    ]
+  }
+}

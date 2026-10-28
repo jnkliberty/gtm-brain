@@ -1,0 +1,16 @@
+{
+  "today": "2026-10-25",
+  "request": "Run start-here for this request: \"Turn my sales call transcript into a recap, next actions, and a customer draft.\"",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "output_has": [
+      "Skill:\\W*follow-through\\b"
+    ]
+  }
+}

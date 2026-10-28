@@ -1,0 +1,13 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through. These fictional notes may be used. This is a private copy and local proposal writes are allowed. The customer company is unknown; the speaker is Dana. [00:01 Dana] \"I will return the export by 2026-10-28. It is not started.\" I do not know which company this call was for.",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "Held"
+    ],
+    "output_lacks": [
+      "GTM\\.run"
+    ]
+  }
+}

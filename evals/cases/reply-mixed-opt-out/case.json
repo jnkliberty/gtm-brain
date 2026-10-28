@@ -1,0 +1,20 @@
+{
+  "today": "2026-10-28",
+  "request": "Run account-handoff for this supplied conversation reply in chat. These are fictional excerpts; no private brain access is authorized. Company: Northwind Robotics. Our owner: Sam Lee. Prior message from Sam: \"Can we discuss the export mapping?\" Reply from Dana: \"The mapping looks useful, but remove me from all outreach and do not contact me again.\"",
+  "no_brain": true,
+  "expect": {
+    "codex_no_read_paths": [
+      "brain/"
+    ],
+    "decision_count": 0,
+    "output_has": [
+      "Intent:\\W*opt-out",
+      "Draft[^\\n]*none",
+      "(?i)(suppression|suppress|do.not.contact)"
+    ],
+    "output_lacks": [
+      "Intent:\\W*interest",
+      "(?i)(?:next action|recommend(?:ed)?|propos(?:e|ed))[^\\n]*:\\W*(?:nurture|book a meeting|follow up)"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "today": "2026-10-25",
+  "request": "Run start-here for this request: \"Record my approval and reported reply on brain/decisions/follow-through/2026-10-25-northwind-robotics-call1.md.\"",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "output_has": [
+      "Skill:\\W*follow-through\\b"
+    ]
+  }
+}
