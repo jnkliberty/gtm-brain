@@ -1,0 +1,14 @@
+{
+  "today": "2026-10-28",
+  "request": "Run start-here for: A prospect replied to my existing email: \"Remove me from your list.\" Classify the reply and propose an owner handoff. Use supplied context only; brain privacy is unconfirmed.",
+  "no_brain": true,
+  "expect": {
+    "decision_count": 0,
+    "codex_no_read_paths": [
+      "brain/"
+    ],
+    "output_has": [
+      "Skill:\\W*account-handoff\\b"
+    ]
+  }
+}

@@ -16,7 +16,7 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 
 ## Steps
 
-1. **Read the index.** Open `brain/index.md`. It groups every brain file by task and names the skills that read each one, so you know what the brain holds before you route. The route still comes from the skill descriptions. The step is done when you have read the index.
+1. **Choose the context path.** For a supplied reply without confirmed brain privacy, skip the index and the script; continue directly at step 4b below. This path is complete without an index read. Otherwise read `brain/index.md`, which groups brain files by task. The route comes from the skill descriptions.
 2. **Read the request.** Take the person's words as they are. An empty request, or one that only asks "what can you do", skips to step 6 with `none`. The step is done when the request is one plain sentence you can hold against a description.
 3. **Ask the script first.** Run from the repo root, with or without a key:
 
@@ -52,7 +52,8 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 - AI answers stating wrong facts about the company: `brand-facts-audit`. Whether AI answers name the company at all: `buyer-prompt-panel`. Mentions lined up with traffic and deals: `mention-to-deal-ledger`.
 - "What does ChatGPT or an AI engine say about us" with neither a name check nor wrong facts mentioned: ask the question between `buyer-prompt-panel` (does it name us) and `brand-facts-audit` (does it get our facts wrong).
 - Call notes turned into pain themes: `call-intel-to-themes`. Call notes turned into buyer questions: `objections-to-questions`.
-- Post-call recap, commitments, or a customer follow-up draft: `follow-through`. A verdict or outcome on its proposal also routes there. A verdict on a signal decision routes to `account-handoff`.
+- A supplied reply in an existing conversation, including interest, questions, referrals, rejections, opt-outs, or unclear intent: `account-handoff`.
+- Post-call recap, commitments, or a customer follow-up draft from call notes: `follow-through`. A verdict or outcome on its proposal also routes there. A verdict on a signal decision routes to `account-handoff`.
 - CRM field values checked against machine and human rules: `crm-field-provenance`. A sampled accuracy score: `data-accuracy-audit`.
 
 ## What GTM Brain can do

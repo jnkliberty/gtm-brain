@@ -4,6 +4,9 @@ A shared memory for a marketing and sales team, with skills for CRM, outbound, a
 
 The team's facts are plain files in your own git repo. MIT starter. The examples use invented CSV data and create proposals for a person to review.
 
+**Identify this checkout by its Git commit.** The plugin manifest retains starter version `0.3.0`; that number does not identify the newer work here.
+Read the [skill catalog and release status](docs/catalog.md) for each skill's job, inputs, result, and availability.
+
 ## Five-minute walkthrough
 
 1. Clone this repository and open the folder in your coding agent, such as Claude Code or Codex.
@@ -19,6 +22,8 @@ The team's facts are plain files in your own git repo. MIT starter. The examples
    claude plugin marketplace add jnkliberty/gtm-brain
    claude plugin install gtm-brain@gtm-brain
    ```
+
+   Check the installed catalog and Git commit before using newer modes. The unchanged manifest version alone does not establish which skills an installation contains.
 
    From a terminal, run `claude` or `codex` in that folder. `AGENTS.md` at the repo root tells the agent where the skills (`skills/<name>/SKILL.md`) and the brain files (`brain/`) live. Codex loads it on its own, and `CLAUDE.md` imports it for Claude Code. If your agent does not load `AGENTS.md`, start with `Read AGENTS.md first.`
 

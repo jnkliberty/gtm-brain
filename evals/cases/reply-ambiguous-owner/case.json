@@ -1,0 +1,18 @@
+{
+  "today": "2026-10-28",
+  "request": "Run account-handoff for this supplied conversation reply in chat. These are fictional excerpts; no private brain access is authorized. Company: Northwind Robotics. Prior message from Sam: \"Can we discuss the export mapping?\" Reply from Dana: \"Maybe later.\" No date or next step is confirmed.",
+  "no_brain": true,
+  "expect": {
+    "codex_no_read_paths": [
+      "brain/"
+    ],
+    "decision_count": 0,
+    "output_has": [
+      "Intent:\\W*ambiguous",
+      "(?i)held",
+      "(?i)(owner.*unknown|unknown.*owner|missing.owner)",
+      "Maybe later"
+    ],
+    "output_lacks": []
+  }
+}
