@@ -20,8 +20,12 @@ import os
 import re
 import sys
 import tempfile
+from fractions import Fraction
 
 BASELINE_DAYS = 28
+# Keep these equal to readback-lift and readback-guard in brain/readback-rules.md.
+LIFT_POINTS = 5
+GUARD_POINTS = 2
 POSITIVE = {"interest", "question", "referral"}
 CLASSES = ("interest", "question", "referral", "rejection", "opt-out", "auto-reply")
 COLUMNS = ["touch_id", "contact_id", "company_id", "company_domain", "email", "linkedin_url", "channel",
@@ -46,13 +50,30 @@ def front(path):
 def person(row):
     """readback-people: contact_id, then email, then LinkedIn URL. None when the row names nobody."""
     for key in ("contact_id", "email", "linkedin_url"):
-        value = (row.get(key) or "").strip().lower()
+        value = (row.get(key) or "").strip()
         if value:
-            return f"{key}:{value}"
+            # A CRM ID is case-sensitive; an email or URL is not.
+            return f"{key}:{value if key == 'contact_id' else value.lower()}"
     return None
 
 
-def window_stats(rows, start, end):
+def dated(touch, key, problems):
+    """True when the field holds a valid date. A non-blank invalid value is a problem and counts as no date."""
+    value = touch[key].strip()
+    if value and not day(value):
+        problems.append(f"{touch['touch_id']}: {key} {value!r} is not a YYYY-MM-DD date; not counted")
+    return bool(day(value))
+
+
+def compare(baseline, candidate, threshold):
+    """Exact percentage-point difference (candidate minus baseline) from the counts, and both threshold tests."""
+    if not baseline["of"] or not candidate["of"]:
+        return {"points": None, "at_or_above": None, "at_or_below": None}
+    diff = 100 * (Fraction(candidate["people"], candidate["of"]) - Fraction(baseline["people"], baseline["of"]))
+    return {"points": round(float(diff), 6), "at_or_above": diff >= threshold, "at_or_below": diff <= -threshold}
+
+
+def window_stats(rows, start, end, problems):
     people, delivered, replied, positive, meetings, unclassified = {}, set(), set(), set(), set(), set()
     by_class = {c: set() for c in CLASSES}
     senders, sources, channels, sent_days = set(), set(), set(), []
@@ -71,13 +92,14 @@ def window_stats(rows, start, end):
             cls = t["reply_class"].strip()
             if cls in by_class:
                 by_class[cls].add(who)
-            if t["replied_at"].strip() and not cls:
+            reply_dated = dated(t, "replied_at", problems)
+            if reply_dated and not cls:
                 unclassified.add(who)
-            if (cls and cls != "auto-reply") or (t["replied_at"].strip() and not cls):
+            if (cls and cls != "auto-reply") or (reply_dated and not cls):
                 replied.add(who)
             if cls in POSITIVE:
                 positive.add(who)
-            if t["meeting_booked_at"].strip():
+            if dated(t, "meeting_booked_at", problems):
                 meetings.add(who)
     n = len(delivered)
 
@@ -148,8 +170,17 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
         channels = {r["channel"].strip() for r in c_rows}
         b_rows = [r for r in outbound if changed and not r["change_id"].strip()
                   and r["channel"].strip() in channels and b_start <= day(r["sent_at"]) <= b_end]
-    out["windows"] = {"baseline": window_stats(b_rows, b_start, b_end),
-                      "candidate": window_stats(c_rows, c_start, c_end)}
+    out["windows"] = {"baseline": window_stats(b_rows, b_start, b_end, out["problems"]),
+                      "candidate": window_stats(c_rows, c_start, c_end, out["problems"])}
+    b_rates, c_rates = out["windows"]["baseline"]["rates"], out["windows"]["candidate"]["rates"]
+    # readback-lift and readback-guard, decided on exact count ratios; percents are for display only.
+    out["comparison"] = {m: compare(b_rates[m], c_rates[m], LIFT_POINTS) for m in ("reply-rate", "positive-reply-rate", "meeting-rate")}
+    guard = compare(b_rates["opt-out-rate"], c_rates["opt-out-rate"], GUARD_POINTS)
+    out["comparison"]["opt-out-rate"] = guard
+    out["guard_worse"] = guard["at_or_above"]
+    primary = compare(b_rates[metric], c_rates[metric], LIFT_POINTS) if (metric := rec.get("primary_metric", "")) in b_rates and metric != "opt-out-rate" else None
+    out["lift"] = None if not primary or primary["points"] is None else (
+        "win" if primary["at_or_above"] else "loss" if primary["at_or_below"] else "neither")
     # Overlap: another change ID on any outbound touch sent inside the candidate window.
     others = set()
     if c_start:
@@ -163,7 +194,8 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
             if other.get("change_id") and other["change_id"] != change_id and when and c_start and c_start <= when <= c_end:
                 others.add(other["change_id"])
     out["overlapping_change_ids"] = sorted(others)
-    out["days_since_last_candidate_send"] = (today - c_end).days if c_end else None
+    last = day(out["windows"]["candidate"]["last_sent"])
+    out["days_since_last_candidate_send"] = (today - last).days if last else None
     first = day(out["windows"]["candidate"]["first_sent"])
     declared = day(rec.get("declared_at"))
     out["declared_on_or_before_first_touch"] = bool(declared and first and declared <= first)
@@ -216,6 +248,28 @@ def self_test():
         explicit = count(touches, rec, datetime.date(2026, 10, 30), None,
                          span("2026-09-01:2026-09-30"), span("2026-10-01:2026-10-31"))
         checks.append((explicit["windows"]["candidate"]["people_delivered"], 3))
+        # Explicit windows: days since the last counted candidate touch (2026-10-03), not the window end.
+        checks.append((explicit["days_since_last_candidate_send"], 27))
+        odd = [
+            ["x1", "Ab1", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-02", "delivered", "unknown", "", "", "s", "v"],
+            ["x2", "ab1", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-02", "delivered", "", "", "unknown", "s", "v"],
+            ["x3", "", "", "", "A@B.example", "", "email", "outbound", "x", "chg", "2026-10-02", "delivered", "", "", "", "s", "v"],
+            ["x4", "", "", "", "a@b.example", "", "email", "outbound", "x", "chg", "2026-10-03", "delivered", "", "", "", "s", "v"],
+        ]
+        buf = io.StringIO()
+        csv.writer(buf, lineterminator="\n").writerows([COLUMNS] + odd)
+        with open(touches, "w", encoding="utf-8") as f:
+            f.write(buf.getvalue())
+        o = count(touches, rec, datetime.date(2026, 10, 30), datetime.date(2026, 10, 20))
+        oc = o["windows"]["candidate"]
+        checks += [(oc["people_sent"], 3),  # contact IDs keep their case; emails fold case
+                   (oc["rates"]["reply-rate"]["people"], 0), (oc["rates"]["meeting-rate"]["people"], 0),
+                   (sum("x1" in p for p in o["problems"]), 1), (sum("x2" in p for p in o["problems"]), 1)]
+        # Exact points from counts: 2 of 101 against 0 of 1 is 1.98 points, not the displayed 2.0.
+        exact = compare({"people": 0, "of": 1}, {"people": 2, "of": 101}, GUARD_POINTS)
+        checks += [(exact["points"], 1.980198), (exact["at_or_above"], False), (exact["at_or_below"], False)]
+        checks.append((compare({"people": 2, "of": 28}, {"people": 6, "of": 28}, LIFT_POINTS)["at_or_above"], True))
+        checks.append((compare({"people": 0, "of": 0}, {"people": 6, "of": 28}, LIFT_POINTS)["points"], None))
     bad = [f"check {i}: got {got!r}, want {want!r}" for i, (got, want) in enumerate(checks) if got != want]
     print("self-test " + ("FAILED\n" + "\n".join(bad) if bad else f"passed ({len(checks)} checks)"))
     return 1 if bad else 0

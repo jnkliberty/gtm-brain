@@ -33,7 +33,7 @@ Find the "Outreach touches and replies" row in "Where to look" in `brain/sources
    python3 scripts/readback_count.py --touches brain/crm-export/touches.csv --change <change record> --today <YYYY-MM-DD> --read-date <read date>
    ```
 
-   Pass the read date from the source check; leave out `--read-date` only when neither place gives one. Add `--baseline START:END --candidate START:END` only when the person named both windows (`readback-windows`). If the script exits with an error, report it and stop with `unproven`. The step is done when you hold the JSON and have listed every entry in its `problems` and `not_outbound_rows`.
+   Pass the read date from the source check; leave out `--read-date` only when neither place gives one. Add `--baseline START:END --candidate START:END` only when the person named both windows (`readback-windows`). If the script exits with an error, report it and stop with `unproven`. If the JSON shows `export_missing: true` or `unreadable_columns`, the decision is `unproven` (`readback-fresh`): skip steps 3 to 5, mark every count and all four confounders "not assessed", and go to step 6. The step is done when you hold the JSON and have listed every entry in its `problems` and `not_outbound_rows`.
 
 3. **Check the gates.** Apply each rule and record pass or fail with the numbers:
    - `readback-declared`: `declared_on_or_before_first_touch` is true, and `primary_metric` is set.
@@ -43,7 +43,7 @@ Find the "Outreach touches and replies" row in "Where to look" in `brain/sources
 
    The step is done when every gate shows pass or fail, the value it read, and its rule ID.
 
-4. **Read the guard and the primary metric.** From `rates`, take the primary metric and `opt-out-rate` for both windows. Subtract baseline from candidate in percentage points. Apply `readback-guard` and `readback-lift`. The step is done when both differences are written with their "n of N" counts. Skip the comparison only when a gate in step 3 failed; still show the counts.
+4. **Read the guard and the primary metric.** From `rates`, take the primary metric and `opt-out-rate` for both windows as "n of N". Take the differences from `comparison.<metric>.points`, and the results from `guard_worse` (`readback-guard`) and `lift` (`readback-lift`: win, loss, or neither). Never compute them from the rounded percents; round only for display. The step is done when both differences are written with their "n of N" counts. Skip the comparison only when a gate in step 3 failed; still show the counts.
 
 5. **List the confounders.** Compare `senders` and `sources` across the windows; read `overlapping_change_ids`; compare `days_since_last_candidate_send` with 14 days (`readback-confounders`). The step is done when each of the four confounders is marked holds or does not hold, with the values behind it.
 

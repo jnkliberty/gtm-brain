@@ -50,14 +50,35 @@ class EvaluationBoundaryTests(unittest.TestCase):
     def test_change_records_and_readbacks_do_not_reach_case(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp)
-            for rel in ("brain/changes/README.md", "brain/changes/2026-10-01-real.md",
-                        "brain/readbacks/README.md", "brain/readbacks/2026-11-01-real.md"):
+            private = ("brain/changes/2026-10-01-real.md", "brain/readbacks/2026-11-01-real.md",
+                       "brain/readbacks/2026/customer.md", "brain/changes/old/README.md")
+            for rel in ("brain/changes/README.md", "brain/readbacks/README.md") + private:
                 (root / rel).parent.mkdir(parents=True, exist_ok=True)
                 (root / rel).write_text("x")
             runner.clear_private(root)
-            self.assertFalse((root / "brain/changes/2026-10-01-real.md").exists())
-            self.assertFalse((root / "brain/readbacks/2026-11-01-real.md").exists())
+            for rel in private:
+                self.assertFalse((root / rel).exists(), rel)
             self.assertTrue((root / "brain/changes/README.md").exists())
+            self.assertTrue((root / "brain/readbacks/README.md").exists())
+
+    def test_outside_links_become_copies_and_inside_links_stay(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            outside = pathlib.Path(tmp) / "outside"
+            outside.mkdir()
+            (outside / "contacts.csv").write_text("real")
+            work = pathlib.Path(tmp) / "work"
+            (work / "brain/crm-export").mkdir(parents=True)
+            (work / "brain/crm-export/contacts.csv").symlink_to(outside / "contacts.csv")
+            (work / "brain/linked").symlink_to(outside, target_is_directory=True)
+            (work / "brain/inside.md").write_text("in")
+            (work / "brain/alias.md").symlink_to(work / "brain/inside.md")
+            runner.localize_links(work)
+            runner.clear_private(work)
+            self.assertFalse((work / "brain/crm-export/contacts.csv").is_symlink())
+            self.assertFalse((work / "brain/linked").is_symlink())
+            self.assertEqual((work / "brain/linked/contacts.csv").read_text(), "real")
+            self.assertEqual((outside / "contacts.csv").read_text(), "real")
+            self.assertTrue((work / "brain/alias.md").is_symlink())
 
     def test_claude_may_run_only_the_named_scripts(self):
         cmd = runner.command("claude", "Run.", None, pathlib.Path("final.txt"))

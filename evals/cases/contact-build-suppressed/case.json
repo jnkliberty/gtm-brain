@@ -24,7 +24,7 @@
     "new_file_lacks": {
       "brain/proposals/": [
         "\\|\\s*[`*_]*K(0\\d|1[012])[`*_]*\\s*\\|\\s*[`*_]*create record",
-        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\b(K13|K14|K15)\\b",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?\\|\\s*[`*_]*(K13|K14|K15)\\b(?![^\\n]*(expired|not excluded|does not block|no block))",
         "^\\|[^\\n]*create record[^\\n]*suppression not checked"
       ]
     },

@@ -86,6 +86,7 @@ The Codex engine uses its workspace-write sandbox with model-command network acc
 | `touch-optout-reply-proposes-row` | An opt-out reply with no suppression row gives `blocked` and one proposed row; `suppression.csv` is unchanged |
 | `touch-stale-export-unknown` | Exports 14 days old against a 7-day limit are stale: `unknown`, never `clear` |
 | `touch-expired-row-clear` | An expired non-opt-out row is reported and does not block |
+| `touch-optout-contact-id-only` | An opt-out touch matched by contact ID alone blocks the person but proposes no suppression row; Gaps names the touch and the missing email or LinkedIn URL |
 | `handoff-supersedes-held` | A new decision on a signal held the day before names the held file in `supersedes` and leaves it unedited |
 | `correction-no-false-promotion` | Three lines on one ID with different conditions or one-off scope propose no rule edit |
 | `correction-promotes-on-three` | Three lines on one ID and one condition from three accounts: the skill proposes an edit, starting `Proposed rule edit: rule-act-now` |
@@ -123,6 +124,7 @@ The Codex engine uses its workspace-write sandbox with model-command network acc
 | `contact-build-over-ceiling` | Ceiling rows added: Harbor has 9 contacts against a ceiling of 8, so it is escalated with no K09; K12 is still created |
 | `contact-build-suppressed` | Opt-out row SUP-D01 excludes K09 (`touch-suppress-person`) despite a mixed-case email and a past `expires_at`; company row SUP-D04 excludes K12 (`touch-suppress-company`); K15 takes K09's place; an expired row and a shared-domain row block nothing |
 | `contact-build-suppression-missing` | `suppression.csv` deleted: K09 and K12 are still created, and each create row carries "suppression not checked" with `touch-coverage` |
+| `contact-build-optout-reply-no-row` | An opt-out reply in `touches.csv` (T05, mixed-case email) with no suppression row excludes K09 with `touch-optout-all-channels`; K15 takes its place, and no create row carries "suppression not checked" |
 | `setup-fresh-days` | A sources.md redo with a new freshness number (14 days) for the two CRM rows: the proposal carries 14 and today's check date on those rows, keeps the other numbers, leaves `brain/sources.md` unchanged, and stays proposed |
 | `objections-to-questions-contoso` | Contoso call notes and themes turn objections into the questions a buyer would type, in one proposal under `brain/search/proposals/` |
 | `cited-brief-checks` | A draft with one phrase used five times, two banned phrases, and one sentence over 25 words: the check JSON under `brain/search/checks/` exists and names all of them |
@@ -145,6 +147,7 @@ The Codex engine uses its workspace-write sandbox with model-command network acc
 | `handoff-optout-reply-no-row` | An opt-out reply in `touches.csv` with no suppression row: `act-now` stays, no draft, gap `recipient suppressed` with T11 and `touch-optout-all-channels` |
 | `handoff-suppression-missing` | No `suppression.csv`: the draft stays, with the gap `suppression not checked` (`touch-coverage`) |
 | `handoff-suppression-stale` | Exports 8 days old on the run date: the draft stays, with the gap `suppression not checked` (`touch-coverage`) |
+| `handoff-optout-reply-contact-id` | An opt-out touch that carries only the recipient's `contact_id` (no email or URL): no draft, gap `recipient suppressed` with T21 and `touch-optout-all-channels` |
 | `handoff-suppression-not-live` | A colleague's opt-out at the same domain and the recipient's expired owner-hold: the draft stays, with no suppression gap |
 | `brand-facts-audit-accurate` | An answer that matches `brain/search/brand-facts.md` raises no finding |
 | `objections-to-questions-reviews-read-date` | Reviews with no read date take the Last checked date in `brain/sources.md`: 92 days, stale, so no ranked row cites an R- ID |

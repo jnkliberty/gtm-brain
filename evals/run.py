@@ -54,14 +54,37 @@ def clear_private(work):
         (brain / name).unlink(missing_ok=True)
     # Change records and readbacks are the team's own history; only the format READMEs stay.
     for folder in ("changes", "readbacks"):
-        for old in (brain / folder).glob("*"):
-            if old.is_file() and old.name != "README.md":
+        for old in (brain / folder).rglob("*"):
+            if old.is_file() and not (old.parent == brain / folder and old.name == "README.md"):
                 old.unlink()
+
+
+def localize_links(work):
+    """Keep links that resolve inside the copy; replace every other link with a copy of its target.
+
+    A link that leaves the copy would let clear_private() and fixture installs change the original files.
+    A link whose target is missing is removed.
+    """
+    root = work.resolve()
+    for folder, dirs, files in os.walk(work):
+        for name in dirs + files:
+            path = pathlib.Path(folder) / name
+            if not path.is_symlink():
+                continue
+            target = path.resolve()
+            if target == root or root in target.parents:
+                continue
+            path.unlink()
+            if target.is_dir():
+                shutil.copytree(target, path)
+            elif target.is_file():
+                shutil.copy2(target, path)
 
 
 def prepare(case, work):
     # symlinks=True: a linked evidence file must stay a link in the copy, or the runbook's resolve-before-read check is never exercised
     shutil.copytree(REPO, work, symlinks=True, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
+    localize_links(work)
     clear_private(work)
     for name in ["base"] + case.get("fixtures", []):
         shutil.copytree(FIXTURES / name, work, dirs_exist_ok=True)
