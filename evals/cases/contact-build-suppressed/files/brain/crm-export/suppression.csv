@@ -1,0 +1,5 @@
+suppression_id,scope,email,linkedin_url,company_domain,reason,recorded_at,expires_at,source
+SUP-D01,person,Omar.Reid@HarborLedger.example,,,opt-out,2026-03-02,2026-06-30,manual
+SUP-D02,person,former.rep@harborledger.example,,,bounced,2026-09-10,2027-03-10,vendor-c
+SUP-D03,person,,linkedin.example/in/example-sol-ortega,,owner-hold,2026-08-01,2026-09-30,manual
+SUP-D04,company,,,northwindrobotics.example,customer,2026-09-25,2027-09-25,manual

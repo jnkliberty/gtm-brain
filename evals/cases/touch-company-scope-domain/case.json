@@ -1,0 +1,26 @@
+{
+  "request": "Run prior-touch-check with the topic wingtip-fabrikam before we propose these three as new contacts: Hana Ito, hana.ito@wingtipsupply.example; Dev Rao, dev.rao@wingtipsupply.example; Ezra Quinn, ezra.quinn@fabrikamtools.example. Planned first touch is email for all three.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "hana\\.ito@wingtipsupply\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "hana\\.ito@wingtipsupply\\.example[^\\n]*touch-suppress-company",
+        "dev\\.rao@wingtipsupply\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "dev\\.rao@wingtipsupply\\.example[^\\n]*\\bS01\\b",
+        "ezra\\.quinn@fabrikamtools\\.example[^\\n]*\\|\\s*[`*_]*clear[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "ezra\\.quinn@fabrikamtools\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["blocked", "clear"]
+  }
+}

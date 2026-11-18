@@ -17,6 +17,10 @@ The brain holds a marketing and sales team's facts as plain files. It covers rul
 - Open [accounts/](accounts/) for what marketing and sales know about one account. Each file is named `<company>.md`, such as `northwind-robotics.md`. Read by `account-handoff`, `brain-setup`, and `signal-sweep`.
 - Open [signals/](signals/) for the interpreted signals on accounts, one file each, with the date first in the name, such as `2026-09-24-northwind-founding-gtm-engineer.md`. Read by `account-handoff` and `signal-sweep`.
 - Open [decisions/](decisions/) for proposed signal decisions that wait on a person's verdict. Top-level files use `<date>-<company>-<signal file name>.md`. `account-handoff` and `signal-sweep` use only these top-level files for signal matching, supersession, and budget counts. They exclude the `follow-through/` subdirectory.
+- Open [touch-rules.md](touch-rules.md) before you propose a new contact or write a first-touch draft. It says when a person or company is suppressed, how long a recent touch holds a person, and what a missing or stale list means. Read by `prior-touch-check`, `tiered-contact-build`, and `account-handoff`. The suppression list and the touch history are `suppression.csv` and `touches.csv` in [crm-export/](crm-export/).
+- Open [readback-rules.md](readback-rules.md) to judge whether a change worked: the metric, people counts, minimum volume, the opt-out guard, confounders, and the decision order. Read by `outcome-readback`.
+- Open [changes/](changes/) for change records, named `<YYYY-MM-DD>-<change-id>.md`, each with a primary metric declared before results. A person writes them; `outcome-readback` reads them. [changes/README.md](changes/README.md) gives the format.
+- Open [readbacks/](readbacks/) for proposed readback decisions, named `<YYYY-MM-DD>-<change-id>.md`. `outcome-readback` writes them. [readbacks/README.md](readbacks/README.md) gives the format.
 
 ## CRM upkeep
 

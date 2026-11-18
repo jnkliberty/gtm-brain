@@ -1,0 +1,35 @@
+{
+  "request": "Run tiered-contact-build on the current CRM export with the topic suppression-check. No account-build proposal is supplied for this run.",
+  "today": "2026-10-03",
+  "append": [
+    {
+      "file": "brain/crm-export/candidates-contacts.csv",
+      "text": "K13,harborledger.example,Quinn,Abbott,Marketing Manager,Marketing,quinn.abbott@harborledger.example,valid,linkedin.example/in/example-quinn-abbott,US,vendor-c\nK14,harborledger.example,Rhea,Dunn,Co-founder,Executive,rhea.dunn@harborledger.example,valid,linkedin.example/in/example-rhea-dunn,US,vendor-c\nK15,harborledger.example,Sol,Ortega,Co-founder,Executive,sol.ortega@harborledger.example,valid,linkedin.example/in/example-sol-ortega,US,vendor-c\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K13[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*K14[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*K15[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bK09\\b)(?=[^\\n]*\\bSUP-D01\\b)(?=[^\\n]*touch-suppress-person)[^\\n]*",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bK12\\b)(?=[^\\n]*\\bSUP-D04\\b)(?=[^\\n]*touch-suppress-company)[^\\n]*"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K(0\\d|1[012])[`*_]*\\s*\\|\\s*[`*_]*create record",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\b(K13|K14|K15)\\b",
+        "^\\|[^\\n]*create record[^\\n]*suppression not checked"
+      ]
+    },
+    "output_lacks": [
+      "\\|\\s*[`*_]*K(09|12)[`*_]*\\s*\\|\\s*[`*_]*create record"
+    ]
+  }
+}

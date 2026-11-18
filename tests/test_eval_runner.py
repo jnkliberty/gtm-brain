@@ -47,6 +47,25 @@ class EvaluationBoundaryTests(unittest.TestCase):
             self.assertFalse(note.exists())
             self.assertFalse((root / "brain/corrections.md").exists())
 
+    def test_change_records_and_readbacks_do_not_reach_case(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            for rel in ("brain/changes/README.md", "brain/changes/2026-10-01-real.md",
+                        "brain/readbacks/README.md", "brain/readbacks/2026-11-01-real.md"):
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_text("x")
+            runner.clear_private(root)
+            self.assertFalse((root / "brain/changes/2026-10-01-real.md").exists())
+            self.assertFalse((root / "brain/readbacks/2026-11-01-real.md").exists())
+            self.assertTrue((root / "brain/changes/README.md").exists())
+
+    def test_claude_may_run_only_the_named_scripts(self):
+        cmd = runner.command("claude", "Run.", None, pathlib.Path("final.txt"))
+        tools = cmd[cmd.index("--allowedTools") + 1].split(",")
+        self.assertIn("Bash(python3 scripts/readback_count.py:*)", tools)
+        self.assertEqual([t for t in tools if t.startswith("Bash(") and "readback" not in t
+                          and "content_checks" not in t and "panel_run.py --canned" not in t], [])
+
     def test_no_brain_case_actually_removes_base_fixture(self):
         with tempfile.TemporaryDirectory() as tmp:
             work = pathlib.Path(tmp) / "repo"

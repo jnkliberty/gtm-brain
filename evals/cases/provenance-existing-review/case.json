@@ -1,0 +1,11 @@
+{
+  "request": "Run crm-field-provenance Branch A on brain/proposals/2026-09-20-enrichment-refresh.md, using brain/crm-export/ as the current values.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "2026-10-03-2026-09-20-enrichment-refresh",
+      "already exists|exists already|file exists"
+    ]
+  }
+}

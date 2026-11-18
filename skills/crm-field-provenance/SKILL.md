@@ -16,7 +16,7 @@ Guards the line between values a machine detected and values a person confirmed.
 - A **confirmed** field holds a person's value, with its **confirmation date** beside it. Only a person changes either.
 - A **field pair** is one row of the table in `brain/field-rules.md`, with its rule ID (for example `field-revenue`).
 
-Every finding cites **evidence**: the rule ID it rests on (`rule-no-overwrite`, `rule-confirmed-wins`, `rule-dated`, `rule-disagree`), the field pair ID, and the row it came from (proposal row number, or record ID in the export). A value no file holds is a **gap**: write it as a gap and leave it open.
+Every finding cites **evidence**: the rule ID it rests on (`rule-no-overwrite`, `rule-dated-protected`, `rule-confirmed-wins`, `rule-dated`, `rule-disagree`), the field pair ID, and the row it came from (proposal row number, or record ID in the export). A value no file holds is a **gap**: write it as a gap and leave it open.
 
 ## Connect
 
@@ -24,7 +24,7 @@ When a live CRM connection is available (for example a HubSpot, Salesforce, or A
 
 ## Inputs
 
-- `brain/field-rules.md`: the field pairs and the four rules.
+- `brain/field-rules.md`: the field pairs and their rules.
 - Current values: a live CRM connection, or `brain/crm-export/companies.csv` and `contacts.csv`.
 - Branch A only: one proposal file in `brain/proposals/`, in the `brain/proposals/README.md` format.
 
@@ -36,7 +36,7 @@ Before a step uses a fact or proposes a value or record, find the fact's row in 
 
 1. **Read.** Read `brain/field-rules.md`, the proposal, and the current values for every record ID the proposal names. Identify record actions by the exact `Field` values in `brain/proposals/README.md`; their candidate IDs may have no current CRM record. The step is done when every field-change row is matched to a field pair and current record or listed as a gap, and every record-action row is identified. Then apply the source check.
 2. **Judge each row.** Give each proposal row exactly one verdict. Identify `action` rows first; for field changes, `blocked` outranks `check`, and `check` outranks `ok`.
-   - `blocked`: the row changes a confirmed field or its confirmation date. Rule: `rule-no-overwrite`. Note: "A person must make this change in the CRM themselves."
+   - `blocked`: the row changes a confirmed field or its confirmation date. Rule: `rule-no-overwrite` for a confirmed field, `rule-dated-protected` for a confirmation date. Note: "A person must make this change in the CRM themselves."
    - `check`: the row changes a detected field while the confirmed field holds a value. Rule: `rule-confirmed-wins`. Note: the change has no effect on anything that reads the value, because the confirmed value wins; quote the confirmed value.
    - `action`: the row proposes `create record`, `archive record`, `merge into <id>`, or `task for owner` as defined in `brain/proposals/README.md`. Rule: `record-action`. Note: a person reviews identity, current state, and approval before applying it; this is outside field provenance.
    - `check`: the row changes a field that no pair or rule in `brain/field-rules.md` covers, or a record the current values do not hold. Rule: `none`. Add the field to Gaps.

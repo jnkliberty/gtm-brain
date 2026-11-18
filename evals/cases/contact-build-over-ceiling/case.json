@@ -1,0 +1,35 @@
+{
+  "request": "Run tiered-contact-build on the current CRM export with the topic ceiling-check. No account-build proposal is supplied for this run.",
+  "today": "2026-10-03",
+  "append": [
+    {
+      "file": "brain/crm-export/contacts.csv",
+      "text": "P015,C003,Alma,Diaz,Sales Manager,Sales,alma.diaz@harborledger.example,valid,linkedin.example/in/example-alma-diaz,Harbor Ledger,US,,,no,vendor-c\nP016,C003,Ben,Shaw,Sales Representative,Sales,ben.shaw@harborledger.example,valid,linkedin.example/in/example-ben-shaw,Harbor Ledger,US,,,no,vendor-c\nP017,C003,Cleo,Price,Marketing Director,Marketing,cleo.price@harborledger.example,valid,linkedin.example/in/example-cleo-price,Harbor Ledger,US,,,no,vendor-c\nP018,C003,Drew,Patel,Revenue Analyst,RevOps,drew.patel@harborledger.example,valid,linkedin.example/in/example-drew-patel,Harbor Ledger,US,,,no,vendor-c\nP019,C003,Elle,Moore,Chief Operating Officer,Executive,elle.moore@harborledger.example,valid,linkedin.example/in/example-elle-moore,Harbor Ledger,US,,,no,vendor-c\nP020,C003,Finn,Lee,Finance Director,Finance,finn.lee@harborledger.example,valid,linkedin.example/in/example-finn-lee,Harbor Ledger,US,,,no,vendor-c\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "contacts-ceiling",
+        "^## Escalated accounts and gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*(Harbor|C003))(?=[^\\n]*\\b9\\b)(?=[^\\n]*\\b8\\b)[^\\n]*",
+        "\\|\\s*[`*_]*K12[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K(09|10)[`*_]*\\s*\\|\\s*[`*_]*create record",
+        "\\|\\s*[`*_]*P0\\d\\d[`*_]*\\s*\\|\\s*[`*_]*archive record"
+      ]
+    },
+    "output_has": [
+      "ceiling"
+    ],
+    "output_lacks": [
+      "\\|\\s*[`*_]*K09[`*_]*\\s*\\|\\s*[`*_]*create record"
+    ]
+  }
+}

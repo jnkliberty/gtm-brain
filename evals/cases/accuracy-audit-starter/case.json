@@ -1,0 +1,41 @@
+{
+  "request": "Run data-accuracy-audit on brain/crm-export/ with the default settings.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/audits/",
+      "brain/proposals/"
+    ],
+    "no_status_files": [
+      "brain/audits/"
+    ],
+    "file_has": {
+      "brain/audits/2026-10-03-accuracy.md": [
+        "^result:\\s*[`*_]*PASS\\b",
+        "^##\\s*Sample[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(\\b(all|every)\\b[^\\n]*\\brecords?\\b|\\bN\\s*=\\s*12\\b[^\\n]*\\bn\\s*=\\s*25\\b)",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C004[`*_]*\\s*\\|\\s*[`*_]*revenue_detected",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C003[`*_]*\\s*\\|\\s*[`*_]*revenue_detected",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C008[`*_]*\\s*\\|\\s*[`*_]*crm_detected",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C005[`*_]*\\s*\\|\\s*[`*_]*revenue_confirmed",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|[^\\n]*\\bC002\\b[^\\n]*duplicate",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*contact[`*_]*\\s*\\|\\s*[`*_]*P004[`*_]*\\s*\\|\\s*[`*_]*email\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*contact[`*_]*\\s*\\|\\s*[`*_]*P006[`*_]*\\s*\\|\\s*[`*_]*company_id",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*contact[`*_]*\\s*\\|[^\\n]*\\bP012\\b[^\\n]*duplicate",
+        "Most errors:\\s*[`*_]*vendor-a",
+        "^##\\s*Owner actions[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bP006\\b",
+        "^##\\s*Owner actions[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC005\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/audits/": [
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C005[`*_]*\\s*\\|\\s*[`*_]*revenue_detected",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*contact[`*_]*\\s*\\|\\s*[`*_]*P012[`*_]*\\s*\\|\\s*[`*_]*company_id"
+      ],
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*P006[`*_]*\\s*\\|\\s*[`*_]*company_id",
+        "\\|\\s*[`*_]*(revenue|crm)_confirmed(_at)?[`*_]*\\s*\\|"
+      ]
+    }
+  }
+}

@@ -14,7 +14,7 @@ Replaces the invented examples in the four policy files with the team's own poli
 
 - An **answer** is what the person said, recorded word for word under its question ID.
 - `keep` is a valid answer: that part of the current file stays as written.
-- An **unanswered** question is a gap. The proposed file holds `GAP: <question ID>` where the value would go. An example value never fills a gap.
+- An **unanswered** question is a gap, including one the person declines or leaves open: record it as `unanswered`. The proposed file holds `GAP: <question ID>` where the value would go. An example value never fills a gap.
 - A value from anywhere else (the example files, a website, a guess) is not the team's words.
 
 ## What stays fixed

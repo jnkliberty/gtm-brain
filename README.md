@@ -77,6 +77,11 @@ A public fork remains public. Use a private repository or a private local copy b
 | `brain/corrections.md` | Every edit or rejection, with its decision file, disputed source line, and when the lesson applies, so repeated mistakes become rule changes |
 | `brain/sources.md` | Where each kind of fact lives, which place wins when two disagree, and how fresh a copy must be. Every CRM skill reads it before it proposes a value |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
+| `skills/prior-touch-check/` | Checks people against the suppression list and past touches before a new contact or a first-touch draft |
+| `skills/outcome-readback/` | Says whether a change worked: baseline against candidate on a metric declared before results |
+| `brain/touch-rules.md`, `brain/readback-rules.md` | The rules those two skills apply |
+| `brain/changes/`, `brain/readbacks/` | Change records a person writes, and the proposed readback decisions |
+| `scripts/readback_count.py` | Counts distinct people, replies, meetings, and opt-outs per window for `outcome-readback` |
 | `skills/follow-through/` | Turns post-call notes into a supported customer draft and retains human feedback |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
 | `skills/signal-sweep/` | Decides every new signal in one run and reports only the handoffs |

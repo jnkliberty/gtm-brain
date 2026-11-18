@@ -19,9 +19,11 @@ import tempfile
 REPO = pathlib.Path(__file__).resolve().parent.parent
 CASES = REPO / "evals" / "cases"
 FIXTURES = REPO / "evals" / "fixtures"
-# Two narrow script permissions: the real check script, and panel_run.py in its no-network canned mode.
+# Three narrow script permissions: the real check script, panel_run.py in its no-network canned mode,
+# and the read-only readback counter. Codex runs them inside its own workspace-write sandbox.
 TOOLS = ",".join(["Read", "Glob", "Grep", "LS", "Write", "Edit",
-                  "Bash(python3 scripts/content_checks.py:*)", "Bash(python3 scripts/panel_run.py --canned:*)"])
+                  "Bash(python3 scripts/content_checks.py:*)", "Bash(python3 scripts/panel_run.py --canned:*)",
+                  "Bash(python3 scripts/readback_count.py:*)"])
 # Rule files in brain/search/ belong to the repo; every other file there is the user's own record.
 SEARCH_RULES = ("README.md", "question-rules.md", "writing-rules.md", "banned-phrases.txt")
 SENTINEL = "PRIVATE-SENTINEL"
@@ -50,10 +52,16 @@ def clear_private(work):
             old.unlink()
     for name in ("voice.md", "proof.md", "corrections.md"):
         (brain / name).unlink(missing_ok=True)
+    # Change records and readbacks are the team's own history; only the format READMEs stay.
+    for folder in ("changes", "readbacks"):
+        for old in (brain / folder).glob("*"):
+            if old.is_file() and old.name != "README.md":
+                old.unlink()
 
 
 def prepare(case, work):
-    shutil.copytree(REPO, work, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
+    # symlinks=True: a linked evidence file must stay a link in the copy, or the runbook's resolve-before-read check is never exercised
+    shutil.copytree(REPO, work, symlinks=True, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
     clear_private(work)
     for name in ["base"] + case.get("fixtures", []):
         shutil.copytree(FIXTURES / name, work, dirs_exist_ok=True)

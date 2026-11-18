@@ -1,0 +1,33 @@
+{
+  "request": "Run account-build on brain/crm-export/candidates-accounts.csv with the topic starter.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "^\\|[^\\n]*\\bA03\\b[^\\n]*create record[^\\n]*tier[- ]?1\\b",
+        "^\\|[^\\n]*\\bA04\\b[^\\n]*create record[^\\n]*tier[- ]?2\\b",
+        "^\\|[^\\n]*\\bA09\\b[^\\n]*create record[^\\n]*tier[- ]?3\\b",
+        "^##\\s*Matched[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA01\\b[^\\n]*\\bC001\\b",
+        "^##\\s*Matched[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA01\\b[^\\n]*\\bC002\\b",
+        "^##\\s*Matched[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA08\\b[^\\n]*\\bC010\\b",
+        "^##\\s*Skipped[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA06\\b",
+        "^##\\s*Skipped[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA07\\b",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA02\\b",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA05\\b",
+        "tier-check-revenue-first"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*A0[125678][`*_]*\\s*\\|\\s*[`*_]*create record"
+      ]
+    },
+    "output_lacks": [
+      "\\|\\s*[`*_]*A0[125678][`*_]*\\s*\\|\\s*[`*_]*create record"
+    ]
+  }
+}

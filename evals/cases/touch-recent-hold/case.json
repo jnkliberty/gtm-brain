@@ -1,0 +1,27 @@
+{
+  "request": "Run prior-touch-check with the topic litware before we write first-touch drafts to Rui Santos (rui.santos@litwarehealth.example) and Lena Fox (lena.fox@litwarehealth.example) at Litware Health. Planned channel: email.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "rui\\.santos@litwarehealth\\.example[^\\n]*\\|\\s*[`*_]*hold[`*_]*\\s*\\|",
+        "rui\\.santos@litwarehealth\\.example[^\\n]*touch-recent",
+        "rui\\.santos@litwarehealth\\.example[^\\n]*2026-09-18",
+        "rui\\.santos@litwarehealth\\.example[^\\n]*jordan\\.blake",
+        "lena\\.fox@litwarehealth\\.example[^\\n]*\\|\\s*[`*_]*clear[`*_]*\\s*\\|",
+        "2026-07-01"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "lena\\.fox@litwarehealth\\.example[^\\n]*\\|\\s*[`*_]*(hold|blocked)[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["hold", "2026-09-18"]
+  }
+}

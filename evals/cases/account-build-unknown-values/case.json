@@ -1,0 +1,38 @@
+{
+  "request": "Run account-build on brain/crm-export/candidates-accounts.csv with the topic unknown-values.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/crm-export/candidates-accounts.csv",
+      "old": "A04,Juniper Grid,junipergrid.example,B2B,Energy analytics,180,26000000,HubSpot,no,US,vendor-c",
+      "new": "A04,Juniper Grid,junipergrid.example,B2B,Energy analytics,180,26000000,HubSpot,unknown,US,vendor-c"
+    },
+    {
+      "file": "brain/crm-export/candidates-accounts.csv",
+      "old": "A09,Basalt Metrics,basaltmetrics.example,B2B,Manufacturing analytics,95,12000000,Pipedrive,no,CA,vendor-c",
+      "new": "A09,Basalt Metrics,basaltmetrics.example,B2B,Manufacturing analytics,95,,Pipedrive,no,CA,vendor-c"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "^\\|[^\\n]*\\bA03\\b[^\\n]*create record[^\\n]*tier[- ]?1\\b",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA04\\b[^\\n]*unknown",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA09\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*A0[1245678][`*_]*\\s*\\|\\s*[`*_]*create record",
+        "\\|\\s*[`*_]*A09[`*_]*\\s*\\|\\s*[`*_]*create record"
+      ]
+    },
+    "output_lacks": [
+      "\\|\\s*[`*_]*A0[49][`*_]*\\s*\\|\\s*[`*_]*create record"
+    ]
+  }
+}

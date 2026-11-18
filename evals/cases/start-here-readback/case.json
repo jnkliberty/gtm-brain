@@ -1,0 +1,22 @@
+{
+  "request": "Run start-here for this request: \"We changed the first-gtm-hire subject line on 2026-10-01. Did the reply rate go up compared with the two weeks before the change, or should we roll it back?\"",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "output_has": [
+      "Skill:\\W*outcome-readback\\b",
+      "Judged by:\\W*(?:agent|jev)",
+      "Why:",
+      "Say next:\\W*[^\\n]*outcome-readback"
+    ],
+    "output_lacks": [
+      "Skill:\\W*(?:none|account-build|account-handoff|brain-setup|brand-facts-audit|buyer-prompt-panel|call-intel-to-themes|cited-brief|competitor-comparison-pages|contact-move-routing|contact-retention-review|crm-field-provenance|crm-maintenance-runbook|data-accuracy-audit|follow-through|icp-filter-calibration|mention-to-deal-ledger|objections-to-questions|prior-touch-check|signal-sweep|start-here|tiered-contact-build)\\b"
+    ]
+  }
+}

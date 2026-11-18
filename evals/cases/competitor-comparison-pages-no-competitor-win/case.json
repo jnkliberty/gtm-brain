@@ -1,0 +1,47 @@
+{
+  "request": "Run competitor-comparison-pages for a comparison page: Contoso versus Pipelane. The page owner is Dana Reyes.",
+  "today": "2026-10-14",
+  "append": [
+    {
+      "file": "brain/search/questions.md",
+      "text": "| bq-009 | What is the difference between Contoso and Pipelane? | /compare/pipelane | invented eval row | Marketing lead | 2026-10-01 |\n"
+    }
+  ],
+  "replace": [
+    {
+      "file": "brain/search/competitors.md",
+      "old": "| cf-004 | Pipelane | Supports Microsoft Dynamics through a paid add-on. | https://pipelane.example/docs | 2026-09-15 | Marketing lead |\n",
+      "new": ""
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*competitor-comparison-pages",
+        "/compare/pipelane",
+        "\\bbq-009\\b",
+        "^\\W*Owner:[^\\n]*Dana Reyes",
+        "^\\W*Rows where the competitor wins:[^\\n]*\\bnone\\b",
+        "^### Table\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*(?:\\bbf-007\\b[^\\n]*\\bcf-003\\b|\\bcf-003\\b[^\\n]*\\bbf-007\\b)",
+        "\\bcf-003\\b[^\\n]*as of 2026-09-15|as of 2026-09-15[^\\n]*\\bcf-003\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(?:(?:competitor|Pipelane)[^\\n]*\\bwins?\\b|\\bwins?\\b[^\\n]*(?:competitor|Pipelane))"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\W*Status:\\s*not ready",
+        "^### Table\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*\\bna-002\\b",
+        "^### Table\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*Relaymark"
+      ]
+    },
+    "output_has": [
+      "Pipelane",
+      "none"
+    ]
+  }
+}

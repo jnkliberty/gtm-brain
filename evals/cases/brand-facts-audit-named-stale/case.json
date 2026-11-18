@@ -1,0 +1,29 @@
+{
+  "request": "Run brand-facts-audit on brain/search/panel-runs/2026-09-14-chatgpt-run1.csv only.",
+  "today": "2026-10-20",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*brand-facts-audit",
+        "2026-09-14-chatgpt-run1[^\\n]*\\bstale\\b|\\bstale\\b[^\\n]*2026-09-14-chatgpt-run1",
+        "\\b36\\b[^\\n]*\\bdays?\\b|\\bdays?\\b[^\\n]*\\b36\\b",
+        "^### Mismatches\\s*\\n(?:(?!###)[^\\n]*\\n)*?[^\\n]*2015[^\\n]*\\bbf-003\\b",
+        "^### Matches\\s*\\n(?:(?!###)[^\\n]*\\n)*?[^\\n]*\\bbf-007\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\W*Status:\\s*not ready"
+      ]
+    },
+    "output_has": [
+      "2015",
+      "stale"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "request": "Run start-here for this request: \"Before I propose new contacts at Harbor Ledger, check whether Priya Nand or Owen Pike is on our suppression list or was already contacted.\"",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/checks/"
+    ],
+    "no_status_files": [
+      "brain/search/checks/"
+    ],
+    "output_has": [
+      "Skill:\\W*prior-touch-check\\b",
+      "Judged by:\\W*(?:agent|jev)",
+      "Why:",
+      "Say next:\\W*[^\\n]*prior-touch-check"
+    ],
+    "output_lacks": [
+      "Skill:\\W*(?:none|account-build|account-handoff|brain-setup|brand-facts-audit|buyer-prompt-panel|call-intel-to-themes|cited-brief|competitor-comparison-pages|contact-move-routing|contact-retention-review|crm-field-provenance|crm-maintenance-runbook|data-accuracy-audit|follow-through|icp-filter-calibration|mention-to-deal-ledger|objections-to-questions|outcome-readback|signal-sweep|start-here|tiered-contact-build)\\b"
+    ]
+  }
+}

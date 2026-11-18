@@ -1,0 +1,42 @@
+{
+  "request": "Run contact-retention-review as of 2026-09-28 with the topic baseline.",
+  "today": "2026-10-03",
+  "delete": [
+    "brain/crm-export/move-evidence.csv",
+    "brain/crm-export/move-contacts.csv"
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "^review_date:\\s*2026-09-28",
+        "\\|\\s*[`*_]*P012[`*_]*\\s*\\|\\s*[`*_]*merge into\\s*[`*_]*P001\\b",
+        "\\|\\s*[`*_]*P013[`*_]*\\s*\\|\\s*[`*_]*archive record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*P014[`*_]*\\s*\\|\\s*[`*_]*archive record[`*_]*\\s*\\|",
+        "archive-restorable",
+        "archive-wrong-function",
+        "keep-protected",
+        "^\\|\\s*[`*_]*P004\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*hold\\b",
+        "^\\|\\s*[`*_]*P009\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*hold\\b",
+        "^\\|\\s*[`*_]*P008\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*out of scope\\b",
+        "^\\|\\s*[`*_]*P011\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*out of scope\\b",
+        "^\\|\\s*[`*_]*P001\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*keep\\b",
+        "^\\|\\s*[`*_]*P006\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*keep\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*P0(0\\d|1[0-2])[`*_]*\\s*\\|\\s*[`*_]*archive record",
+        "\\|\\s*[`*_]*P0(0\\d|1[013-9])[`*_]*\\s*\\|\\s*[`*_]*merge into",
+        "\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*company_id[`*_]*\\s*\\|"
+      ]
+    },
+    "output_lacks": [
+      "\\|\\s*[`*_]*P0(0\\d|1[0-2])[`*_]*\\s*\\|\\s*[`*_]*archive record"
+    ]
+  }
+}

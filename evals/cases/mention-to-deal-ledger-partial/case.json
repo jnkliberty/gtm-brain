@@ -1,0 +1,34 @@
+{
+  "request": "Run mention-to-deal-ledger for 2026-09. The deals export and the companies export were both read on 2026-09-28.",
+  "today": "2026-09-30",
+  "delete": ["brain/search/analytics-export.csv"],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*mention-to-deal-ledger",
+        "^#\\s*Mention to deal ledger 2026-09 \\(partial\\)\\s*$",
+        "^## Gaps\\s*\\n+\\s*[-*][^\\n]*analytics-export\\.csv",
+        "(?:ai-referral|AI referral)[^\\n]*(?:\\n[^\\n]*){0,2}?\\|\\s*[`*_]*gap\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bD-1009\\b",
+        "\\bD-1010\\b[^\\n]*chatgpt",
+        "\\bD-1011\\b[^\\n]*chatgpt",
+        "^[^\\n]*\\bai\\b[^\\n]*\\b43,?200\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "/pricing[^\\n]*\\b68\\b",
+        "(?:ai-referral|AI referral)[^\\n]*\\|\\s*0\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "partial",
+      "analytics-export"
+    ]
+  }
+}

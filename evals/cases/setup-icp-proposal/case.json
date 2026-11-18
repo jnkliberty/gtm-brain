@@ -1,0 +1,31 @@
+{
+  "request": "Run brain-setup. We are adopting the brain and starting the full setup. Do not interview me for brain/icp.md, these are my answers. q-icp-in: \"B2B logistics software companies with 80 to 400 employees, a sales team of three or more, and HubSpot as the CRM.\" q-icp-out: \"Freight brokers, consumer apps, and any company with a RevOps team already.\" q-icp-range: \"20 to 35 accounts.\" Show me the icp proposal and stop there. I have not said yes to any proposed text.",
+  "today": "2026-10-04",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/setup/"
+    ],
+    "new_file_has": {
+      "brain/setup/": [
+        "^started_at:\\s*2026-10-04",
+        "q-icp-in:\\s*\"?B2B logistics software companies with 80 to 400 employees",
+        "q-icp-out:\\s*\"?Freight brokers, consumer apps",
+        "q-icp-range:\\s*\"?20 to 35",
+        "^#+\\s*`?brain/icp\\.md`?\\s*$\\s*^status:\\s*proposed",
+        "^#+\\s*`?brain/stages\\.md`?\\s*$\\s*^status:\\s*not started",
+        "^#+\\s*`?brain/plays\\.md`?\\s*$\\s*^status:\\s*not started",
+        "^#+\\s*`?brain/sources\\.md`?\\s*$\\s*^status:\\s*not started",
+        "\\b20\\b[^\\n]*\\b35\\b",
+        "Freight brokers"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/setup/": [
+        "^status:\\s*(approved|rejected)",
+        "GAP:",
+        "4 to 6 accounts"
+      ]
+    }
+  }
+}

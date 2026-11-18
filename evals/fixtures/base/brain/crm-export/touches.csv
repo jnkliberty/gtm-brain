@@ -1,0 +1,5 @@
+touch_id,contact_id,company_id,company_domain,email,linkedin_url,channel,direction,play,change_id,sent_at,delivery_status,replied_at,reply_class,meeting_booked_at,sender,source
+T01,,,fabrikamtools.example,maya.brooks@fabrikamtools.example,linkedin.example/in/example-maya-brooks,email,outbound,first-gtm-hire,,2026-07-14,delivered,2026-07-16,opt-out,,jordan.blake,sequencer
+T02,,,litwarehealth.example,rui.santos@litwarehealth.example,linkedin.example/in/example-rui-santos,email,outbound,first-gtm-hire,,2026-09-18,delivered,,,,jordan.blake,sequencer
+T03,,,litwarehealth.example,lena.fox@litwarehealth.example,linkedin.example/in/example-lena-fox,linkedin,outbound,first-gtm-hire,,2026-07-01,sent,,,,rina.cho,manual
+T04,,,tailspinair.example,ken.adler@tailspinair.example,linkedin.example/in/example-ken-adler,email,outbound,first-gtm-hire,,2026-09-14,delivered,2026-09-17,opt-out,,jordan.blake,sequencer

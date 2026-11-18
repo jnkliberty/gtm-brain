@@ -1,0 +1,24 @@
+{
+  "request": "Run prior-touch-check with the topic proseware for Sofia Marin, sofia.marin@proseware.example. Planned channel: email.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "sofia\\.marin@proseware\\.example[^\\n]*\\|\\s*[`*_]*clear[`*_]*\\s*\\|",
+        "\\bS03\\b[^\\n]*expired|expired[^\\n]*\\bS03\\b",
+        "2026-09-15"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "sofia\\.marin@proseware\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["clear", "expired"]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "request": "Run icp-filter-calibration on brain/crm-export/companies.csv as of 2026-10-03.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "C002,Northwind Robotics Inc.,northwindrobotics.example,B2B,Warehouse robotics,150,30000000,",
+      "new": "C002,Northwind Robotics Inc.,northwindrobotics.example,B2B,Warehouse robotics,45,30000000,"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "no_status_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "file_has": {
+      "brain/filters.md": [
+        "^built_at:\\s*2026-10-03"
+      ]
+    },
+    "new_file_has": {
+      "brain/calibration/": [
+        "^matched_records:[\\s`*_]*4[`*_]*\\s*$",
+        "^matched_unique:[\\s`*_]*4[`*_]*\\s*$",
+        "^ambiguous_records:[\\s`*_]*3[`*_]*\\s*$",
+        "^verdict:[\\s`*_]*in range\\b",
+        "^## Ambiguous\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC001\\b[^\\n]*source-export-copy",
+        "^## Ambiguous\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC002\\b[^\\n]*source-export-copy",
+        "^## Ambiguous\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC005\\b",
+        "\\b140\\b",
+        "\\b45\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/calibration/": [
+        "^verdict:[\\s`*_]*(tighten|loosen)\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?\\|\\s*[`*_]*(C001|C002)\\b"
+      ]
+    },
+    "output_has": [
+      "C002",
+      "source-export-copy"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "request": "Run crm-maintenance-runbook as of 2026-10-20 with the topic october.",
+  "today": "2026-10-20",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/maintenance/"
+    ],
+    "no_status_files": [
+      "brain/maintenance/"
+    ],
+    "new_file_has": {
+      "brain/maintenance/": [
+        "^reviewed_at:\\s*2026-10-20",
+        "^\\|\\s*[`*_]*M-CURRENT[`*_]*\\s*\\|\\s*[`*_]*due[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-FUTURE[`*_]*\\s*\\|\\s*[`*_]*current[`*_]*\\s*\\|",
+        "^(?=\\|\\s*[`*_]*M-FUTURE\\b)[^\\n]*2026-10-31",
+        "^\\|\\s*[`*_]*M-UPCOMING[`*_]*\\s*\\|\\s*[`*_]*overdue[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-DUE[`*_]*\\s*\\|\\s*[`*_]*overdue[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-OVERDUE[`*_]*\\s*\\|\\s*[`*_]*overdue[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-SOURCES[`*_]*\\s*\\|\\s*[`*_]*not yet due[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-INVALID[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-WRONG-CHECK[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-NO-OWNER[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|"
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "request": "Run competitor-comparison-pages for a comparison page: Contoso versus Pipelane.",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*competitor-comparison-pages",
+        "^\\W*Status:\\s*not ready",
+        "^\\s*[-*][^\\n]*(?:questions\\.md|approved question)",
+        "^\\s*[-*][^\\n]*\\bowner\\b",
+        "^\\W*Next:[^\\n]*objections-to-questions|^\\s*[-*][^\\n]*objections-to-questions"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^### Table",
+        "^\\W*Owner:\\s*\\S"
+      ]
+    },
+    "output_has": [
+      "not ready",
+      "owner"
+    ]
+  }
+}

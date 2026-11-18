@@ -1,0 +1,25 @@
+{
+  "request": "Run prior-touch-check on the people in brain/proposals/2026-10-01-tiered-contact-build-lucerne.md before anyone adds them, with the topic lucerne.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "alex\\.kim@lucernepublishing\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "alex\\.kim@lucernepublishing\\.example[^\\n]*touch-suppress-person",
+        "alex\\.kim@lucernepublishing\\.example[^\\n]*\\bS04\\b",
+        "bo\\.lindqvist@lucernepublishing\\.example[^\\n]*\\|\\s*[`*_]*clear[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "bo\\.lindqvist@lucernepublishing\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["blocked", "clear"]
+  }
+}

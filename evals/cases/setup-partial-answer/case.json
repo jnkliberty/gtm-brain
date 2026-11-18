@@ -1,0 +1,28 @@
+{
+  "request": "Run brain-setup to redo brain/icp.md only. Do not interview me, these are my answers. q-icp-in: \"B2B logistics software companies with 80 to 400 employees and HubSpot as the CRM.\" q-icp-out: keep. q-icp-range: I will not give a number today; leave it open. I have not said yes to any proposed text.",
+  "today": "2026-10-04",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/setup/"
+    ],
+    "new_file_has": {
+      "brain/setup/": [
+        "^started_at:\\s*2026-10-04",
+        "^status:\\s*proposed",
+        "q-icp-range:\\s*\"?unanswered",
+        "GAP:\\s*`?q-icp-range",
+        "80 to 400 employees",
+        "agencies selling GTM services"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/setup/": [
+        "^status:\\s*(approved|rejected)",
+        "4 to 6",
+        "GAP:\\s*`?q-icp-(in|out)\\b",
+        "^#+\\s*`?brain/(stages|plays|sources)\\.md"
+      ]
+    }
+  }
+}

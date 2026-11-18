@@ -1,0 +1,47 @@
+{
+  "request": "Run contact-move-routing as of 2026-09-28 with the topic starter, on the starter fixture.",
+  "today": "2026-09-28",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/moves/",
+      "brain/proposals/"
+    ],
+    "no_status_files": [
+      "brain/moves/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*M101[`*_]*\\s*\\|\\s*[`*_]*title[`*_]*\\s*\\|[^\\n]*Director Revenue Operations[^\\n]*VP Revenue Operations",
+        "\\|\\s*[`*_]*M102[`*_]*\\s*\\|\\s*[`*_]*title[`*_]*\\s*\\|[^\\n]*Director Revenue Operations[^\\n]*VP Revenue Operations",
+        "\\|\\s*[`*_]*C003[`*_]*\\s*\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|[^|\\n]*\\|\\s*[`*_]*maria\\.ortiz",
+        "harborledger\\.example\\s*\\\\?\\|\\s*harborledger\\.example\\s*\\\\?\\|\\s*2026-08-01"
+      ],
+      "brain/moves/": [
+        "^(?=[^\\n]*MOVE_P006)[^\\n]*confirmed move",
+        "^(?=[^\\n]*MOVE_P006)[^\\n]*owner gap",
+        "^(?=[^\\n]*MOVE_P006)[^\\n]*quillonhealth\\.example",
+        "^(?=[^\\n]*ROLE_M10[12])[^\\n]*changed role",
+        "^(?=[^\\n]*\\bP001\\b)(?=[^\\n]*\\bP012\\b)[^\\n]*same role",
+        "^(?=[^\\n]*SAME_P003)[^\\n]*same role",
+        "^(?=[^\\n]*WRONG_PERSON_P002)[^\\n]*uncertain",
+        "^(?=[^\\n]*WRONG_ORIGIN_P004)[^\\n]*uncertain",
+        "^(?=[^\\n]*CONCURRENT_P005)[^\\n]*uncertain",
+        "^(?=[^\\n]*ADVISORY_P007)[^\\n]*uncertain",
+        "^(?=[^\\n]*STALE_P009)[^\\n]*uncertain",
+        "^(?=[^\\n]*FUTURE_P010)[^\\n]*uncertain",
+        "^(?=[^\\n]*CONFLICT_A_P011)[^\\n]*uncertain",
+        "^(?=[^\\n]*NO_START_P013)[^\\n]*uncertain",
+        "^(?=[^\\n]*NO_END_P014)[^\\n]*uncertain"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "task for owner[`*_]*\\s*\\|[^|\\n]*\\|\\s*[`*_]*(alex\\.chen|sam\\.lee)",
+        "\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|[\\s\\S]*\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*company_id[`*_]*\\s*\\|",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*\\w+[`*_]*\\s*\\|\\s*[`*_]*(P00[1-9]|P01[0-4]|C00[1245]|C008|C010|C012)[`*_]*\\s*\\|"
+      ]
+    }
+  }
+}

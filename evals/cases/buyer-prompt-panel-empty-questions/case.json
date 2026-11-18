@@ -1,0 +1,14 @@
+{
+  "request": "Run buyer-prompt-panel for Contoso. Use the pasted-answers path: the saved Gemini answers are in inbox/gemini-pasted.json.",
+  "today": "2026-10-13",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "No approved questions",
+      "objections-to-questions"
+    ],
+    "output_lacks": [
+      "wrote brain/search/panel-runs/"
+    ]
+  }
+}

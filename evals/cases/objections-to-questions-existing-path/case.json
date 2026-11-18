@@ -1,0 +1,11 @@
+{
+  "request": "Run objections-to-questions for the topic pricing. Use the call notes, the call themes, and the reviews.",
+  "today": "2026-10-14",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "2026-10-14-objections-to-questions-pricing\\.md",
+      "exists|already"
+    ]
+  }
+}

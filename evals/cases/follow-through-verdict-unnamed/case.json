@@ -1,0 +1,16 @@
+{
+  "today": "2026-10-25",
+  "fixtures": [
+    "follow-through-record"
+  ],
+  "request": "Run follow-through to record feedback on brain/decisions/follow-through/2026-10-24-northwind-robotics-call1.md. Approve this draft as written. I confirm this is a private copy and authorize this local feedback update.",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "(?:who|name|identity)[^\\n]*\\?"
+    ],
+    "output_lacks": [
+      "(?m)^\\W*approved_by:\\W*(?:unnamed|user|you|me|the user|claude|codex|agent)\\b"
+    ]
+  }
+}

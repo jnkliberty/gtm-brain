@@ -27,6 +27,7 @@ For a record action, use one of these exact values in `Field`. Put the target re
 
 | Field | Object | Record ID | New value |
 | --- | --- | --- | --- |
+| `create record` | suppression | touch ID or person the row is for | Proposed `suppression.csv` row. Written by `prior-touch-check`; a person adds the row |
 | `create record` | company or contact | candidate ID | Proposed record fields, including the candidate ID |
 | `archive record` | contact | current contact ID | `restorable` |
 | `merge into <id>` | company or contact | current record ID | Surviving record ID |

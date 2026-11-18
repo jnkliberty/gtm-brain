@@ -1,0 +1,31 @@
+{
+  "request": "Run crm-field-provenance Branch A on brain/proposals/2026-09-20-enrichment-refresh.md, using brain/crm-export/ as the current values.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/provenance/"
+    ],
+    "no_status_files": [
+      "brain/provenance/"
+    ],
+    "file_has": {
+      "brain/provenance/2026-10-03-2026-09-20-enrichment-refresh.md": [
+        "^branch:\\s*[`*_]*proposal-review",
+        "^counts:[^\\n]*\\b1 ok\\b",
+        "^counts:[^\\n]*\\b1 check\\b",
+        "^counts:[^\\n]*\\b2 blocked\\b",
+        "^counts:[^\\n]*\\b0 action\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*1[`*_]*\\s*\\|\\s*[`*_]*C001[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*ok[`*_]*\\s*\\|\\s*[`*_]*rule-confirmed-wins[`*_]*\\s*\\|",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*2[`*_]*\\s*\\|\\s*[`*_]*C003[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|\\s*[`*_]*rule-no-overwrite[`*_]*\\s*\\|",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*3[`*_]*\\s*\\|\\s*[`*_]*C008[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|\\s*[`*_]*rule-no-overwrite[`*_]*\\s*\\|",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*4[`*_]*\\s*\\|\\s*[`*_]*P006[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*check[`*_]*\\s*\\|\\s*[`*_]*none[`*_]*\\s*\\|",
+        "^##\\s*Gaps[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*company_id"
+      ]
+    },
+    "output_has": [
+      "blocked",
+      "company_id"
+    ]
+  }
+}
