@@ -1,0 +1,5 @@
+suppression_id,scope,email,linkedin_url,company_domain,reason,recorded_at,expires_at,source
+S01,company,,,wingtipsupply.example,customer,2026-08-04,,crm
+S02,person,Maya.Brooks@FabrikamTools.example,linkedin.example/in/example-maya-brooks,fabrikamtools.example,opt-out,2026-07-16,,T01
+S03,person,sofia.marin@proseware.example,,proseware.example,owner-hold,2026-06-01,2026-09-15,owner request
+S04,person,alex.kim@lucernepublishing.example,,lucernepublishing.example,opt-out,2026-08-30,,email reply

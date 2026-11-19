@@ -1,0 +1,3 @@
+touch_id,contact_id,company_id,company_domain,email,linkedin_url,channel,direction,play,change_id,sent_at,delivery_status,replied_at,reply_class,meeting_booked_at,sender,source
+T01,,,fabrikamtools.example,maya.brooks@fabrikamtools.example,linkedin.example/in/example-maya-brooks,email,outbound,first-gtm-hire,,2026-07-14,delivered,2026-07-16,opt-out,,jordan.blake,sequencer
+T21,P001,C001,northwindrobotics.example,,,phone,outbound,deliverability-repair,,2026-08-20,unknown,2026-08-20,opt-out,,jordan.blake,manual

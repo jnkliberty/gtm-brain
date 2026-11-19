@@ -1,0 +1,39 @@
+{
+  "request": "Run tiered-contact-build on the current CRM export with the topic baseline. No account-build proposal is supplied for this run.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K09[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*K12[`*_]*\\s*\\|\\s*[`*_]*create record[`*_]*\\s*\\|",
+        "^\\|[^|\\n]*Northwind[^\\n]*\\btier[ -]?2\\b",
+        "^\\|[^|\\n]*Harbor[^\\n]*\\btier[ -]?2\\b",
+        "^\\|[^|\\n]*Summit[^\\n]*\\btier[ -]?1\\b",
+        "^\\|[^|\\n]*Tidewater[^\\n]*\\btier[ -]?3\\b",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bK10\\b[^\\n]*invalid",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bK11\\b)(?=[^\\n]*\\b(P001|P012)\\b)[^\\n]*",
+        "^## Existing duplicates for review\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bP001\\b)(?=[^\\n]*\\bP012\\b)[^\\n]*",
+        "^## Escalated accounts and gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(Fernwood|C004)[^\\n]*tier-check-revenue-first",
+        "^## Escalated accounts and gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(Quillon|C005)[^\\n]*unknown",
+        "^## Out of scope\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(Brightpath|C006)",
+        "^## Out of scope\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(Kestrel|C007)",
+        "^## Out of scope\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(Cedar|C012)",
+        "contacts-order",
+        "contacts-valid-email"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K(0[1-8]|1[01])[`*_]*\\s*\\|\\s*[`*_]*create record",
+        "^\\|[^|\\n]*Northwind[^|\\n]*\\|\\s*[`*_]*No tier\\b"
+      ]
+    },
+    "output_lacks": [
+      "\\|\\s*[`*_]*K(0[1-8]|1[01])[`*_]*\\s*\\|\\s*[`*_]*create record"
+    ]
+  }
+}

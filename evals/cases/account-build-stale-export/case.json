@@ -1,0 +1,32 @@
+{
+  "request": "Run account-build on brain/crm-export/candidates-accounts.csv as of 2026-11-15 with the topic stale-export.",
+  "today": "2026-11-15",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "source-export-copy",
+        "stale",
+        "48[- ]days?",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA03\\b",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA04\\b",
+        "^##\\s*Escalated[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bA09\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*create record[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "48[- ]days?"
+    ],
+    "output_lacks": [
+      "\\|\\s*[`*_]*create record[`*_]*\\s*\\|"
+    ]
+  }
+}

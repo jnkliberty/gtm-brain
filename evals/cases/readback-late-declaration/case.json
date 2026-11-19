@@ -1,0 +1,23 @@
+{
+  "request": "Run outcome-readback for the change shorter-opener. The touches export was read on 2026-11-17.",
+  "today": "2026-11-18",
+  "fixtures": ["readback-base"],
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/readbacks/"],
+    "new_file_has": {
+      "brain/readbacks/": [
+        "^decision:\\s*[`*_]*unproven\\b",
+        "readback-declared",
+        "2026-10-08",
+        "2026-10-01"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/readbacks/": [
+        "^decision:\\s*[`*_]*(?:promote|keep-testing|roll-back)"
+      ]
+    },
+    "output_has": ["unproven"]
+  }
+}

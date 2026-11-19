@@ -1,0 +1,31 @@
+{
+  "request": "Run objections-to-questions for all topics. Use the call notes, the call themes, and the reviews. The companies export was read on 2026-12-20. Nobody knows when the reviews export was read.",
+  "today": "2026-12-29",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*objections-to-questions",
+        "reviews\\.csv[^\\n]*\\bstale\\b|\\bstale\\b[^\\n]*reviews\\.csv",
+        "\\b92\\b[^\\n]*\\bdays?\\b|\\bdays?\\b[^\\n]*\\b92\\b",
+        "sources\\.md",
+        "\\bQ001\\b",
+        "\\bQ003\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\|\\s*[`*_]*\\d+[`*_]*\\s*\\|\\s*[`*_]*bq-\\d{3}[^\\n]*\\bR-0\\d\\d\\b",
+        "\\b110\\b[^\\n]*\\bdays?\\b"
+      ]
+    },
+    "output_has": [
+      "\\bstale\\b",
+      "\\b92\\b"
+    ]
+  }
+}

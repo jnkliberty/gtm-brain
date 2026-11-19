@@ -1,0 +1,21 @@
+{
+  "request": "Run prior-touch-check with the topic tailspin before a new email sequence to Ken Adler, ken.adler@tailspinair.example, at Tailspin Air.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "ken\\.adler@tailspinair\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "ken\\.adler@tailspinair\\.example[^\\n]*touch-optout-all-channels",
+        "ken\\.adler@tailspinair\\.example[^\\n]*\\bT04\\b",
+        "create record[^\\n]*ken\\.adler@tailspinair\\.example[^\\n]*opt-out",
+        "create record[^\\n]*2026-09-17"
+      ]
+    },
+    "output_has": ["blocked", "opt-out"]
+  }
+}

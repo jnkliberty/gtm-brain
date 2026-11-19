@@ -1,0 +1,35 @@
+{
+  "request": "Run contact-move-routing as of 2026-11-15 with the topic stale-export, on the starter fixture.",
+  "today": "2026-11-15",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/moves/",
+      "brain/proposals/"
+    ],
+    "no_status_files": [
+      "brain/moves/"
+    ],
+    "new_file_has": {
+      "brain/moves/": [
+        "source-export-copy",
+        "stale",
+        "48[- ]days?"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*title[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*company_id[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "48[- ]days?"
+    ],
+    "output_lacks": [
+      "\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|"
+    ]
+  }
+}

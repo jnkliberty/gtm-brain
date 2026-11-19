@@ -1,0 +1,24 @@
+{
+  "request": "Run prior-touch-check with the topic stale-export for Ezra Quinn, ezra.quinn@fabrikamtools.example. Planned channel: email.",
+  "today": "2026-10-12",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*stale",
+        "suppression\\.csv[^\\n]*stale",
+        "\\b14\\b",
+        "not proof of no contact",
+        "ezra\\.quinn@fabrikamtools\\.example[^\\n]*\\|\\s*[`*_]*unknown[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*clear[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["unknown", "stale"],
+    "output_lacks": ["\\|\\s*[`*_]*clear[`*_]*\\s*\\|"]
+  }
+}

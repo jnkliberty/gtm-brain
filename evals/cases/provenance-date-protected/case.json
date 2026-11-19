@@ -1,0 +1,30 @@
+{
+  "request": "Run crm-field-provenance Branch A on brain/proposals/2026-10-01-vendor-sync.md, using brain/crm-export/ as the current values.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/provenance/"
+    ],
+    "no_status_files": [
+      "brain/provenance/"
+    ],
+    "file_has": {
+      "brain/provenance/2026-10-03-2026-10-01-vendor-sync.md": [
+        "^counts:[^\\n]*\\b0 ok\\b",
+        "^counts:[^\\n]*\\b1 check\\b",
+        "^counts:[^\\n]*\\b1 blocked\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*1[`*_]*\\s*\\|\\s*[`*_]*C003[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|\\s*[`*_]*rule-dated-protected[`*_]*\\s*\\|",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*2[`*_]*\\s*\\|\\s*[`*_]*C005[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*check[`*_]*\\s*\\|\\s*[`*_]*rule-confirmed-wins[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/provenance/": [
+        "\\|\\s*[`*_]*ok[`*_]*\\s*\\|\\s*[`*_]*rule-"
+      ]
+    },
+    "output_lacks": [
+      "status:\\s*approved"
+    ]
+  }
+}

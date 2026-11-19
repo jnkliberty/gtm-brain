@@ -1,0 +1,50 @@
+{
+  "request": "Run icp-filter-calibration on brain/crm-export/companies.csv as of 2026-10-03.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "no_status_files": [
+      "brain/filters.md",
+      "brain/calibration/"
+    ],
+    "file_has": {
+      "brain/filters.md": [
+        "^built_at:\\s*2026-10-03",
+        "crit-",
+        "has_gtm_engineer",
+        "no \\(gap\\)"
+      ]
+    },
+    "new_file_has": {
+      "brain/calibration/": [
+        "^run_at:\\s*2026-10-03",
+        "^target_range:[\\s`*_]*4 to 6\\b",
+        "^matched_records:[\\s`*_]*6[`*_]*\\s*$",
+        "^matched_unique:[\\s`*_]*5[`*_]*\\s*$",
+        "^ambiguous_records:[\\s`*_]*1[`*_]*\\s*$",
+        "^verdict:[\\s`*_]*in range\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC001\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC002\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC004\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC008\\b",
+        "^## Likely duplicates\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*northwindrobotics\\.example)(?=[^\\n]*\\bC001\\b)(?=[^\\n]*\\bC002\\b)[^\\n]*",
+        "^## Ambiguous\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC005\\b[^\\n]*unknown"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/calibration/": [
+        "^verdict:[\\s`*_]*(tighten|loosen)\\b",
+        "^## Matched records\\s*\\n(?:(?!## )[^\\n]*\\n)*?\\|\\s*[`*_]*(C005|C006|C007|C009|C011|C012)\\b",
+        "^## Ambiguous\\s*\\n(?:(?!## )[^\\n]*\\n)*?\\|\\s*[`*_]*(C001|C002|C009)\\b"
+      ]
+    },
+    "output_has": [
+      "in range",
+      "C005"
+    ]
+  }
+}

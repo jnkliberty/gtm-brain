@@ -1,0 +1,31 @@
+{
+  "request": "Run data-accuracy-audit on brain/crm-export/ with a sample of 5 accounts and 5 contacts; keep the other default settings.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/audits/",
+      "brain/proposals/"
+    ],
+    "no_status_files": [
+      "brain/audits/"
+    ],
+    "file_has": {
+      "brain/audits/2026-10-03-accuracy.md": [
+        "^##\\s*Sample[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bk\\s*=\\s*2\\b",
+        "^##\\s*Sample[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bC001\\b[^\\n]*\\bC003\\b[^\\n]*\\bC005\\b[^\\n]*\\bC007\\b[^\\n]*\\bC009\\b",
+        "^##\\s*Sample[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bP001\\b[^\\n]*\\bP003\\b[^\\n]*\\bP005\\b[^\\n]*\\bP007\\b[^\\n]*\\bP009\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C003[`*_]*\\s*\\|\\s*[`*_]*revenue_detected",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|\\s*[`*_]*C005[`*_]*\\s*\\|\\s*[`*_]*revenue_confirmed",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*company[`*_]*\\s*\\|[^\\n]*\\bC00[12]\\b[^\\n]*duplicate",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*contact[`*_]*\\s*\\|[^\\n]*\\bP0(01|12)\\b[^\\n]*duplicate"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/audits/": [
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*(company|contact)[`*_]*\\s*\\|\\s*[`*_]*(C004|C008|P004|P006)[`*_]*\\s*\\|",
+        "^##\\s*Sample[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\baudit(ed)? (all|every)\\b"
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "note": "Invented sample answers for the Contoso eval. Not a real engine run.",
+  "engine": "gemini",
+  "company": "Contoso",
+  "date": "2026-10-13",
+  "collected_by": "manual-paste",
+  "answers": [
+    {
+      "run": 1,
+      "prompt_id": "bq-001",
+      "answer": "Contoso lists $1,200 per team per month on a 12-month term. Relaymark charges per seat.",
+      "cited_urls": ["https://contoso.example/pricing", "https://relaymark.example/pricing"]
+    },
+    {
+      "run": 1,
+      "prompt_id": "bq-003",
+      "answer": "Most handoff tools offer a native CRM connector. Ask which CRM setups the vendor tests against.",
+      "cited_urls": []
+    }
+  ]
+}

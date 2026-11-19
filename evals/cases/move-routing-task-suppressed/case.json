@@ -1,0 +1,26 @@
+{
+  "request": "Run contact-move-routing as of 2026-09-28 with the topic rerun, on the starter fixture.",
+  "today": "2026-09-28",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/moves/",
+      "brain/proposals/"
+    ],
+    "no_status_files": [
+      "brain/moves/"
+    ],
+    "new_file_has": {
+      "brain/moves/": [
+        "^(?=[^\\n]*ROLE_M10[12])[^\\n]*changed role",
+        "^(?=[^\\n]*ROLE_M10[12])[^\\n]*suppressed"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*task for owner[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*company_id[`*_]*\\s*\\|"
+      ]
+    }
+  }
+}

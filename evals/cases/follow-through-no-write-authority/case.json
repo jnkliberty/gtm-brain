@@ -1,0 +1,16 @@
+{
+  "today": "2026-10-25",
+  "request": "Run follow-through for the supplied fictional call. I confirm this is a private copy and I may use these notes. I do not authorize saving any file; return everything in chat. I have not authorized sending. Fictional call: Northwind Robotics, 2026-10-25. Sam Lee is our consultant; Dana Reyes is the customer.\n[00:01 Sam] \"I will send the field map to Dana by 2026-10-27. It is not sent.\"\n[00:02 Dana] \"I will return the export to Sam by 2026-10-28. It is not started.\"\n",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "Ready",
+      "Customer draft",
+      "outcome_log"
+    ],
+    "output_lacks": [
+      "GTM\\.run",
+      "(?:I|We|we) (?:have )?sent (?:the|your) field map"
+    ]
+  }
+}

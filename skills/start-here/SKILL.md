@@ -55,12 +55,14 @@ The `description` at the top of every `skills/*/SKILL.md` is the source of truth
 - A supplied reply in an existing conversation, including interest, questions, referrals, rejections, opt-outs, or unclear intent: `account-handoff`.
 - Post-call recap, commitments, or a customer follow-up draft from call notes: `follow-through`. A verdict or outcome on its proposal also routes there. A verdict on a signal decision routes to `account-handoff`.
 - CRM field values checked against machine and human rules: `crm-field-provenance`. A sampled accuracy score: `data-accuracy-audit`.
+- Whether people may get a new contact or first touch, given the suppression list and earlier outreach: `prior-touch-check`. A request to send or post is still `none`.
+- Whether a recorded change worked, comparing a metric before and after it: `outcome-readback`. Mentions lined up with traffic and deals, with no change record named: `mention-to-deal-ledger`.
 
 ## What GTM Brain can do
 
 For a `none` answer, say it in three groups, in plain words:
 
-- **CRM and outbound:** turn signals into sales decisions, set up the brain, build and audit accounts and contacts, route job changes, and review maintenance.
+- **CRM and outbound:** turn signals into sales decisions, set up the brain, build and audit accounts and contacts, check suppression and earlier outreach before a first touch, route job changes, review maintenance, and read back whether a change worked.
 - **Call intelligence:** turn call notes into a recap, actions, and a customer draft, or turn private call notes into evidence-backed themes.
 - **Content engineering:** buyer questions from objections, cited briefs, AI answer panels, brand-fact audits, comparison pages, and a monthly mention-to-deal view.
 

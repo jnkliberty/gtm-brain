@@ -1,5 +1,6 @@
 """Boundaries that keep skill evaluations private and catch unauthorized edits."""
 import importlib.util
+import os
 import pathlib
 import subprocess
 import tempfile
@@ -46,6 +47,45 @@ class EvaluationBoundaryTests(unittest.TestCase):
             runner.clear_private(root)
             self.assertFalse(note.exists())
             self.assertFalse((root / "brain/corrections.md").exists())
+
+    def test_change_records_and_readbacks_do_not_reach_case(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            private = ("brain/changes/2026-10-01-real.md", "brain/readbacks/2026-11-01-real.md",
+                       "brain/readbacks/2026/customer.md", "brain/changes/old/README.md")
+            for rel in ("brain/changes/README.md", "brain/readbacks/README.md") + private:
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_text("x")
+            runner.clear_private(root)
+            for rel in private:
+                self.assertFalse((root / rel).exists(), rel)
+            self.assertTrue((root / "brain/changes/README.md").exists())
+            self.assertTrue((root / "brain/readbacks/README.md").exists())
+
+    def test_outside_links_are_removed_and_inside_links_stay(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            outside = pathlib.Path(tmp) / "outside"
+            outside.mkdir()
+            (outside / "contacts.csv").write_text("real")
+            work = pathlib.Path(tmp) / "work"
+            (work / "brain/crm-export").mkdir(parents=True)
+            (work / "brain/crm-export/contacts.csv").symlink_to(outside / "contacts.csv")
+            (work / "brain/linked").symlink_to(outside, target_is_directory=True)
+            (work / "brain/inside.md").write_text("in")
+            (work / "brain/alias.md").symlink_to(work / "brain/inside.md")
+            runner.localize_links(work)
+            runner.clear_private(work)
+            self.assertFalse(os.path.lexists(work / "brain/crm-export/contacts.csv"))
+            self.assertFalse(os.path.lexists(work / "brain/linked"))
+            self.assertEqual((outside / "contacts.csv").read_text(), "real")
+            self.assertTrue((work / "brain/alias.md").is_symlink())
+
+    def test_claude_may_run_only_the_named_scripts(self):
+        cmd = runner.command("claude", "Run.", None, pathlib.Path("final.txt"))
+        tools = cmd[cmd.index("--allowedTools") + 1].split(",")
+        self.assertIn("Bash(python3 scripts/readback_count.py:*)", tools)
+        self.assertEqual([t for t in tools if t.startswith("Bash(") and "readback" not in t
+                          and "content_checks" not in t and "panel_run.py --canned" not in t], [])
 
     def test_no_brain_case_actually_removes_base_fixture(self):
         with tempfile.TemporaryDirectory() as tmp:

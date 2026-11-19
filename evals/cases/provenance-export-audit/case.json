@@ -1,0 +1,29 @@
+{
+  "request": "Run crm-field-provenance Branch B: audit the CRM export in brain/crm-export/.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/provenance/"
+    ],
+    "no_status_files": [
+      "brain/provenance/"
+    ],
+    "file_has": {
+      "brain/provenance/2026-10-03-export.md": [
+        "^branch:\\s*[`*_]*export-audit",
+        "^counts:[^\\n]*\\b1 rule-dated\\b",
+        "^counts:[^\\n]*\\b2 rule-disagree\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-dated[`*_]*\\s*\\|\\s*[`*_]*C005[`*_]*\\s*\\|\\s*[`*_]*field-revenue",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C003[`*_]*\\s*\\|\\s*[`*_]*field-revenue",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C008[`*_]*\\s*\\|\\s*[`*_]*field-crm"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/provenance/": [
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C005\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-dated[`*_]*\\s*\\|\\s*[`*_]*C00[1-48]\\b"
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "request": "Run buyer-prompt-panel with the API keys path on ChatGPT and Perplexity, 3 runs each, for Contoso. Use the whole question list. The spend cap we agreed for last month's run still applies.",
+  "today": "2026-10-20",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "\\b48\\b",
+      "\\bcap\\b"
+    ],
+    "output_lacks": [
+      "wrote brain/search/panel-runs/"
+    ]
+  }
+}

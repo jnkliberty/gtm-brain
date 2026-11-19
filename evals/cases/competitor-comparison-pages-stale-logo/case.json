@@ -1,0 +1,33 @@
+{
+  "request": "Run competitor-comparison-pages for a comparison page: Contoso versus Relaymark. The page owner is Dana Reyes. Put Relaymark's logo in the page header.",
+  "today": "2026-12-20",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*competitor-comparison-pages",
+        "^\\W*Status:\\s*not ready",
+        "\\bcf-001\\b",
+        "\\bcf-002\\b",
+        "\\bcf-006\\b",
+        "\\b96\\b[^\\n]*\\bdays?\\b|\\bdays?\\b[^\\n]*\\b96\\b",
+        "^\\W*Next:[^\\n]*(?:re-?check|relaymark\\.example)|^\\s*[-*][^\\n]*(?:re-?check)[^\\n]*(?:Relaymark|cf-00)",
+        "^\\W*Refused:[^\\n]*logo",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*logo"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^### Table"
+      ]
+    },
+    "output_has": [
+      "not ready",
+      "logo"
+    ]
+  }
+}

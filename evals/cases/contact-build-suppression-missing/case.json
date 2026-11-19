@@ -1,0 +1,29 @@
+{
+  "request": "Run tiered-contact-build on the current CRM export with the topic no-suppression. No account-build proposal is supplied for this run.",
+  "today": "2026-10-03",
+  "delete": [
+    "brain/crm-export/suppression.csv"
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "^\\|[^\\n]*\\bK09\\b[^\\n]*create record(?=[^\\n]*suppression not checked)(?=[^\\n]*touch-coverage)[^\\n]*",
+        "^\\|[^\\n]*\\bK12\\b[^\\n]*create record(?=[^\\n]*suppression not checked)(?=[^\\n]*touch-coverage)[^\\n]*"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*K(0[1-8]|1[01])[`*_]*\\s*\\|\\s*[`*_]*create record",
+        "^## Excluded candidates\\s*\\n(?:(?!## )[^\\n]*\\n)*?\\|\\s*[`*_]*(K09|K12)\\b",
+        "touch-suppress-(person|company)[^\\n]*\\b(K09|K12)\\b|\\b(K09|K12)\\b[^\\n]*touch-suppress-(person|company)"
+      ]
+    },
+    "output_has": [
+      "suppression not checked|suppression[^\\n]*(missing|not found|absent)"
+    ]
+  }
+}

@@ -77,6 +77,11 @@ A public fork remains public. Use a private repository or a private local copy b
 | `brain/corrections.md` | Every edit or rejection, with its decision file, disputed source line, and when the lesson applies, so repeated mistakes become rule changes |
 | `brain/sources.md` | Where each kind of fact lives, which place wins when two disagree, and how fresh a copy must be. Every CRM skill reads it before it proposes a value |
 | `skills/account-handoff/` | Turns a marketing signal into a sales decision |
+| `skills/prior-touch-check/` | Checks people against the suppression list and past touches before a new contact or a first-touch draft |
+| `skills/outcome-readback/` | Says whether a change worked: baseline against candidate on a metric declared before results |
+| `brain/touch-rules.md`, `brain/readback-rules.md` | The rules those two skills apply |
+| `brain/changes/`, `brain/readbacks/` | Change records a person writes, and the proposed readback decisions |
+| `scripts/readback_count.py` | Counts distinct people, replies, meetings, and opt-outs per window for `outcome-readback` |
 | `skills/follow-through/` | Turns post-call notes into a supported customer draft and retains human feedback |
 | `skills/brain-setup/` | Interviews your team and proposes your own ICP, stages, plays, and source map |
 | `skills/signal-sweep/` | Decides every new signal in one run and reports only the handoffs |
@@ -109,7 +114,7 @@ A public fork remains public. Use a private repository or a private local copy b
 
 Every content skill works with no key. Content work follows "Shared rules for content skills" in `brain/search/README.md`. Add data in this order; each step makes the answers closer to what buyers see.
 
-1. **Keys.** Set an engine key in your shell environment and `python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/ --company "<company name>"` asks that engine your approved questions. The optional keys are `OPENAI_API_KEY`, `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`, and `ANTHROPIC_API_KEY`. An engine without a key is listed as skipped. API answers can differ from the consumer apps.
+1. **Keys.** Set an engine key in your shell environment and `python3 scripts/panel_run.py --questions brain/search/questions.md --runs 3 --out brain/search/panel-runs/ --company "<company name>" --max-calls <your call cap>` asks that engine your approved questions. The script counts the worst case (prompts x engines x runs x 2, for one retry) and makes no call when that is over `--max-calls`; with no cap it runs nothing. `--prompts bq-001,bq-002` runs only those questions. The optional keys are `OPENAI_API_KEY`, `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`, and `ANTHROPIC_API_KEY`. An engine without a key is listed as skipped. API answers can differ from the consumer apps.
 2. **Tracker imports.** Export a CSV from the answer tracker your team already uses and save it in `brain/search/panel-runs/` in the format `brain/search/README.md` defines, with `collected_by` set to `tracker-export`. The skills read it like any other panel run.
 3. **Pasted answers.** Paste an engine's answer into the chat. The `buyer-prompt-panel` skill records it as `collected_by: manual-paste`.
 

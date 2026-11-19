@@ -1,0 +1,11 @@
+{
+  "request": "Run icp-filter-calibration on brain/crm-export/companies.csv as of 2026-10-03.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "2026-10-03-icp\\.md",
+      "already exists|exists already|will not overwrite|won't overwrite|not overwrit|never overwrit"
+    ]
+  }
+}

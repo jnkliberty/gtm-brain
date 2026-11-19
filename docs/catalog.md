@@ -33,6 +33,8 @@ Content skills need no API key; optional engines and Jev use the environment key
 | [brain-setup](../skills/brain-setup/SKILL.md) | Replace the invented team rules. | Your answers about customers, stages, plays, and sources. | Proposed ICP, stages, plays, and source map; writes only approved files. | Starter |
 | [account-handoff](../skills/account-handoff/SKILL.md) | Decide what sales should do with a signal or an existing conversation reply. | Signal mode: account, CRM export, interpreted signal, rules, and past decisions. Reply mode: current reply, relevant conversation, company context, and explicit owner evidence. | Signal decision or recorded verdict. Reply mode returns intent, evidence, owner, proposed action, gaps, and an optional draft in chat only. | Starter signal mode; supplied-reply mode in current checkout, tested with fictional Codex cases |
 | [signal-sweep](../skills/signal-sweep/SKILL.md) | Decide all new signals in one run. | Signals, past signal decisions, and account-handoff inputs. | Signal decisions and a short list of accounts that need a person. | Starter; Follow-through exclusions in current checkout |
+| [prior-touch-check](../skills/prior-touch-check/SKILL.md) | Check people against the suppression list and past touches before a new contact or first touch. | A proposal file, candidate rows, or named people; the touches and suppression exports; touch rules. | Clear, hold, blocked, or unknown per person, with evidence and file coverage. Proposes missing opt-out rows; edits no list. | Current checkout; CSV route |
+| [outcome-readback](../skills/outcome-readback/SKILL.md) | Decide whether a change worked. | A change record with a metric declared before results, the touches export, and readback rules. | One proposed decision: promote, keep-testing, roll-back, or unproven, with counts by distinct people, the opt-out guard, and confounders. | Current checkout; CSV route |
 | [follow-through](../skills/follow-through/SKILL.md) | Turn a sales call into a supported follow-up. | Authorized notes or transcript, company context, and prior feedback when available. | Recap, actions, one customer draft, evidence, and repair notes; can retain a human verdict. | Current checkout; chat only unless privacy and save authority are confirmed |
 
 ### CRM quality and records
@@ -73,8 +75,36 @@ Reuse the existing check from the repository root:
 python3 scripts/graph_check.py
 ```
 
-On October 28, 2026, the graph check returned `graph ok`. A local comparison found 20 catalog rows for 20 skill entrypoints.
-The README and catalog local link targets also resolved. These checks do not verify model behavior.
+On November 18, 2026, the graph check returned `graph ok`. A script found 22 catalog rows for 22 skill entrypoints (`skills/*/SKILL.md`), and all 26 local link targets in this catalog resolved. These checks do not verify model behavior.
+
+### Eval cases per skill
+
+Counted by script from the folders under `evals/cases/` on November 18, 2026: 145 cases. A case counts for the skill its request runs. Signal verdict and rule-edit cases (`correction-*`, `rule-edit-approved`) count for account-handoff; `follow-through-signal-isolation` runs signal-sweep; the two `sources-*` cases count for the skill they name. A count says how many fixed cases exist, not how often they pass; see [evals/README.md](../evals/README.md) for what each case proves.
+
+| Skill | Cases |
+| --- | --- |
+| account-handoff | 37 |
+| follow-through | 17 |
+| prior-touch-check | 10 |
+| outcome-readback | 7 |
+| signal-sweep | 7 |
+| start-here | 7 |
+| crm-field-provenance | 6 |
+| tiered-contact-build | 6 |
+| brand-facts-audit | 5 |
+| buyer-prompt-panel | 4 |
+| competitor-comparison-pages | 4 |
+| icp-filter-calibration | 4 |
+| objections-to-questions | 4 |
+| account-build | 3 |
+| brain-setup | 3 |
+| call-intel-to-themes | 3 |
+| cited-brief | 3 |
+| contact-move-routing | 3 |
+| contact-retention-review | 3 |
+| crm-maintenance-runbook | 3 |
+| data-accuracy-audit | 3 |
+| mention-to-deal-ledger | 3 |
 
 The graph check verifies links under `brain/` and `skills/`, and reachability from `brain/index.md`.
 It does not verify this catalog's completeness, links in `docs/`, package publication, or model behavior.

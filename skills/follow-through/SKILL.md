@@ -61,6 +61,7 @@ Return `exit: Ready|Held|Blocked|Stopped` and these named sections in order:
 6. `outcome_log`: last; empty until a dated, attributed human report is supplied.
 
 For authorized private writes, create `brain/decisions/follow-through/<date>-<company>-<record-id>.md`.
+A Stopped exit, or a missing or conflicting company identity, writes no file, even with write authority: return the record in chat only.
 Use the known account stem or a safe filename form of the supplied company label, never path separators or traversal.
 Generate a local unique record ID, check the candidate path, and regenerate on collision. Never overwrite an existing record.
 A revision gets a new record and a `supersedes` pointer to a Follow-through record only. Preserve the earlier body.

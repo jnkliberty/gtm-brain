@@ -1,0 +1,27 @@
+{
+  "request": "Run prior-touch-check with the topic missing-list for Ezra Quinn (ezra.quinn@fabrikamtools.example), Rui Santos (rui.santos@litwarehealth.example), and Ken Adler (ken.adler@tailspinair.example). Planned channel: email.",
+  "today": "2026-10-02",
+  "delete": ["brain/crm-export/suppression.csv"],
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*(missing|not found|absent|does not exist|no file)",
+        "not proof of no contact",
+        "ezra\\.quinn@fabrikamtools\\.example[^\\n]*\\|\\s*[`*_]*unknown[`*_]*\\s*\\|",
+        "ezra\\.quinn@fabrikamtools\\.example[^\\n]*touch-coverage",
+        "rui\\.santos@litwarehealth\\.example[^\\n]*\\|\\s*[`*_]*unknown[`*_]*\\s*\\|",
+        "ken\\.adler@tailspinair\\.example[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*clear[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["unknown"],
+    "output_lacks": ["\\|\\s*[`*_]*clear[`*_]*\\s*\\|"]
+  }
+}

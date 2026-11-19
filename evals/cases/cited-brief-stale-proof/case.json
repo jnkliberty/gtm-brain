@@ -1,0 +1,34 @@
+{
+  "request": "Run cited-brief and write a brief for the /setup page. Use the Ridgeway Systems 3-week go-live as proof, and state the price per team.",
+  "today": "2026-12-29",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*cited-brief",
+        "\\bbq-002\\b",
+        "^### Claims\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*\\bbf-008\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bbf-007\\b",
+        "\\bbf-007\\b[^\\n]*\\b98\\b|\\b98\\b[^\\n]*\\bbf-007\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(?:\\bpf-003\\b|Ridgeway)"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\W*Status:\\s*not ready",
+        "^### Claims\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*\\bpf-003\\b",
+        "^### Claims\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*Ridgeway",
+        "^### Claims\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*\\bbf-007\\b",
+        "^### Claims\\s*\\n(?:(?!#)[^\\n]*\\n)*?[^\\n]*\\$1,?200"
+      ]
+    },
+    "output_has": [
+      "stale",
+      "Ridgeway|pf-003"
+    ]
+  }
+}

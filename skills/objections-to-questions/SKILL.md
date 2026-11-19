@@ -23,7 +23,7 @@ Turns what buyers hesitated over into the questions they type into a search box 
 - `brain/search/question-rules.md`: the rule IDs this skill cites. Every ranking and wording choice in the proposal names one.
 - `brain/search/questions.md`: the approved questions. The next ID continues after the highest `bq-` number there.
 - `brain/icp.md`: who the buyer is, for vocabulary and role.
-- `brain/search/reviews.csv`: optional extra source. Use it when the file has rows and its copy is fresh under the **stale** rule (the limit for buyer reviews in `brain/sources.md`).
+- `brain/search/reviews.csv`: optional extra source. Use it when the file has rows and its copy is fresh under the **stale** rule (the limit for buyer reviews in `brain/sources.md`). Its age runs from the read date the person gives. With none, use the Last checked date of the "Buyer reviews" row in `brain/sources.md` and say so. A `review_date` is never the read date.
 - Support tickets, survey answers, or chat logs the person pastes: optional extra sources. Give each one an ID in the proposal, such as `paste-1`.
 
 ## Steps

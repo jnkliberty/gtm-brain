@@ -1,0 +1,35 @@
+{
+  "request": "Run crm-maintenance-runbook as of 2026-09-28 with the topic history-check.",
+  "today": "2026-09-28",
+  "append": [
+    {
+      "file": "brain/maintenance/history.csv",
+      "text": "M-GHOST,2026-09-20,brain/maintenance/evidence/current.md\nM-OVERDUE,2026-09-25,brain/maintenance/evidence/overdue-note.md\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/maintenance/"
+    ],
+    "no_status_files": [
+      "brain/maintenance/"
+    ],
+    "new_file_has": {
+      "brain/maintenance/": [
+        "^\\|\\s*[`*_]*M-OVERDUE[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "^(?=\\|\\s*[`*_]*M-OVERDUE\\b)[^\\n]*2026-09-2[45]",
+        "^\\|\\s*[`*_]*M-CURRENT[`*_]*\\s*\\|\\s*[`*_]*current[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-MISSING[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-INVALID[`*_]*\\s*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "^##\\s*Gaps[^\\n]*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*M-GHOST"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/maintenance/": [
+        "^\\|\\s*[`*_]*M-GHOST[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*M-(MISSING|INVALID|FUTURE|ABSOLUTE|TRAVERSAL|SYMLINK|WRONG-CHECK|WRONG-TYPE|NO-OWNER)[`*_]*\\s*\\|\\s*[`*_]*current"
+      ]
+    }
+  }
+}

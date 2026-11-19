@@ -1,0 +1,22 @@
+{
+  "request": "Run prior-touch-check with the topic fourth-coffee for Alex Kim, VP Sales at Fourth Coffee, alex.kim@fourthcoffee.example. Planned channel: email.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "alex\\.kim@fourthcoffee\\.example[^\\n]*\\|\\s*[`*_]*clear[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "alex\\.kim@fourthcoffee\\.example[^\\n]*\\|\\s*[`*_]*(blocked|hold|unknown)[`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": ["clear"]
+  }
+}

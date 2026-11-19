@@ -33,7 +33,7 @@ Use top-level `brain/decisions/*.md` only for signal matching, supersession, pen
    - Signals with no account file, by file name.
    - One line: "<n> nurture and <n> skip, logged in `brain/decisions/`." Accounts held back by the budget or listed for a missing or unresolved input are not counted here.
 
-   When the first six parts are empty, the whole report is one line: "No handoffs today." followed by the count. The step is done when every new signal appears in exactly one part of the report, and every handoff still `proposed` from an earlier run is listed.
+   When the first six parts are empty, the whole report is one line: "No handoffs today." followed by the count. Add nothing before or after that line: no reason, no feed age, no note on files written. The step is done when every new signal appears in exactly one part of the report, and every handoff still `proposed` from an earlier run is listed.
 
 ## Write boundary
 

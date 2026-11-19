@@ -19,9 +19,11 @@ import tempfile
 REPO = pathlib.Path(__file__).resolve().parent.parent
 CASES = REPO / "evals" / "cases"
 FIXTURES = REPO / "evals" / "fixtures"
-# Two narrow script permissions: the real check script, and panel_run.py in its no-network canned mode.
+# Three narrow script permissions: the real check script, panel_run.py in its no-network canned mode,
+# and the read-only readback counter. Codex runs them inside its own workspace-write sandbox.
 TOOLS = ",".join(["Read", "Glob", "Grep", "LS", "Write", "Edit",
-                  "Bash(python3 scripts/content_checks.py:*)", "Bash(python3 scripts/panel_run.py --canned:*)"])
+                  "Bash(python3 scripts/content_checks.py:*)", "Bash(python3 scripts/panel_run.py --canned:*)",
+                  "Bash(python3 scripts/readback_count.py:*)"])
 # Rule files in brain/search/ belong to the repo; every other file there is the user's own record.
 SEARCH_RULES = ("README.md", "question-rules.md", "writing-rules.md", "banned-phrases.txt")
 SENTINEL = "PRIVATE-SENTINEL"
@@ -50,10 +52,35 @@ def clear_private(work):
             old.unlink()
     for name in ("voice.md", "proof.md", "corrections.md"):
         (brain / name).unlink(missing_ok=True)
+    # Change records and readbacks are the team's own history; only the format READMEs stay.
+    for folder in ("changes", "readbacks"):
+        for old in (brain / folder).rglob("*"):
+            if old.is_file() and not (old.parent == brain / folder and old.name == "README.md"):
+                old.unlink()
+
+
+def localize_links(work):
+    """Keep links that resolve inside the copy; remove every other link.
+
+    A link that leaves the copy would let clear_private() and fixture installs change the original files,
+    and a copy of its target would put a file from outside the repo, possibly private, in front of the model.
+    """
+    root = work.resolve()
+    for folder, dirs, files in os.walk(work):
+        for name in dirs + files:
+            path = pathlib.Path(folder) / name
+            if not path.is_symlink():
+                continue
+            target = path.resolve()
+            if target == root or root in target.parents:
+                continue
+            path.unlink()
 
 
 def prepare(case, work):
-    shutil.copytree(REPO, work, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
+    # symlinks=True: a linked evidence file must stay a link in the copy, or the runbook's resolve-before-read check is never exercised
+    shutil.copytree(REPO, work, symlinks=True, ignore=shutil.ignore_patterns(".git", ".worktrees", "evals", "tests", "__pycache__"))
+    localize_links(work)
     clear_private(work)
     for name in ["base"] + case.get("fixtures", []):
         shutil.copytree(FIXTURES / name, work, dirs_exist_ok=True)

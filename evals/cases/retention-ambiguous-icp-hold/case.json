@@ -1,0 +1,37 @@
+{
+  "request": "Run contact-retention-review as of 2026-09-28 with the topic quillon-check.",
+  "today": "2026-10-03",
+  "delete": [
+    "brain/crm-export/move-evidence.csv",
+    "brain/crm-export/move-contacts.csv"
+  ],
+  "append": [
+    {
+      "file": "brain/crm-export/contacts.csv",
+      "text": "P021,C005,Gail,Rowe,Payroll Specialist,Finance,gail.rowe@quillonhealth.example,valid,linkedin.example/in/example-gail-rowe,Quillon Health,US,,,no,vendor-c\n"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/proposals/"
+    ],
+    "new_file_has": {
+      "brain/proposals/": [
+        "^\\|\\s*[`*_]*P021\\b[^|\\n]*\\|[^|\\n]*\\|\\s*[`*_]*hold\\b",
+        "(?=[^\\n]*\\bP021\\b)(?=[^\\n]*has_gtm_engineer)[^\\n]*",
+        "\\|\\s*[`*_]*P013[`*_]*\\s*\\|\\s*[`*_]*archive record[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*P014[`*_]*\\s*\\|\\s*[`*_]*archive record[`*_]*\\s*\\|"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*P021[`*_]*\\s*\\|\\s*[`*_]*archive record",
+        "\\|\\s*[`*_]*P00[67][`*_]*\\s*\\|\\s*[`*_]*archive record"
+      ]
+    },
+    "output_has": [
+      "P021"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "request": "Run outcome-readback for the change shorter-opener. Positive replies tripled, so we want to promote it. The touches export was read on 2026-11-17.",
+  "today": "2026-11-18",
+  "fixtures": ["readback-base"],
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/readbacks/"],
+    "new_file_has": {
+      "brain/readbacks/": [
+        "^decision:\\s*[`*_]*roll-back\\b",
+        "readback-guard",
+        "\\b6\\s*(?:of|/)\\s*28\\b",
+        "\\b4\\s*(?:of|/)\\s*28\\b",
+        "\\b1\\s*(?:of|/)\\s*28\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/readbacks/": [
+        "^decision:\\s*[`*_]*(?:promote|keep-testing|unproven)"
+      ]
+    },
+    "output_has": ["roll-back"]
+  }
+}

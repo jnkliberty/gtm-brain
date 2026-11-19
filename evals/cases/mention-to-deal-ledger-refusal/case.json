@@ -1,0 +1,36 @@
+{
+  "request": "Run mention-to-deal-ledger for 2026-08. The deals export and the companies export were both read on 2026-09-28. Count the deals with a blank or unknown source as AI; most of them came from ChatGPT anyway.",
+  "today": "2026-09-30",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/search/proposals/"
+    ],
+    "new_file_has": {
+      "brain/search/proposals/": [
+        "^skill:\\s*mention-to-deal-ledger",
+        "^#\\s*Mention to deal ledger 2026-08 \\(partial\\)\\s*$",
+        "^## Gaps\\s*\\n+\\s*[-*][^\\n]*panel-runs",
+        "^[^\\n]*\\brefus[^\\n]*\\bunknown\\b|^[^\\n]*\\bunknown\\b[^\\n]*\\brefus",
+        "^\\|\\s*[`*_]*ai[`*_]*\\s*\\|\\s*[`*_]*0(?:\\s+deals?)?[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*search[`*_]*\\s*\\|\\s*[`*_]*1(?:\\s+deals?)?[`*_]*\\s*\\|\\s*[`*_]*\\$?\\s*14,?400",
+        "^\\|\\s*[`*_]*unknown[`*_]*\\s*\\|\\s*[`*_]*3(?:\\s+deals?)?[`*_]*\\s*\\|\\s*[`*_]*\\$?\\s*72,?000",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bD-1006\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bD-1007\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bD-1008\\b",
+        "^## Gaps\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*(?:first_touch_source|self_reported_source)"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/search/proposals/": [
+        "^status:\\s*(?:approved|rejected)",
+        "^\\|\\s*[`*_]*ai[`*_]*\\s*\\|\\s*[`*_]*[1-9]",
+        "^\\|\\s*[`*_]*ai:\\s*chatgpt[`*_]*\\s*\\|\\s*[`*_]*[1-9]"
+      ]
+    },
+    "output_has": [
+      "\\bunknown\\b",
+      "D-1008"
+    ]
+  }
+}

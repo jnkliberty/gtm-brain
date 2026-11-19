@@ -1,0 +1,3 @@
+suppression_id,scope,email,linkedin_url,company_domain,reason,recorded_at,expires_at,source
+S21,company,,,NorthwindRobotics.example,customer,2026-09-15,,crm
+S22,person,maya.brooks@fabrikamtools.example,,fabrikamtools.example,opt-out,2026-09-16,,email reply

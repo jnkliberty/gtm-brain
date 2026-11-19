@@ -35,6 +35,8 @@ The snapshot date of `brain/crm-export/` is the read date of every value taken f
 | Tiers | `brain/tiers.md` | Sales lead | File read | no limit | 2026-09-21 |
 | Contact retention and build rules | `brain/contact-rules.md` | Sales lead | File read | no limit | 2026-09-21 |
 | Vendor account and contact candidates | Enrichment vendor | Operations | `brain/crm-export/candidates-*.csv`; a candidate is not a CRM record | 30 | 2026-09-28 |
+| Outreach touches and replies | Sending tool | Sales lead | `brain/crm-export/touches.csv`, export dated 2026-09-28; a copy (`source-export-copy`); `touch-coverage` in `brain/touch-rules.md` applies when it is missing or stale | 7 | 2026-09-28 |
+| Suppression list | Sending tool | Sales lead | `brain/crm-export/suppression.csv`, export dated 2026-09-28; a copy (`source-export-copy`); `touch-coverage` in `brain/touch-rules.md` applies when it is missing or stale | 7 | 2026-09-28 |
 | Contact work history | Enrichment vendor | Operations | `brain/crm-export/move-evidence.csv`, each row dated by `observed_at`; `move-verified` in `brain/contact-rules.md` sets its limit | 90 | 2026-09-28 |
 | Call excerpts | Call recorder | Sales lead | `brain/calls/call-notes.csv`, private copy | no limit | 2026-09-24 |
 | Account history and marketing activity | `brain/accounts/` | Account owner | File read | no limit | 2026-09-24 |
@@ -57,7 +59,7 @@ When two places disagree, the first matching rule decides.
 1. **`source-crm-live`:** a value read live from the CRM wins for live status: stage, amount, owner, close date. An export is a copy, not a live read; `source-export-copy` covers it.
 2. **`source-brain-rules`:** this repo wins for rules, definitions, and reviewed decisions.
 3. **`source-recorder`:** the call recorder wins for what was said.
-4. **`source-export-copy`:** an export, a snapshot, or a value copied into a brain file is a copy. State its read date beside every value read from it. When two copies disagree, the one read later wins. When their read dates are equal or one is missing, neither wins and the field stays unresolved. A copy older than its "Fresh for" days is stale: state its age and ask for a fresher read. A stale copy cannot support a proposal that depends on it.
+4. **`source-export-copy`:** an export, a snapshot, or a value copied into a brain file is a copy. State its read date beside every value read from it. When two copies disagree, the one read later wins. When their read dates are equal or one is missing, neither wins and the field stays unresolved. An unresolved field blocks only a result that depends on which value is right: when every disagreeing value gives the same result under the rule being applied (the same tier, the same filter outcome, the same protection), that result stands, and the skill cites each value. A copy older than its "Fresh for" days is stale: state its age and ask for a fresher read. A stale copy cannot support a proposal that depends on it.
 5. **`source-fix-copy`:** when a copy disagrees with its source, report the disagreement and propose an update to the copy. Keep the decision based on the source.
 6. **`source-unmapped`:** a fact with no row in "Where to look" is a gap. List it under Gaps and name the row that would resolve it.
 

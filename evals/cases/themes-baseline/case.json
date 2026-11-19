@@ -1,0 +1,37 @@
+{
+  "request": "Run call-intel-to-themes with review date 2026-10-03 and topic handoff-review.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/themes/"
+    ],
+    "new_file_has": {
+      "brain/themes/": [
+        "^reviewed_at:\\s*2026-10-03",
+        "^## Proposed theme\\s*\\n+[\\s`*_]*manual_handoff\\b",
+        "Eligible domains:[\\s`*_]*2\\b",
+        "^## Facts\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*harborledger\\.example[^\\n]*\\bQ001\\b",
+        "^## Facts\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*summitfleet\\.example[^\\n]*\\bQ003\\b",
+        "^## Conflicts\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bQ006\\b)(?=[^\\n]*\\bQ007\\b)[^\\n]*",
+        "^## Conflicts\\s*\\n(?:(?!## )[^\\n]*\\n)*?(?=[^\\n]*\\bQ008\\b)(?=[^\\n]*\\bQ009\\b)[^\\n]*",
+        "^\\|\\s*[`*_]*quote_delay[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*1[`*_]*\\s*\\|",
+        "^\\|\\s*[`*_]*support_sync[`*_]*\\s*\\|[^\\n]*\\|\\s*[`*_]*0[`*_]*\\s*\\|",
+        "call-private",
+        "draft-public-only"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/themes/": [
+        "Eligible domains:[\\s`*_]*[3-9]",
+        "^## Facts\\s*\\n(?:(?!## )[^\\n]*\\n)*?[^\\n]*\\bQ002\\b",
+        "^## Proposed theme\\s*\\n+[\\s`*_]*(quote_delay|support_sync)\\b",
+        "^\\|\\s*[`*_]*manual_handoff[`*_]*\\s*\\|[^\\n]*tidewateranalytics\\.example[^\\n]*\\|\\s*[`*_]*[2-9][`*_]*\\s*\\|"
+      ]
+    },
+    "output_has": [
+      "manual_handoff",
+      "\\b2\\b[^\\n]*domains|domains[^\\n]*\\b2\\b"
+    ]
+  }
+}

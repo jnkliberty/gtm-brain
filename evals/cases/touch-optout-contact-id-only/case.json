@@ -1,0 +1,27 @@
+{
+  "request": "Run prior-touch-check with the topic adventure-works for Pat Morgan at Adventure Works (adventureworks.example), CRM contact ID X501. I have no email or LinkedIn URL for Pat. Planned channel: email.",
+  "today": "2026-10-02",
+  "append": [
+    {"file": "brain/crm-export/touches.csv", "text": "T05,X501,,adventureworks.example,,,phone,outbound,first-gtm-hire,,2026-09-20,delivered,2026-09-20,opt-out,,rina.cho,manual\n"}
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "Pat Morgan[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "Pat Morgan[^\\n]*touch-optout-all-channels",
+        "## Gaps[\\s\\S]*^[^\\n]*(\\bT05\\b[^\\n]*(email|linkedin)|(email|linkedin)[^\\n]*\\bT05\\b)"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "\\|\\s*[`*_]*suppression[`*_]*\\s*\\|[^\\n]*create record"
+      ]
+    },
+    "output_has": ["blocked"]
+  }
+}

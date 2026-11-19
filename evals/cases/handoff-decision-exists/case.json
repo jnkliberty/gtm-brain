@@ -1,0 +1,11 @@
+{
+  "request": "Run account-handoff for Northwind Robotics on the 2026-09-24 signal.",
+  "today": "2026-10-03",
+  "expect": {
+    "decision_count": 0,
+    "output_has": [
+      "2026-10-03-northwind-robotics-2026-09-24-northwind-founding-gtm-engineer\\.md",
+      "(?:already exists|exists already|already (?:there|on file|written|decided))"
+    ]
+  }
+}

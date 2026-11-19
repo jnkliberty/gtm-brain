@@ -1,5 +1,5 @@
 ---
-description: "Column meanings for the CRM export CSVs: companies, contacts, vendor candidates, and the synthetic ceiling and move test files. Read it before you read or write a file in this folder."
+description: "Column meanings for the CRM export CSVs: companies, contacts, vendor candidates, outreach touches, the suppression list, and the synthetic ceiling and move test files. Read it before you read or write a file in this folder."
 ---
 
 # CRM export format
@@ -54,3 +54,39 @@ Synthetic add-on for testing the contact ceiling. Combine its rows with `contact
 ## move-evidence.csv and move-contacts.csv
 
 Synthetic work-history evidence for `contact-move-routing` and `contact-retention-review`. `case_id` identifies a test observation; `contact_id` links to a current contact. `profile_url` and `person_name` must match that contact before an observation can classify a move. Origin and destination names, domains, titles, role dates, `observed_at`, and `source` preserve the evidence behind the decision. `move-contacts.csv` adds two invented duplicate contact rows for the move test; combine it with `contacts.csv` only for that test. An employer-name mismatch in `contacts.csv` alone is a review flag.
+
+## touches.csv
+
+One row per outreach touch or reply, exported from the sending tool or CRM. [touch-rules.md](../touch-rules.md) says how a skill matches a person to these rows. Dates are `YYYY-MM-DD`.
+
+| Column | Meaning |
+| --- | --- |
+| `touch_id` | The touch's ID in the sending tool |
+| `contact_id`, `company_id` | CRM IDs, empty when the person or company has no CRM record |
+| `company_domain` | The company's primary web domain |
+| `email`, `linkedin_url` | The person touched. Either may be empty. |
+| `channel` | `email`, `linkedin`, `phone`, `event`, or `other` |
+| `direction` | `outbound` (we contacted them) or `inbound` (they contacted us) |
+| `play` | The play from `brain/plays.md`, empty when none applied |
+| `change_id` | Empty, or the ID of the change record this touch belongs to |
+| `sent_at` | The date the touch was sent or received |
+| `delivery_status` | `sent`, `delivered`, `bounced`, or `unknown` |
+| `replied_at`, `reply_class` | The reply date and its class: `interest`, `question`, `referral`, `rejection`, `opt-out`, `auto-reply`, or empty for no reply |
+| `meeting_booked_at` | The date a meeting was booked from this touch, or empty |
+| `sender` | The person or mailbox that sent it |
+| `source` | Where the row came from |
+
+## suppression.csv
+
+People and companies the team must not contact, exported from the sending tool or CRM. A skill never edits this file; it proposes rows for a person to add.
+
+| Column | Meaning |
+| --- | --- |
+| `suppression_id` | The row's ID |
+| `scope` | `person` (this one person) or `company` (everyone at `company_domain`) |
+| `email`, `linkedin_url` | The person, for `person` scope. Empty for `company` scope. |
+| `company_domain` | The company's domain. For `person` scope it describes the person and covers no one else. |
+| `reason` | `opt-out`, `customer`, `competitor`, `owner-hold`, `bounced`, or `legal` |
+| `recorded_at` | The date the row was added |
+| `expires_at` | The date the row stops applying, or empty for never. An opt-out never expires. |
+| `source` | Where the row came from, such as a touch ID or `crm` |

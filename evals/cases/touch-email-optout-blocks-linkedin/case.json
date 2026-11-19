@@ -1,0 +1,25 @@
+{
+  "request": "Run prior-touch-check with the topic maya-linkedin. I want to send a LinkedIn connection request to Maya Brooks at Fabrikam Tools, https://www.linkedin.example/in/example-maya-brooks/. I have no email for her.",
+  "today": "2026-10-02",
+  "expect": {
+    "decision_count": 0,
+    "new_files": ["brain/proposals/"],
+    "new_file_has": {
+      "brain/proposals/": [
+        "touches\\.csv[^\\n]*2026-09-28",
+        "suppression\\.csv[^\\n]*2026-09-28",
+        "not proof of no contact",
+        "Maya Brooks[^\\n]*\\|\\s*[`*_]*blocked[`*_]*\\s*\\|",
+        "Maya Brooks[^\\n]*touch-optout-all-channels",
+        "Maya Brooks[^\\n]*\\bS02\\b"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/proposals/": [
+        "Maya Brooks[^\\n]*\\|\\s*[`*_]*(clear|hold|unknown)[`*_]*\\s*\\|",
+        "\\|\\s*[`*_]*suppression[`*_]*\\s*\\|[^\\n]*create record"
+      ]
+    },
+    "output_has": ["blocked", "touch-optout-all-channels"]
+  }
+}
