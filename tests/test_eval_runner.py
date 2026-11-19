@@ -1,5 +1,6 @@
 """Boundaries that keep skill evaluations private and catch unauthorized edits."""
 import importlib.util
+import os
 import pathlib
 import subprocess
 import tempfile
@@ -61,7 +62,7 @@ class EvaluationBoundaryTests(unittest.TestCase):
             self.assertTrue((root / "brain/changes/README.md").exists())
             self.assertTrue((root / "brain/readbacks/README.md").exists())
 
-    def test_outside_links_become_copies_and_inside_links_stay(self):
+    def test_outside_links_are_removed_and_inside_links_stay(self):
         with tempfile.TemporaryDirectory() as tmp:
             outside = pathlib.Path(tmp) / "outside"
             outside.mkdir()
@@ -74,9 +75,8 @@ class EvaluationBoundaryTests(unittest.TestCase):
             (work / "brain/alias.md").symlink_to(work / "brain/inside.md")
             runner.localize_links(work)
             runner.clear_private(work)
-            self.assertFalse((work / "brain/crm-export/contacts.csv").is_symlink())
-            self.assertFalse((work / "brain/linked").is_symlink())
-            self.assertEqual((work / "brain/linked/contacts.csv").read_text(), "real")
+            self.assertFalse(os.path.lexists(work / "brain/crm-export/contacts.csv"))
+            self.assertFalse(os.path.lexists(work / "brain/linked"))
             self.assertEqual((outside / "contacts.csv").read_text(), "real")
             self.assertTrue((work / "brain/alias.md").is_symlink())
 

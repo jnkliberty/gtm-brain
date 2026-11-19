@@ -7,7 +7,7 @@
   "expect": {
     "decision_count": 0,
     "output_has": [
-      "(?:who|name|identity)[^\\n]*\\?"
+      "(?i)(?:who|name|identity)[^\\n]*\\?|(?:need|tell me|send)[^\\n]*\\bname\\b|\\bwho\\b[^\\n]*approv"
     ],
     "output_lacks": [
       "(?m)^\\W*approved_by:\\W*(?:unnamed|user|you|me|the user|claude|codex|agent)\\b"

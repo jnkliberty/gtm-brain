@@ -39,13 +39,13 @@ Find the "Outreach touches and replies" row in "Where to look" in `brain/sources
    - `readback-declared`: `declared_on_or_before_first_touch` is true, and `primary_metric` is set.
    - `readback-metrics`: the metric is `reply-rate`, `positive-reply-rate`, or `meeting-rate`.
    - `readback-fresh`: the export exists, has a read date, and its `export_age_days` is within the limit.
-   - `readback-min-volume`: `people_delivered` is 20 or more in each window.
+   - `readback-min-volume`: `min_volume_met` is true; show `people_delivered` for each window.
 
    The step is done when every gate shows pass or fail, the value it read, and its rule ID.
 
-4. **Read the guard and the primary metric.** From `rates`, take the primary metric and `opt-out-rate` for both windows as "n of N". Take the differences from `comparison.<metric>.points`, and the results from `guard_worse` (`readback-guard`) and `lift` (`readback-lift`: win, loss, or neither). Never compute them from the rounded percents; round only for display. The step is done when both differences are written with their "n of N" counts. Skip the comparison only when a gate in step 3 failed; still show the counts.
+4. **Read the guard and the primary metric.** From `rates`, take the primary metric and `opt-out-rate` for both windows as "n of N". Take the differences from `comparison.<metric>.points`, and the results from `guard_worse` (`readback-guard`), `lift` (`readback-lift`: win, loss, or neither), and `too_few_people` (`readback-min-difference`: quote each entry; empty means none). Never compute them from the rounded percents; round only for display. The step is done when both differences are written with their "n of N" counts. Skip the comparison only when a gate in step 3 failed; still show the counts.
 
-5. **List the confounders.** Compare `senders` and `sources` across the windows; read `overlapping_change_ids`; compare `days_since_last_candidate_send` with 14 days (`readback-confounders`). The step is done when each of the four confounders is marked holds or does not hold, with the values behind it.
+5. **List the confounders.** Compare `senders` and `sources` across the windows; read `overlapping_change_ids`; read `window_open` and show `days_since_last_candidate_send` (`readback-confounders`). The step is done when each of the four confounders is marked holds or does not hold, with the values behind it.
 
 6. **Decide.** Walk `readback-decide` from line 1 and stop at the first line that matches. Name the line and its rule ID. For `promote`, write the proposed edit under `readback-promote-edit`: the file, the current text, and the new text, for a person to make. For every other decision, Proposed edit reads `none`. The step is done when exactly one decision and one rule are named.
 

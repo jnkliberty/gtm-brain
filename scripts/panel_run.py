@@ -24,7 +24,12 @@ default 1)}. The whole file is checked before anything is written. The prompt te
 questions.md. Output files are named <date>-<engine>-canned-run<n>.csv and an existing file is never
 overwritten.
 
-Exit codes: 0 done, 2 unreadable or invalid input, 3 no engine key set, 4 every call failed.
+Spend stop (live mode only): before any call the script counts the worst case, prompts x engines
+with a key x runs x 2 (each call may retry once). Over --max-calls (default 0: no cap, no live
+call) it exits 5 and makes no call. --prompts bq-001,bq-003 runs only those prompt IDs.
+
+Exit codes: 0 done, 2 unreadable or invalid input, 3 no engine key set, 4 every call failed,
+5 planned calls over --max-calls.
 """
 import argparse
 import contextlib
@@ -53,7 +58,8 @@ DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 BILLING_WORDS = ("credit", "quota", "billing", "insufficient")
 URL_RE = re.compile(r"https?://[^\s)\]>\"',;]+")
 CANNED_SOURCES = ("canned", "manual-paste", "tracker-export")
-EXIT_OK, EXIT_INPUT, EXIT_NO_KEYS, EXIT_ALL_FAILED = 0, 2, 3, 4
+EXIT_OK, EXIT_INPUT, EXIT_NO_KEYS, EXIT_ALL_FAILED, EXIT_OVER_CAP = 0, 2, 3, 4, 5
+CALLS_PER_PROMPT = 2  # worst case: one call plus one retry
 
 
 class PanelError(Exception):
@@ -216,6 +222,16 @@ def error_names(err):
     return " ".join(v.lower() for v in (node.get("code"), node.get("type")) if isinstance(v, str))
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuse redirects, so one counted call is one request; a 3xx becomes an HTTPError."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+_OPEN = urllib.request.build_opener(_NoRedirect()).open
+
+
 def http_post(url, headers, body, timeout=TIMEOUT):
     """POST JSON and return the decoded JSON. Raise PanelError with a category."""
     payload = json.dumps(body).encode("utf-8")
@@ -224,9 +240,11 @@ def http_post(url, headers, body, timeout=TIMEOUT):
     for name, value in headers.items():
         req.add_header(name, value)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with _OPEN(req, timeout=timeout) as resp:
             raw = resp.read()
     except urllib.error.HTTPError as err:
+        if 300 <= err.code < 400:
+            raise PanelError("redirect", f"HTTP {err.code}")
         raise PanelError(classify_http(err.code, error_names(err)), f"HTTP {err.code}")
     except (TimeoutError, urllib.error.URLError, OSError, http.client.HTTPException) as err:
         raise PanelError("timeout", type(err).__name__)
@@ -450,6 +468,19 @@ def report(files, failures, skipped, root):
         print("skipped (no key set): " + ", ".join(skipped))
 
 
+def pick_prompts(raw, questions):
+    """Keep only the named prompt IDs (comma separated); an unknown ID is an input error."""
+    if raw is None:
+        return questions
+    wanted = [p.strip() for p in raw.split(",") if p.strip()]
+    if not wanted:
+        raise PanelError("input", "--prompts names no prompt ID")
+    unknown = sorted(set(wanted) - {pid for pid, _ in questions})
+    if unknown:
+        raise PanelError("input", "unknown prompt ID(s) for --prompts: " + ", ".join(unknown))
+    return [q for q in questions if q[0] in wanted]
+
+
 def run_api(args, out, questions, names, env, transport):
     if not names:
         raise PanelError("input", "company name missing: pass --company \"Name\"")
@@ -459,6 +490,13 @@ def run_api(args, out, questions, names, env, transport):
         print("skipped (no key set): " + ", ".join(skipped))
         print("No engine key is set, so no run happened. Set OPENAI_API_KEY, PERPLEXITY_API_KEY, GEMINI_API_KEY, or ANTHROPIC_API_KEY.")
         return EXIT_NO_KEYS
+    questions = pick_prompts(args.prompts, questions)
+    planned = len(questions) * len(active) * max(args.runs, 0) * CALLS_PER_PROMPT
+    if planned > args.max_calls:
+        print(f"error: worst case is {planned} calls ({len(questions)} prompts x {len(active)} engines x "
+              f"{args.runs} runs x {CALLS_PER_PROMPT}), over --max-calls {args.max_calls}; no call made",
+              file=sys.stderr)
+        return EXIT_OVER_CAP
     date = checked_date(args.date) if args.date else datetime.date.today().isoformat()
     out.mkdir(parents=True, exist_ok=True)
     ctx = {"out": out, "base": panel_base(args.root), "date": date, "names": names, "transport": transport}
@@ -500,6 +538,9 @@ def build_parser():
     p.add_argument("--date", default="", help="YYYY-MM-DD for file names; default today")
     p.add_argument("--canned", action="append", default=None,
                    help="JSON file of stored engine answers; no network call; one non-empty path, given once")
+    p.add_argument("--max-calls", type=int, default=0,
+                   help="live mode: exit 5 with no call when the worst-case call count is higher; default 0")
+    p.add_argument("--prompts", default=None, help="live mode: only these prompt IDs, comma separated")
     p.add_argument("--self-test", action="store_true")
     return p
 
@@ -536,7 +577,7 @@ def _check(name, ok, failures):
 def _ns(tmp=None, sub="out", **kw):
     """Arguments for run_main. With tmp set, root is tmp and out is tmp/brain/search/panel-runs/<sub>."""
     base = dict(questions="", runs=1, out="", root=str(ROOT), company="Contoso", engines="",
-                date="2026-10-14", canned=None, self_test=False)
+                date="2026-10-14", canned=None, self_test=False, max_calls=1000, prompts=None)
     if tmp is not None:
         base.update(root=str(tmp), out=str(pathlib.Path(tmp) / "brain" / "search" / "panel-runs" / sub))
     base.update(kw)
@@ -663,12 +704,12 @@ class _Body:
 
 
 def _with_urlopen(fake, func):
-    original = urllib.request.urlopen
-    urllib.request.urlopen = fake
+    global _OPEN
+    original, _OPEN = _OPEN, fake
     try:
         return func()
     finally:
-        urllib.request.urlopen = original
+        _OPEN = original
 
 
 def _http_category(fake):
@@ -703,18 +744,13 @@ def _test_billing(failures):
         transport_calls.append(url)
         return http_post(url, headers, body)
     fake = _FakeUrlopen({"engine.example": _http_error(429, quota)})
-    original = urllib.request.urlopen
-    urllib.request.urlopen = fake
 
     def attempt():
         try:
             call_with_retry(counting, "https://engine.example/v1", {}, {})
         except PanelError as err:
             return err
-    try:
-        err = attempt()
-    finally:
-        urllib.request.urlopen = original
+    err = _with_urlopen(fake, attempt)
     _check("billing failure is not retried", err is not None and err.category == "credit" and len(transport_calls) == 1, failures)
     _check("no response body in the failure detail", err is not None and marker not in (err.detail + str(err)), failures)
 

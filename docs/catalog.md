@@ -75,8 +75,36 @@ Reuse the existing check from the repository root:
 python3 scripts/graph_check.py
 ```
 
-On October 28, 2026, the graph check returned `graph ok`. A local comparison found 20 catalog rows for 20 skill entrypoints.
-The README and catalog local link targets also resolved. These checks do not verify model behavior.
+On November 18, 2026, the graph check returned `graph ok`. A script found 22 catalog rows for 22 skill entrypoints (`skills/*/SKILL.md`), and all 26 local link targets in this catalog resolved. These checks do not verify model behavior.
+
+### Eval cases per skill
+
+Counted by script from the folders under `evals/cases/` on November 18, 2026: 145 cases. A case counts for the skill its request runs. Signal verdict and rule-edit cases (`correction-*`, `rule-edit-approved`) count for account-handoff; `follow-through-signal-isolation` runs signal-sweep; the two `sources-*` cases count for the skill they name. A count says how many fixed cases exist, not how often they pass; see [evals/README.md](../evals/README.md) for what each case proves.
+
+| Skill | Cases |
+| --- | --- |
+| account-handoff | 37 |
+| follow-through | 17 |
+| prior-touch-check | 10 |
+| outcome-readback | 7 |
+| signal-sweep | 7 |
+| start-here | 7 |
+| crm-field-provenance | 6 |
+| tiered-contact-build | 6 |
+| brand-facts-audit | 5 |
+| buyer-prompt-panel | 4 |
+| competitor-comparison-pages | 4 |
+| icp-filter-calibration | 4 |
+| objections-to-questions | 4 |
+| account-build | 3 |
+| brain-setup | 3 |
+| call-intel-to-themes | 3 |
+| cited-brief | 3 |
+| contact-move-routing | 3 |
+| contact-retention-review | 3 |
+| crm-maintenance-runbook | 3 |
+| data-accuracy-audit | 3 |
+| mention-to-deal-ledger | 3 |
 
 The graph check verifies links under `brain/` and `skills/`, and reachability from `brain/index.md`.
 It does not verify this catalog's completeness, links in `docs/`, package publication, or model behavior.

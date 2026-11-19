@@ -60,10 +60,10 @@ def clear_private(work):
 
 
 def localize_links(work):
-    """Keep links that resolve inside the copy; replace every other link with a copy of its target.
+    """Keep links that resolve inside the copy; remove every other link.
 
-    A link that leaves the copy would let clear_private() and fixture installs change the original files.
-    A link whose target is missing is removed.
+    A link that leaves the copy would let clear_private() and fixture installs change the original files,
+    and a copy of its target would put a file from outside the repo, possibly private, in front of the model.
     """
     root = work.resolve()
     for folder, dirs, files in os.walk(work):
@@ -75,10 +75,6 @@ def localize_links(work):
             if target == root or root in target.parents:
                 continue
             path.unlink()
-            if target.is_dir():
-                shutil.copytree(target, path)
-            elif target.is_file():
-                shutil.copy2(target, path)
 
 
 def prepare(case, work):

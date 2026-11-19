@@ -1,0 +1,23 @@
+{
+  "request": "Run account-handoff for Northwind Robotics on the 2026-09-24 signal.",
+  "today": "2026-10-03",
+  "delete": ["brain/crm-export/suppression.csv"],
+  "replace": [
+    {"file": "brain/accounts/northwind-robotics.md", "old": "## Past sales touches\n\n- None.", "new": "## Past sales touches\n\n- 2026-08-20: phone call to Dana Reyes (touch T21 in the CRM export)."}
+  ],
+  "expect": {
+    "decision_count": 1,
+    "decisions": [
+      {
+        "account": "northwind-robotics",
+        "signal": "brain/signals/2026-09-24-northwind-founding-gtm-engineer.md",
+        "decision": "act-now",
+        "rule": "rule-act-now",
+        "play": "first-gtm-hire",
+        "no_draft": true,
+        "gaps": ["recipient suppressed", "T21", "touch-optout-all-channels", "suppression not checked", "touch-coverage"],
+        "no_gaps": ["T01"]
+      }
+    ]
+  }
+}

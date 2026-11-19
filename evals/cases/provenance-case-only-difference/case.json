@@ -1,0 +1,40 @@
+{
+  "request": "Run crm-field-provenance Branch B: audit the CRM export in brain/crm-export/.",
+  "today": "2026-10-03",
+  "replace": [
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "C001,Northwind Robotics,northwindrobotics.example,B2B,Warehouse robotics,140,32000000,,,HubSpot,HubSpot,2026-08-14,",
+      "new": "C001,Northwind Robotics,northwindrobotics.example,B2B,Warehouse robotics,140,32000000,,,HubSpot, hubspot ,2026-08-14,"
+    },
+    {
+      "file": "brain/crm-export/companies.csv",
+      "old": "C007,Kestrel Security,kestrelsec.example,B2B,Cloud security,480,95000000,,,Salesforce,,,",
+      "new": "C007,Kestrel Security,kestrelsec.example,B2B,Cloud security,480,95000000,,,Salesforce,Sales force,2026-08-01,"
+    }
+  ],
+  "expect": {
+    "decision_count": 0,
+    "new_files": [
+      "brain/provenance/"
+    ],
+    "no_status_files": [
+      "brain/provenance/"
+    ],
+    "file_has": {
+      "brain/provenance/2026-10-03-export.md": [
+        "^branch:\\s*[`*_]*export-audit",
+        "^counts:[^\\n]*\\b1 rule-dated\\b",
+        "^counts:[^\\n]*\\b3 rule-disagree\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C007[`*_]*\\s*\\|\\s*[`*_]*field-crm",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C008[`*_]*\\s*\\|\\s*[`*_]*field-crm"
+      ]
+    },
+    "new_file_lacks": {
+      "brain/provenance/": [
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-disagree[`*_]*\\s*\\|\\s*[`*_]*C001\\b",
+        "^\\|\\s*\\d+\\s*\\|\\s*[`*_]*rule-dated[`*_]*\\s*\\|\\s*[`*_]*C00[1-47]\\b"
+      ]
+    }
+  }
+}

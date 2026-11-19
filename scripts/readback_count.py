@@ -9,23 +9,26 @@ Usage:
 Prints JSON. It counts; it decides nothing. The rules in brain/readback-rules.md turn the counts into
 a decision. Without --baseline and --candidate, the candidate window holds the outbound touches tagged
 with the change ID, and the baseline holds untagged outbound touches on the same channels in the
-28 days before changed_at (readback-windows). Reads only; writes nothing.
+baseline-days before changed_at (readback-windows). Every threshold comes from the Thresholds section
+of brain/readback-rules.md. Reads only; writes nothing.
 """
 import argparse
 import csv
 import datetime
 import io
 import json
+import math
 import os
 import re
 import sys
 import tempfile
 from fractions import Fraction
 
-BASELINE_DAYS = 28
-# Keep these equal to readback-lift and readback-guard in brain/readback-rules.md.
-LIFT_POINTS = 5
-GUARD_POINTS = 2
+# The thresholds live only in the Thresholds section of brain/readback-rules.md, one per line as
+# "- threshold <name>: <whole number>". thresholds() reads them; a missing or doubled name stops the run.
+RULES = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, "brain", "readback-rules.md")
+THRESHOLDS = ("lift-points", "guard-points", "min-people-difference", "baseline-days", "min-delivered-people",
+              "open-window-days")
 POSITIVE = {"interest", "question", "referral"}
 CLASSES = ("interest", "question", "referral", "rejection", "opt-out", "auto-reply")
 COLUMNS = ["touch_id", "contact_id", "company_id", "company_domain", "email", "linkedin_url", "channel",
@@ -65,12 +68,48 @@ def dated(touch, key, problems):
     return bool(day(value))
 
 
-def compare(baseline, candidate, threshold):
-    """Exact percentage-point difference (candidate minus baseline) from the counts, and both threshold tests."""
+def thresholds(path=RULES):
+    """The numbers in the Thresholds section of the rules file. Exits with a clear message when one is missing."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+    except OSError as e:
+        raise SystemExit(f"cannot read the rules file {path}: {e.strerror}")
+    # Only the "## Thresholds" section counts; a threshold line anywhere else is ignored.
+    section = re.search(r"(?ms)^## Thresholds[ \t]*\n(.*?)(?=^## |\Z)", text)
+    if not section:
+        raise SystemExit(f"{path}: no '## Thresholds' section")
+    values = {}
+    for name, number in re.findall(r"(?m)^- threshold ([a-z-]+): (\d+)[ \t]*$", section.group(1)):
+        if name in values:
+            raise SystemExit(f"{path}: threshold {name} appears twice; keep one line")
+        values[name] = int(number)
+        top = 100 if name.endswith("-points") else 3650
+        if not 1 <= values[name] <= top:
+            raise SystemExit(f"{path}: threshold {name} is {number}; use a whole number from 1 to {top}")
+    missing = [n for n in THRESHOLDS if n not in values]
+    if missing:
+        raise SystemExit(f"{path}: no line '- threshold <name>: <whole number>' for {', '.join(missing)}")
+    return values
+
+
+def compare(baseline, candidate, threshold, min_people):
+    """Exact differences (candidate minus baseline) from the counts, and the threshold tests.
+
+    people_difference: the candidate count minus the count the baseline rate predicts for the candidate's
+    delivered people. A side (above or below) passes only when both the points and the people difference
+    reach their thresholds; *_points_only is true when the points reach it and the people difference does not."""
     if not baseline["of"] or not candidate["of"]:
-        return {"points": None, "at_or_above": None, "at_or_below": None}
+        return {"points": None, "people_difference": None, "at_or_above": None, "at_or_below": None,
+                "above_points_only": None, "below_points_only": None}
     diff = 100 * (Fraction(candidate["people"], candidate["of"]) - Fraction(baseline["people"], baseline["of"]))
-    return {"points": round(float(diff), 6), "at_or_above": diff >= threshold, "at_or_below": diff <= -threshold}
+    people = candidate["people"] - Fraction(baseline["people"] * candidate["of"], baseline["of"])
+    enough = abs(people) >= min_people
+    above, below = diff >= threshold, diff <= -threshold
+    # Shown values are cut toward zero, never rounded up, so a value under a threshold never shows as reaching it.
+    return {"points": math.trunc(diff * 10**6) / 10**6, "people_difference": math.trunc(people * 10**6) / 10**6,
+            "at_or_above": above and enough, "at_or_below": below and enough,
+            "above_points_only": above and not enough, "below_points_only": below and not enough}
 
 
 def window_stats(rows, start, end, problems):
@@ -124,8 +163,9 @@ def span(text):
     return a, b
 
 
-def count(touches_path, change_path, today, read_date=None, baseline=None, candidate=None):
-    out = {"touches": touches_path, "today": today.isoformat(), "problems": []}
+def count(touches_path, change_path, today, read_date=None, baseline=None, candidate=None, limits=None):
+    limits = limits or thresholds()
+    out = {"touches": touches_path, "today": today.isoformat(), "thresholds": limits, "problems": []}
     if not os.path.isfile(touches_path):
         return out | {"export_missing": True}
     with open(touches_path, newline="", encoding="utf-8") as f:
@@ -144,20 +184,27 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
     change_id = rec.get("change_id", "")
     out["change"] = {k: rec.get(k, "") for k in ("change_id", "changed_at", "primary_metric", "declared_at")}
     out["change"]["record_found"] = bool(rec)
-    outbound = []
+    outbound, unnamed = [], []  # unnamed: a valid send with no person; not counted, but still a send date
     for r in rows:
         if r["direction"].strip() != "outbound":
             out.setdefault("not_outbound_rows", []).append(r["touch_id"])
             continue
         if not day(r["sent_at"]) or not person(r):
             out["problems"].append(f"{r['touch_id']}: no valid sent_at or no person; not counted")
+            if day(r["sent_at"]):
+                unnamed.append(r)
             continue
         outbound.append(r)
+
+    def in_candidate(r):
+        if candidate:
+            return candidate[0] <= day(r["sent_at"]) <= candidate[1]
+        return bool(change_id) and r["change_id"].strip() == change_id
+    c_rows = [r for r in outbound if in_candidate(r)]
+    send_days = sorted(day(r["sent_at"]) for r in c_rows + [u for u in unnamed if in_candidate(u)])
     if candidate:
-        c_rows = [r for r in outbound if candidate[0] <= day(r["sent_at"]) <= candidate[1]]
         c_start, c_end = candidate
     else:
-        c_rows = [r for r in outbound if change_id and r["change_id"].strip() == change_id]
         dates = sorted(day(r["sent_at"]) for r in c_rows)
         c_start, c_end = (dates[0], dates[-1]) if dates else (None, None)
     if baseline:
@@ -165,7 +212,7 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
         b_rows = [r for r in outbound if b_start <= day(r["sent_at"]) <= b_end]
     else:
         changed = day(rec.get("changed_at"))
-        b_start = changed - datetime.timedelta(days=BASELINE_DAYS) if changed else None
+        b_start = changed - datetime.timedelta(days=limits["baseline-days"]) if changed else None
         b_end = changed - datetime.timedelta(days=1) if changed else None
         channels = {r["channel"].strip() for r in c_rows}
         b_rows = [r for r in outbound if changed and not r["change_id"].strip()
@@ -173,14 +220,22 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
     out["windows"] = {"baseline": window_stats(b_rows, b_start, b_end, out["problems"]),
                       "candidate": window_stats(c_rows, c_start, c_end, out["problems"])}
     b_rates, c_rates = out["windows"]["baseline"]["rates"], out["windows"]["candidate"]["rates"]
-    # readback-lift and readback-guard, decided on exact count ratios; percents are for display only.
-    out["comparison"] = {m: compare(b_rates[m], c_rates[m], LIFT_POINTS) for m in ("reply-rate", "positive-reply-rate", "meeting-rate")}
-    guard = compare(b_rates["opt-out-rate"], c_rates["opt-out-rate"], GUARD_POINTS)
+    # readback-lift, readback-guard, readback-min-difference: exact count ratios; percents are for display only.
+    few = limits["min-people-difference"]
+    out["comparison"] = {m: compare(b_rates[m], c_rates[m], limits["lift-points"], few)
+                         for m in ("reply-rate", "positive-reply-rate", "meeting-rate")}
+    guard = compare(b_rates["opt-out-rate"], c_rates["opt-out-rate"], limits["guard-points"], few)
     out["comparison"]["opt-out-rate"] = guard
     out["guard_worse"] = guard["at_or_above"]
-    primary = compare(b_rates[metric], c_rates[metric], LIFT_POINTS) if (metric := rec.get("primary_metric", "")) in b_rates and metric != "opt-out-rate" else None
+    metric = rec.get("primary_metric", "")
+    primary = out["comparison"].get(metric) if metric != "opt-out-rate" else None
     out["lift"] = None if not primary or primary["points"] is None else (
         "win" if primary["at_or_above"] else "loss" if primary["at_or_below"] else "neither")
+    # Points met by too few people: the readback-decide line for readback-min-difference reads this list.
+    thin = [(metric, primary)] if primary and (primary["above_points_only"] or primary["below_points_only"]) else []
+    thin += [("opt-out-rate", guard)] if guard["above_points_only"] else []
+    out["too_few_people"] = [f"{m}: {c['points']} points, but a people difference of {c['people_difference']}, "
+                             f"under {few}" for m, c in thin]
     # Overlap: another change ID on any outbound touch sent inside the candidate window.
     others = set()
     if c_start:
@@ -194,9 +249,12 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
             if other.get("change_id") and other["change_id"] != change_id and when and c_start and c_start <= when <= c_end:
                 others.add(other["change_id"])
     out["overlapping_change_ids"] = sorted(others)
-    last = day(out["windows"]["candidate"]["last_sent"])
+    # First and last candidate sends include rows with no person (readback-confounders, readback-declared).
+    first, last = (send_days[0], send_days[-1]) if send_days else (None, None)
     out["days_since_last_candidate_send"] = (today - last).days if last else None
-    first = day(out["windows"]["candidate"]["first_sent"])
+    # readback-confounders (open window) and readback-min-volume, against the rules-file thresholds.
+    out["window_open"] = bool(last) and (today - last).days < limits["open-window-days"]
+    out["min_volume_met"] = all(w["people_delivered"] >= limits["min-delivered-people"] for w in out["windows"].values())
     declared = day(rec.get("declared_at"))
     out["declared_on_or_before_first_touch"] = bool(declared and first and declared <= first)
     out["counted_rows"] = len(c_rows) + len(b_rows)
@@ -221,8 +279,9 @@ def self_test():
     csv.writer(buf, lineterminator="\n").writerows([COLUMNS] + rows)
     with tempfile.TemporaryDirectory() as tmp:
         touches = os.path.join(tmp, "touches.csv")
-        with open(touches, "w", encoding="utf-8") as f:
-            f.write(buf.getvalue())
+        for name in (touches, os.path.join(tmp, "base.csv")):
+            with open(name, "w", encoding="utf-8") as f:
+                f.write(buf.getvalue())
         changes = os.path.join(tmp, "changes")
         os.mkdir(changes)
         rec = os.path.join(changes, "2026-10-01-chg.md")
@@ -255,6 +314,8 @@ def self_test():
             ["x2", "ab1", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-02", "delivered", "", "", "unknown", "s", "v"],
             ["x3", "", "", "", "A@B.example", "", "email", "outbound", "x", "chg", "2026-10-02", "delivered", "", "", "", "s", "v"],
             ["x4", "", "", "", "a@b.example", "", "email", "outbound", "x", "chg", "2026-10-03", "delivered", "", "", "", "s", "v"],
+            # A candidate send with no person is not counted, but it is still the last send.
+            ["x5", "", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-28", "delivered", "", "", "", "s", "v"],
         ]
         buf = io.StringIO()
         csv.writer(buf, lineterminator="\n").writerows([COLUMNS] + odd)
@@ -264,12 +325,63 @@ def self_test():
         oc = o["windows"]["candidate"]
         checks += [(oc["people_sent"], 3),  # contact IDs keep their case; emails fold case
                    (oc["rates"]["reply-rate"]["people"], 0), (oc["rates"]["meeting-rate"]["people"], 0),
-                   (sum("x1" in p for p in o["problems"]), 1), (sum("x2" in p for p in o["problems"]), 1)]
+                   (sum("x1" in p for p in o["problems"]), 1), (sum("x2" in p for p in o["problems"]), 1),
+                   (o["days_since_last_candidate_send"], 2), (o["window_open"], True)]
+        # A people difference just under 3 never shows as 3.0: 4 of 10**8+1 against 1 of 10**8 is 2.99999999.
+        near = compare({"people": 1, "of": 10**8}, {"people": 4, "of": 10**8 + 1}, 0, 3)
+        checks += [(near["people_difference"] < 3, True), (near["above_points_only"], True)]
         # Exact points from counts: 2 of 101 against 0 of 1 is 1.98 points, not the displayed 2.0.
-        exact = compare({"people": 0, "of": 1}, {"people": 2, "of": 101}, GUARD_POINTS)
+        exact = compare({"people": 0, "of": 1}, {"people": 2, "of": 101}, 2, 0)
         checks += [(exact["points"], 1.980198), (exact["at_or_above"], False), (exact["at_or_below"], False)]
-        checks.append((compare({"people": 2, "of": 28}, {"people": 6, "of": 28}, LIFT_POINTS)["at_or_above"], True))
-        checks.append((compare({"people": 0, "of": 0}, {"people": 6, "of": 28}, LIFT_POINTS)["points"], None))
+        checks.append((compare({"people": 2, "of": 28}, {"people": 6, "of": 28}, 5, 3)["at_or_above"], True))
+        checks.append((compare({"people": 0, "of": 0}, {"people": 6, "of": 28}, 5, 3)["points"], None))
+        # readback-min-difference: 3 of 20 against 2 of 20 is 5 points but one person, so no win.
+        one = compare({"people": 2, "of": 20}, {"people": 3, "of": 20}, 5, 3)
+        checks += [(one["points"], 5.0), (one["people_difference"], 1.0), (one["at_or_above"], False),
+                   (one["above_points_only"], True)]
+        # The counter itself applies it: reply-rate 1 of 2 against 2 of 2 is -50 points but one person.
+        checks += [(r["lift"], "neither"), (len(r["too_few_people"]), 1),
+                   (r["comparison"]["reply-rate"]["people_difference"], -1.0)]
+        # Opt-outs 3 of 28 against 1 of 28: 7.1 points by two people does not trip the guard.
+        g = compare({"people": 1, "of": 28}, {"people": 3, "of": 28}, 2, 3)
+        checks += [(g["at_or_above"], False), (g["above_points_only"], True)]
+        # Thresholds come from the rules file: the real one parses, an edited one changes the result,
+        # and a missing number stops the run with its name.
+        real = thresholds()
+        checks.append((sorted(real), sorted(THRESHOLDS)))
+        checks += [(r["min_volume_met"], False), (r["window_open"], False)]
+        rules = os.path.join(tmp, "rules.md")
+
+        def lines(values):
+            return "## Thresholds\n\n" + "".join(f"- threshold {k}: {v}\n" for k, v in values.items())
+
+        def edited(**changes):
+            with open(rules, "w", encoding="utf-8") as f:
+                f.write(lines(real | changes))
+            return count(os.path.join(tmp, "base.csv"), rec, datetime.date(2026, 10, 30), None, None, None,
+                         thresholds(rules))
+
+        def stops(text):
+            with open(rules, "w", encoding="utf-8") as f:
+                f.write(text)
+            try:
+                thresholds(rules)
+                return "no error"
+            except SystemExit as e:
+                return str(e)
+        # A threshold line outside the Thresholds section does not count.
+        others = {k: v for k, v in real.items() if k != "lift-points"}
+        checks.append(("lift-points" in stops(lines(others) + "\n## Appendix\n\n- threshold lift-points: 99\n"), True))
+        # Out of range stops the run and names the threshold, for every threshold.
+        checks += [(f"threshold {k} is" in stops(lines(real | {k: 999999999})), True) for k in THRESHOLDS]
+        checks.append(("baseline-days" in stops(lines(real | {"baseline-days": 0})), True))
+        lift = edited(**{"lift-points": 40, "min-people-difference": 1})
+        checks += [(lift["thresholds"]["lift-points"], 40), (lift["lift"], "loss"), (lift["too_few_people"], [])]
+        checks.append((edited(**{"baseline-days": 10})["windows"]["baseline"]["start"], "2026-09-21"))
+        checks.append((edited(**{"min-delivered-people": 2})["min_volume_met"], True))
+        checks.append((edited(**{"open-window-days": 30})["window_open"], True))
+        gone = stops(lines({"lift-points": 5, "min-people-difference": 3}))
+        checks.append((all(n in gone for n in THRESHOLDS if n not in ("lift-points", "min-people-difference")), True))
     bad = [f"check {i}: got {got!r}, want {want!r}" for i, (got, want) in enumerate(checks) if got != want]
     print("self-test " + ("FAILED\n" + "\n".join(bad) if bad else f"passed ({len(checks)} checks)"))
     return 1 if bad else 0

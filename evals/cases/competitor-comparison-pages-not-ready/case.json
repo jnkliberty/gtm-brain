@@ -19,7 +19,7 @@
       "brain/search/proposals/": [
         "^status:\\s*(?:approved|rejected)",
         "^### Table",
-        "^\\W*Owner:\\s*\\S"
+        "^[*_`]*Owner:[*_`]*[ \\t]*\\S"
       ]
     },
     "output_has": [
