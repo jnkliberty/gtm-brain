@@ -1,5 +1,7 @@
 """The hard spend stop and the prompt subset in scripts/panel_run.py. Fake transport only, no network."""
 import contextlib
+import gc
+import http.client
 import http.server
 import importlib.util
 import io
@@ -9,6 +11,7 @@ import pathlib
 import tempfile
 import threading
 import unittest
+import warnings
 from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location("panel_run", pathlib.Path(__file__).parents[1] / "scripts/panel_run.py")
@@ -37,12 +40,12 @@ class SpendStopTests(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
-    def run_cli(self, *extra):
+    def run_cli(self, *extra, env=ENV):
         argv = ["--questions", str(self.qfile), "--runs", "2", "--root", str(self.tmp), "--out", str(self.out),
                 "--company", "Contoso", "--engines", "chatgpt,perplexity", "--date", "2026-11-18", *extra]
         args = panel.build_parser().parse_args(argv)
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()) as err:
-            code = panel.run_main(args, ENV, self.transport)
+            code = panel.run_main(args, env, self.transport)
         return code, err.getvalue()
 
     def test_over_the_cap_makes_zero_calls_and_exits_non_zero(self):
@@ -80,15 +83,21 @@ class SpendStopTests(unittest.TestCase):
         self.assertEqual(code, panel.EXIT_INPUT)
         self.assertEqual(self.transport.calls, [])
 
+    def test_empty_prompt_selection_exits_2_even_with_no_keys(self):
+        code, _ = self.run_cli("--prompts", " , ", "--max-calls", "100", env={})
+        self.assertEqual(code, panel.EXIT_INPUT)
+        self.assertEqual(self.transport.calls, [])
+
 
 class _Redirecting(http.server.BaseHTTPRequestHandler):
     requests = []
+    status, location = 307, "/next"
 
     def _answer(self):
         type(self).requests.append((self.command, self.path))
         if self.path == "/v1":
-            self.send_response(307)
-            self.send_header("Location", "/next")
+            self.send_response(self.status)
+            self.send_header("Location", self.location)
             self.send_header("Content-Length", "0")
             self.end_headers()
         else:
@@ -105,20 +114,44 @@ class _Redirecting(http.server.BaseHTTPRequestHandler):
 
 
 class RedirectTests(unittest.TestCase):
-    def test_redirect_is_one_failed_request_not_retried(self):
-        _Redirecting.requests = []
+    def redirect_once(self, status, location):
+        """One counted call against a local server that answers with a redirect; return (error, warnings)."""
+        _Redirecting.requests, _Redirecting.status, _Redirecting.location = [], status, location
         server = http.server.HTTPServer(("127.0.0.1", 0), _Redirecting)
         threading.Thread(target=server.serve_forever, daemon=True).start()
         url = f"http://127.0.0.1:{server.server_port}/v1"
+        category, closes, original_close = None, [], http.client.HTTPResponse.close
+
+        def counting_close(response):
+            closes.append(response.status)
+            original_close(response)
         try:
-            with patch.dict(os.environ, {"no_proxy": "127.0.0.1", "NO_PROXY": "127.0.0.1"}):
-                with self.assertRaises(panel.PanelError) as caught:
+            with warnings.catch_warnings(record=True) as seen, \
+                    patch.dict(os.environ, {"no_proxy": "127.0.0.1", "NO_PROXY": "127.0.0.1"}), \
+                    patch.object(http.client.HTTPResponse, "close", counting_close):
+                warnings.simplefilter("always", ResourceWarning)
+                gc.disable()  # a close done only by the garbage collector does not count
+                try:
                     panel.call_with_retry(panel.http_post, url, {}, {})
+                except panel.PanelError as err:  # anything else aborts the panel and fails the test
+                    category = err.category
+                closed_on_return = list(closes)
+                gc.enable()
+                gc.collect()
         finally:
+            gc.enable()
             server.shutdown()
             server.server_close()
-        self.assertEqual(caught.exception.category, "redirect")
-        self.assertEqual(_Redirecting.requests, [("POST", "/v1")])
+        return category, closed_on_return, [w for w in seen if issubclass(w.category, ResourceWarning)]
+
+    def test_redirect_is_one_failed_request_not_retried(self):
+        for status, location in ((307, "/next"), (302, "/next"), (302, "http://[")):
+            with self.subTest(status=status, location=location):
+                category, closed, leaked = self.redirect_once(status, location)
+                self.assertEqual(category, "redirect")
+                self.assertIn(status, closed, "the 3xx response was not closed before the call returned")
+                self.assertEqual(_Redirecting.requests, [("POST", "/v1")])
+                self.assertEqual(leaked, [], "the 3xx response was left open")
 
 
 if __name__ == "__main__":

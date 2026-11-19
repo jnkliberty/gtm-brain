@@ -222,11 +222,18 @@ def error_names(err):
     return " ".join(v.lower() for v in (node.get("code"), node.get("type")) if isinstance(v, str))
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    """Refuse redirects, so one counted call is one request; a 3xx becomes an HTTPError."""
+class _NoRedirect(urllib.request.BaseHandler):
+    """Close and refuse every 3xx before the redirect handler reads Location: one call, one request."""
 
-    def redirect_request(self, *args, **kwargs):
-        return None
+    handler_order = 100  # before HTTPErrorProcessor (1000), which would hand the 3xx to the redirect handler
+
+    def http_response(self, request, response):
+        if 300 <= response.code < 400:
+            response.close()
+            raise PanelError("redirect", f"HTTP {response.code}")
+        return response
+
+    https_response = http_response
 
 
 _OPEN = urllib.request.build_opener(_NoRedirect()).open
@@ -485,12 +492,12 @@ def run_api(args, out, questions, names, env, transport):
     if not names:
         raise PanelError("input", "company name missing: pass --company \"Name\"")
     wanted = [e.strip() for e in args.engines.split(",") if e.strip()] if args.engines else []
+    questions = pick_prompts(args.prompts, questions)
     active, skipped = pick_engines(wanted, env)
     if not active:
         print("skipped (no key set): " + ", ".join(skipped))
         print("No engine key is set, so no run happened. Set OPENAI_API_KEY, PERPLEXITY_API_KEY, GEMINI_API_KEY, or ANTHROPIC_API_KEY.")
         return EXIT_NO_KEYS
-    questions = pick_prompts(args.prompts, questions)
     planned = len(questions) * len(active) * max(args.runs, 0) * CALLS_PER_PROMPT
     if planned > args.max_calls:
         print(f"error: worst case is {planned} calls ({len(questions)} prompts x {len(active)} engines x "

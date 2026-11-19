@@ -76,17 +76,22 @@ def thresholds(path=RULES):
     except OSError as e:
         raise SystemExit(f"cannot read the rules file {path}: {e.strerror}")
     # Only the "## Thresholds" section counts; a threshold line anywhere else is ignored.
-    section = re.search(r"(?ms)^## Thresholds[ \t]*\n(.*?)(?=^## |\Z)", text)
+    # The section ends at the next level 1 or 2 heading, whatever whitespace follows the hashes.
+    section = re.search(r"(?ms)^##[ \t]+Thresholds[ \t]*\n(.*?)(?=^#{1,2}[ \t]|\Z)", text)
     if not section:
         raise SystemExit(f"{path}: no '## Thresholds' section")
+    # Every threshold line is read, whatever its value; duplicates are judged first, then each value.
+    found = re.findall(r"(?m)^- threshold ([a-z-]+):[ \t]*(.*?)[ \t]*$", section.group(1))
+    names = [name for name, _ in found]
+    for name in names:
+        if names.count(name) > 1:
+            raise SystemExit(f"{path}: threshold {name} appears {names.count(name)} times; keep one line")
     values = {}
-    for name, number in re.findall(r"(?m)^- threshold ([a-z-]+): (\d+)[ \t]*$", section.group(1)):
-        if name in values:
-            raise SystemExit(f"{path}: threshold {name} appears twice; keep one line")
-        values[name] = int(number)
+    for name, number in found:
         top = 100 if name.endswith("-points") else 3650
-        if not 1 <= values[name] <= top:
-            raise SystemExit(f"{path}: threshold {name} is {number}; use a whole number from 1 to {top}")
+        if not re.fullmatch(r"\d+", number) or not 1 <= int(number) <= top:
+            raise SystemExit(f"{path}: threshold {name} is {number!r}; use a whole number from 1 to {top}")
+        values[name] = int(number)
     missing = [n for n in THRESHOLDS if n not in values]
     if missing:
         raise SystemExit(f"{path}: no line '- threshold <name>: <whole number>' for {', '.join(missing)}")
@@ -205,8 +210,7 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
     if candidate:
         c_start, c_end = candidate
     else:
-        dates = sorted(day(r["sent_at"]) for r in c_rows)
-        c_start, c_end = (dates[0], dates[-1]) if dates else (None, None)
+        c_start, c_end = (send_days[0], send_days[-1]) if send_days else (None, None)
     if baseline:
         b_start, b_end = baseline
         b_rows = [r for r in outbound if b_start <= day(r["sent_at"]) <= b_end]
@@ -219,6 +223,9 @@ def count(touches_path, change_path, today, read_date=None, baseline=None, candi
                   and r["channel"].strip() in channels and b_start <= day(r["sent_at"]) <= b_end]
     out["windows"] = {"baseline": window_stats(b_rows, b_start, b_end, out["problems"]),
                       "candidate": window_stats(c_rows, c_start, c_end, out["problems"])}
+    # Reported candidate send dates include sends with no person, in every mode.
+    out["windows"]["candidate"]["first_sent"] = send_days[0].isoformat() if send_days else None
+    out["windows"]["candidate"]["last_sent"] = send_days[-1].isoformat() if send_days else None
     b_rates, c_rates = out["windows"]["baseline"]["rates"], out["windows"]["candidate"]["rates"]
     # readback-lift, readback-guard, readback-min-difference: exact count ratios; percents are for display only.
     few = limits["min-people-difference"]
@@ -316,6 +323,7 @@ def self_test():
             ["x4", "", "", "", "a@b.example", "", "email", "outbound", "x", "chg", "2026-10-03", "delivered", "", "", "", "s", "v"],
             # A candidate send with no person is not counted, but it is still the last send.
             ["x5", "", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-28", "delivered", "", "", "", "s", "v"],
+            ["x0", "", "", "", "", "", "email", "outbound", "x", "chg", "2026-10-01", "delivered", "", "", "", "s", "v"],
         ]
         buf = io.StringIO()
         csv.writer(buf, lineterminator="\n").writerows([COLUMNS] + odd)
@@ -326,7 +334,10 @@ def self_test():
         checks += [(oc["people_sent"], 3),  # contact IDs keep their case; emails fold case
                    (oc["rates"]["reply-rate"]["people"], 0), (oc["rates"]["meeting-rate"]["people"], 0),
                    (sum("x1" in p for p in o["problems"]), 1), (sum("x2" in p for p in o["problems"]), 1),
-                   (o["days_since_last_candidate_send"], 2), (o["window_open"], True)]
+                   (o["days_since_last_candidate_send"], 2), (o["window_open"], True),
+                   # Unnamed sends on both sides of the named ones set the reported dates and the window bounds.
+                   ((oc["first_sent"], oc["last_sent"], oc["start"], oc["end"]),
+                    ("2026-10-01", "2026-10-28", "2026-10-01", "2026-10-28"))]
         # A people difference just under 3 never shows as 3.0: 4 of 10**8+1 against 1 of 10**8 is 2.99999999.
         near = compare({"people": 1, "of": 10**8}, {"people": 4, "of": 10**8 + 1}, 0, 3)
         checks += [(near["people_difference"] < 3, True), (near["above_points_only"], True)]
@@ -371,7 +382,10 @@ def self_test():
                 return str(e)
         # A threshold line outside the Thresholds section does not count.
         others = {k: v for k, v in real.items() if k != "lift-points"}
-        checks.append(("lift-points" in stops(lines(others) + "\n## Appendix\n\n- threshold lift-points: 99\n"), True))
+        for heading in ("## Appendix", "# Appendix", "##\tAppendix"):
+            checks.append(("lift-points" in stops(lines(others) + f"\n{heading}\n\n- threshold lift-points: 99\n"), True))
+        # A second, bad line for a name stops the run and names it; it is never skipped.
+        checks.append(("lift-points" in stops(lines(real) + "- threshold lift-points: -1\n"), True))
         # Out of range stops the run and names the threshold, for every threshold.
         checks += [(f"threshold {k} is" in stops(lines(real | {k: 999999999})), True) for k in THRESHOLDS]
         checks.append(("baseline-days" in stops(lines(real | {"baseline-days": 0})), True))
