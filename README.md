@@ -1,3 +1,10 @@
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-paper.svg">
+    <img src="docs/assets/logo-ink.svg" width="72" height="72" alt="GTM brain logo">
+  </picture>
+</p>
+
 # GTM brain
 
 A shared memory for a marketing and sales team, with skills for CRM, outbound, and content engineering.
